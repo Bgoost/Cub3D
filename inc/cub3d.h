@@ -2,6 +2,8 @@
 # define CUB3D_H
 
 # include "../MLX42/include/MLX42/MLX42.h"
+# include "colors.h"
+# include <stdio.h>
 # define WIDTH 1600
 # define HEIGHT 1000
 
