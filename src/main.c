@@ -1,9 +1,9 @@
-#include "MLX42-master/include/MLX42/MLX42.h"
-#define WIDTH 1600
-#define HEIGHT 1000
+#include "../inc/cub3d.h"
 
-int main(int argc, char *argv)
+int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     mlx_t* mlx;
 
     mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
