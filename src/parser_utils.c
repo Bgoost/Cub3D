@@ -37,6 +37,8 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
         line = get_next_line(fd);
         i++;
     }
+
+
     scene->lines[i] = NULL;
     close(fd);
 }
@@ -49,17 +51,22 @@ int is_valid_map_char(char c)
 char *trim_whitespace(char *str)
 {
     char *end;
-    while (ft_isspace(*str))
-        str++;
-    if (*str == 0)
-        return str; // All spaces
+    char *trimmed;
 
-    end = str + ft_strlen(str) - 1;
-    while (end > str && ft_isspace(*end))
+    trimmed = malloc(ft_strlen(str) + 1);
+    if (!trimmed)
+        exit_error("Error: Memory allocation failed for trimmed string.");
+    ft_strcpy(trimmed, str);
+    while (ft_isspace(*trimmed))
+        trimmed++;
+    if (*trimmed == 0)
+        return trimmed; // All spaces
+
+    end = trimmed + ft_strlen(trimmed) - 1;
+    while (end > trimmed && ft_isspace(*end))
         end--;
-
     end[1] = '\0';
-    return str;
+    return trimmed;
 }
 
 int is_strspace(char *str)
@@ -76,14 +83,47 @@ int is_strspace(char *str)
     return (1);
 }
 
-void free_scene(t_map *scene)
+void free_textures(t_textures *textures)
 {
-    free(scene->textures.north);
-    free(scene->textures.south);
-    free(scene->textures.west);
-    free(scene->textures.east);
-    // for (int i = 0; i < scene->width; i++) {
-    //     free(scene->map[i]);
-    // }
-    free(scene->map);
+    if (textures->north)
+    {
+        free(textures->north);
+        textures->north = NULL;
+    }
+    if (textures->south)
+    {
+        free(textures->south);
+        textures->south = NULL;
+    }
+    if (textures->west)
+    {
+        free(textures->west);
+        textures->west = NULL;
+    }
+    if (textures->east)
+    {
+        free(textures->east);
+        textures->east = NULL;
+    }
+}
+
+
+void free_scene(t_map **scene)
+{
+    if (!scene || !(*scene))
+        return;
+
+    free_textures(&(*scene)->textures);
+    if ((*scene)->lines)
+    {
+        free_map((*scene)->lines);
+        (*scene)->lines = NULL;
+    }
+    if ((*scene)->map)
+    {
+        free_map((*scene)->map);
+        (*scene)->map = NULL;
+    }
+    free(*scene);
+    *scene = NULL;
 }

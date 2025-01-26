@@ -20,6 +20,7 @@ t_map *init_map()
         exit_error("Error: Memory allocation failed for map.");
     
     map->lines = NULL;
+    map->map = NULL;
     map->textures.north = NULL;
     map->textures.south = NULL;
     map->textures.west = NULL;
@@ -33,18 +34,18 @@ t_map *init_map()
     map->start = 0;
     map->end = 0;
     map->width = 0;
-    map->map = NULL;
+    map->height = 0;
     map->player_x = 0;
     map->player_y = 0;
-    map->player_c = '.';
+    map->player_c = '\0';
     return map;
 }
 
-int main_checker(int argc, char *argv[], t_map *map)
+int main_checker(int argc, char *argv[], t_map **map)
 {
     int fd;
-    map = init_map();
 
+    *map = init_map();
     if (argc != 2)
         exit_error("Usage: ./Cub3D t_map_name.cub");
     if (cub_control(argv[1]) == -1)
@@ -52,25 +53,26 @@ int main_checker(int argc, char *argv[], t_map *map)
     fd = open(argv[1], O_RDONLY);
     if (fd == -1)
         return (exit_error(strerror(errno)), 0);
-    
-    parse_scene_file(argv[1], map);
 
+    parse_scene_file(argv[1], *map);
 
-    // printing the map and its properties 
-    printf("North texture: %s\n", map->textures.north);
-    printf("South texture: %s\n", map->textures.south);
-    printf("West texture: %s\n", map->textures.west);
-    printf("East texture: %s\n", map->textures.east);
-    printf("Floor color: %d, %d, %d\n", map->textures.floor_color[0], map->textures.floor_color[1], map->textures.floor_color[2]);
-    printf("Ceiling color: %d, %d, %d\n", map->textures.ceiling_color[0], map->textures.ceiling_color[1], map->textures.ceiling_color[2]);
+    // Print map details
+    printf("North texture: %s\n", (*map)->textures.north);
+    printf("South texture: %s\n", (*map)->textures.south);
+    printf("West texture: %s\n", (*map)->textures.west);
+    printf("East texture: %s\n", (*map)->textures.east);
+    printf("Floor color: %d, %d, %d\n", (*map)->textures.floor_color[0],
+           (*map)->textures.floor_color[1], (*map)->textures.floor_color[2]);
+    printf("Ceiling color: %d, %d, %d\n", (*map)->textures.ceiling_color[0],
+           (*map)->textures.ceiling_color[1], (*map)->textures.ceiling_color[2]);
     printf("Map:\n");
-    for (int i = 0; i < (map->end - map->start) + 1; i++) {
-        printf("%s\n", map->map[i]);
-    }
+    for (int i = 0; i < ((*map)->end - (*map)->start) + 1; i++)
+        printf("%s\n", (*map)->map[i]);
+
     free_scene(map);
     printf("Parsing successful!\n");
 
-    return(1);
+    return 1;
 }
 
 int	cub_control(char *argv)

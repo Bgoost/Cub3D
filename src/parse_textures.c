@@ -52,31 +52,32 @@ static void parse_texture(char *line, const char *identifier, char **destination
     validate_and_assign_texture_path(result, destination);
 }
 
+
 static void parse_color(char *line, const char *identifier, int *color)
 {
     char *trimmed;
     int i;
+    int num;
 
-    trimmed = trim_whitespace(line + ft_strlen(identifier));
     i = 0;
+    trimmed = trim_whitespace(line + ft_strlen(identifier));
     while (*trimmed != '\0' && i < 3)
     {
+        while (ft_isspace(*trimmed))
+            trimmed++;
         if (ft_isdigit(*trimmed))
         {
-            int num = 0;
+            num = 0;
             while (ft_isdigit(*trimmed))
-            {
-                num = num * 10 + (*trimmed - '0');
-                trimmed++;
-            }
-            if (num < 0 || num > 255)
+                num = num * 10 + (*trimmed++ - '0');
+            if (num > 255)
                 exit_error("Error: Color values must be in range [0,255].");
             color[i++] = num;
         }
-        else if (*trimmed++ != ',' || !ft_isdigit(*trimmed))
+        else if (*trimmed++ != ',')
             exit_error("Error: Invalid color format.");
     }
-    if (*trimmed != '\0' || i != 3)
+    if ((*trimmed != '\0' && !ft_isspace(*trimmed)) || i != 3)
         exit_error("Error: Invalid color format.");
 }
 
@@ -87,7 +88,7 @@ void parse_main_textures(char *line, t_map *scene)
     trimmed = trim_whitespace(line);
     if (*trimmed == '\0')
     {
-        free(line);
+        free(trimmed);
         return;
     }
     if (ft_strncmp(trimmed, "NO ", 3) == 0)
@@ -104,5 +105,5 @@ void parse_main_textures(char *line, t_map *scene)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
     else if (!is_strspace(trimmed))
         exit_error("Error: Invalid identifier in scene file.");
-    free(line);
+    free(trimmed);
 }

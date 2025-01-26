@@ -22,16 +22,10 @@ int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    // mlx_t* mlx;
-    t_map map;
+    t_map *map;
     if(!main_checker(argc, argv, &map))
         return 1;
-    // mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
-    // if (!mlx)
-    //     return 1;
-    // mlx_loop(mlx);
-    // mlx_terminate(mlx);
-    return 0;
+
 }
 
 // lo dejo comentado por si acaso, si quieres lo borrass

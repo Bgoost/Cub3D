@@ -61,6 +61,7 @@ typedef struct  s_map
     int start;
     int end;
     int width;
+    int height;
     int player_x;
     int player_y;
     char player_c;
@@ -68,15 +69,17 @@ typedef struct  s_map
 }               t_map;
 
 void	exit_error(char *msg);
-int		main_checker(int argc, char *argv[], t_map *map);
+int		main_checker(int argc, char *argv[], t_map **map);
 int		cub_control(char *argv);
 void	parse_scene_file(const char *filename, t_map *scene);
-void	free_scene(t_map *scene);
+void	free_scene(t_map **scene);
 int		is_strspace(char *str);
 char	*trim_whitespace(char *str);
 int		is_valid_map_char(char c);
 void	set_file_lines(const char *filename, t_map *scene, int lines_count);
 int		get_lines_count(const char *filename);
 void	parse_main_textures(char *line, t_map *scene);
+void free_map(char **map);
+
 
 #endif
