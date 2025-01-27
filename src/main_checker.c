@@ -57,6 +57,7 @@ int main_checker(int argc, char *argv[], t_map **map)
     parse_scene_file(argv[1], *map);
 
     // Print map details
+    printf("\n\nMap details:\n");
     printf("North texture: %s\n", (*map)->textures.north);
     printf("South texture: %s\n", (*map)->textures.south);
     printf("West texture: %s\n", (*map)->textures.west);

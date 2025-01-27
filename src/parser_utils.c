@@ -107,6 +107,22 @@ void free_textures(t_textures *textures)
     }
 }
 
+void free_map(char **map)
+{
+    int i;
+
+    i = 0;
+    if (!map)
+        return;
+
+    while(map[i] != NULL)
+    {
+        free(map[i]);
+        map[i] = NULL;
+        i++;
+    }
+    free(map);
+}
 
 void free_scene(t_map **scene)
 {
