@@ -1,0 +1,16 @@
+NO assets/textures/wall.xpm
+F 220,100,1
+SO assets/img/"bar rel.xpm42"
+EA ./hola/aa.xmp
+WE ./hola/"a a".xmp
+C 250,    30     ,1
+
+	111111111
+	100000001
+111111	100000001
+100001	1100N0001
+111111	111111011
+
+111
+101
+111

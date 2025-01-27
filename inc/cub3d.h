@@ -11,10 +11,12 @@
 # include <string.h>
 # include <ctype.h>
 # include <unistd.h>
+# include <math.h>
 
 # define WIDTH 1600
 # define HEIGHT 1000
-#define VALID_MAP_CHARS "10NSEW \n\t"
+# define VALID_MAP_CHARS "10NSEW \n\t"
+# define PI 3.141592653589793238462643383279502884197
 
 # define FOV 60
 # define TILE 64
@@ -25,24 +27,24 @@
 
 typedef struct s_point
 {
-	int	x;
-	int	y;
+	double	x;
+	double	y;
 }	t_point;
 
 typedef struct s_ray
 {
 	int		wall_height;
 	int		projection_height; // amount of wall pixels
-	int		distance_to_wall; 
-	int		x_increment;
-	int		y_increment;
+	double	distance_to_wall; 
+	t_point	hit_point;
 }	t_ray;
 
 typedef struct	s_raycasting
 {
 	double	ray_increment; // = FOV/WIDTH
-	int		distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
-	int		angle; // cambia segun N(90), S(270), W(180), E(360)
+	double		distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
+	double		angle; // cambia segun N(90), S(270), W(180), E(360)
+	t_point	player;
 }	t_raycasting;
 
 typedef struct  s_textures
