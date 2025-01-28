@@ -19,10 +19,10 @@ static int extract_texture_path(const char *trimmed, char *result)
             if (result_len < MAX_LINE_LEN - 1)
                 result[result_len++] = trimmed[i];
             else
-                exit_error("Error: Texture path is too long.");
+                exit_error("Error:\nTexture path is too long.");
         }
         else
-            exit_error("Error: Found a space in the file.");
+            exit_error("Error:\nFound a space in the file.");
         i++;
     }
     result[result_len] = '\0';
@@ -33,10 +33,10 @@ static void validate_and_assign_texture_path(const char *result,
     char **destination)
 {
     if (*destination != NULL)
-        exit_error("Error: Duplicate texture identifier.");
+        exit_error("Error:\nDuplicate texture identifier.");
     *destination = ft_strdup(result);
     if (*destination == NULL)
-        exit_error("Error: Memory allocation failed for texture path.");
+        exit_error("Error:\nMemory allocation failed for texture path.");
 }
 
 static void parse_texture(char *line, const char *identifier, char **destination)
@@ -45,52 +45,73 @@ static void parse_texture(char *line, const char *identifier, char **destination
     char *trimmed;
     char result[MAX_LINE_LEN];
 
-    trimmed = trim_whitespace(line + ft_strlen(identifier));
+    trimmed = ft_strtrim(line + ft_strlen(identifier), " \t\n");
     is_in_quotes = extract_texture_path(trimmed, result);
     if (is_in_quotes)
-        exit_error("Error: Unmatched quotes in texture path.");
+        exit_error("Error:\nUnmatched quotes in texture path.");
     validate_and_assign_texture_path(result, destination);
+}
+
+
+static void parse_number_and_comma(char **trimmed, int *color, int *i, int *comma_count)
+{
+    int num;
+
+    while (ft_isspace(**trimmed))
+        (*trimmed)++;
+    if (ft_isdigit(**trimmed))
+    {
+        num = 0;
+        while (ft_isdigit(**trimmed))
+            num = num * 10 + (*(*trimmed)++ - '0');
+        if (num > 255)
+            exit_error("Error:\nColor values must be in range [0,255].");
+        color[(*i)++] = num;
+        while (ft_isspace(**trimmed))
+            (*trimmed)++;
+        if (**trimmed == ',')
+        {
+            (*comma_count)++;
+            (*trimmed)++;
+        }
+        else if (**trimmed != '\0' && *i < 3)
+            exit_error("Error:\nInvalid color format (missing commas).");
+    }
+    else
+        exit_error("Error:\nInvalid color format (non-digit character found).");
 }
 
 
 static void parse_color(char *line, const char *identifier, int *color)
 {
     char *trimmed;
+    char *current;
     int i;
-    int num;
+    int comma_count;
 
     i = 0;
-    trimmed = trim_whitespace(line + ft_strlen(identifier));
-    while (*trimmed != '\0' && i < 3)
+    comma_count = 0;
+    if(color[i] != -1)
+        exit_error("Error:\nDuplicate color identifier.");
+    trimmed = ft_strtrim(line + ft_strlen(identifier), " \t\n");
+    current = trimmed;
+    while (*current != '\0' && i < 3)
     {
-        while (ft_isspace(*trimmed))
-            trimmed++;
-        if (ft_isdigit(*trimmed))
-        {
-            num = 0;
-            while (ft_isdigit(*trimmed))
-                num = num * 10 + (*trimmed++ - '0');
-            if (num > 255)
-                exit_error("Error: Color values must be in range [0,255].");
-            color[i++] = num;
-        }
-        else if (*trimmed++ != ',')
-            exit_error("Error: Invalid color format.");
+        parse_number_and_comma(&current, color, &i, &comma_count);
     }
-    if ((*trimmed != '\0' && !ft_isspace(*trimmed)) || i != 3)
-        exit_error("Error: Invalid color format.");
+    if ((*current != '\0' && !ft_isspace(*current)) || i != 3 || comma_count != 2)
+        exit_error("Error:\nInvalid color format.");
+    free(trimmed);
 }
+
 
 void parse_main_textures(char *line, t_map *scene)
 {
     char *trimmed;
     
-    trimmed = trim_whitespace(line);
+    trimmed = ft_strtrim(line, " \t\n");
     if (*trimmed == '\0')
-    {
-        free(trimmed);
         return;
-    }
     if (ft_strncmp(trimmed, "NO ", 3) == 0)
         parse_texture(trimmed, "NO", &scene->textures.north);
     else if (ft_strncmp(trimmed, "SO ", 3) == 0)
@@ -104,6 +125,10 @@ void parse_main_textures(char *line, t_map *scene)
     else if (ft_strncmp(trimmed, "C ", 2) == 0)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
     else if (!is_strspace(trimmed))
-        exit_error("Error: Invalid identifier in scene file.");
+    {
+        printf("\033[31mError:\nInvalid identifier [%s] in file.\033[0m", trimmed);
+        free(trimmed);
+        exit_error("");
+    }
     free(trimmed);
 }

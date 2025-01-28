@@ -40,11 +40,11 @@ void parse_scene_file(const char *filename, t_map *scene)
         || !scene->textures.east)
     {
         free_scene(&scene);
-        exit_error("Error: Missing one or more textures.");
+        exit_error("Error:\nMissing one or more textures.");
     }
     if (scene->textures.floor_color[0] == -1 || scene->textures.ceiling_color[0] == -1)
     {
         free_scene(&scene);
-        exit_error("Error: Missing floor or ceiling color.");
+        exit_error("Error:\nMissing floor or ceiling color.");
     }
 }

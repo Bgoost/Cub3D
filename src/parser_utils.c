@@ -8,7 +8,7 @@ int get_lines_count(const char *filename)
     fd = open(filename, O_RDONLY);
     lines_count = 0;
     if (fd < 0)
-        exit_error("Error: Failed to open file.");
+        exit_error("Error:\nFailed to open file.");
     line = get_next_line(fd);
     while(line != NULL)
     {
@@ -28,7 +28,7 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     scene->lines = malloc(sizeof(char *) * lines_count);
     fd = open(filename, O_RDONLY);
     if (fd < 0)
-        exit_error("Error: Failed to open file.");
+        exit_error("Error:\nFailed to open file.");
     i = 0;
     line = get_next_line(fd);
     while(line != NULL)
@@ -48,26 +48,6 @@ int is_valid_map_char(char c)
     return c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W';
 }
 
-char *trim_whitespace(char *str)
-{
-    char *end;
-    char *trimmed;
-
-    trimmed = malloc(ft_strlen(str) + 1);
-    if (!trimmed)
-        exit_error("Error: Memory allocation failed for trimmed string.");
-    ft_strcpy(trimmed, str);
-    while (ft_isspace(*trimmed))
-        trimmed++;
-    if (*trimmed == 0)
-        return trimmed; // All spaces
-
-    end = trimmed + ft_strlen(trimmed) - 1;
-    while (end > trimmed && ft_isspace(*end))
-        end--;
-    end[1] = '\0';
-    return trimmed;
-}
 
 int is_strspace(char *str)
 {

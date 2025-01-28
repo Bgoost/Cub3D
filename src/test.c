@@ -250,10 +250,10 @@ t_ray	*cast_ray(t_raycasting info, char **map)
 	// need to do another function to check this value is correct		
 
 	// Find first wall point
-	t_point	center;
+	// t_point	center;
 
-	center.x = WIDTH / 2;
-	center.y = HEIGHT / 2;
+	// center.x = WIDTH / 2;
+	// center.y = HEIGHT / 2;
 
 	// Find last wall point
 	
