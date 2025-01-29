@@ -12,11 +12,12 @@
 # include <ctype.h>
 # include <unistd.h>
 # include <math.h>
+# include <limits.h>
+# include <float.h>
 
 # define WIDTH 1600
 # define HEIGHT 1000
 # define VALID_MAP_CHARS "10NSEW \n\t"
-# define PI 3.141592653589793238462643383279502884197
 
 # define FOV 60
 # define TILE 64
@@ -24,6 +25,10 @@
 # define MAX_MAP_SIZE 1024
 # define BUFF 4096
 # define MAX_LINE_LEN 1024
+
+# define CEILING_COLOR 0xA3E9DAff
+# define WALL_COLOR 0xB76841ff
+# define FLOOR_COLOR 0x869292ff
 
 typedef struct s_point
 {
@@ -34,16 +39,19 @@ typedef struct s_point
 typedef struct s_ray
 {
 	int		wall_height;
-	int		projection_height; // amount of wall pixels
+	int		first_wall_pixel;
+	int		last_wall_pixel;
+	double	projection_height; // amount of wall pixels
 	double	distance_to_wall; 
 	t_point	hit_point;
+	double	angle;
 }	t_ray;
 
 typedef struct	s_raycasting
 {
 	double	ray_increment; // = FOV/WIDTH
-	double		distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
-	double		angle; // cambia segun N(90), S(270), W(180), E(360)
+	double	distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
+	double	direction; // N(90), S(270), W(180), E(360)
 	t_point	player;
 }	t_raycasting;
 

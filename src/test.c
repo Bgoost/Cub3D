@@ -6,13 +6,13 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/01/27 20:53:08 by martalop         ###   ########.fr       */
+/*   Updated: 2025/01/29 20:56:12 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-#define MAP_HEIGHT 5
+#define MAP_HEIGHT 10
 #define MAP_WIDTH 5
 
 char	**hardcore_map(int height, int width, int fd)
@@ -63,7 +63,7 @@ double	degree_to_radian(double degree)
 {
 	double	radian;
 	
-	radian = (degree * PI) / 180.0;
+	radian = (degree * M_PI) / 180.0;
 	return (radian);
 }
 
@@ -71,22 +71,22 @@ void	hardcore_info(t_raycasting *info)
 {
 	info->ray_increment = (double)FOV / (double)WIDTH;
 	info->distance_to_plane = (WIDTH / 2) / tan(degree_to_radian(FOV / 2));
-	info->angle = 60;
+	info->direction = 90;
 	info->player.x = 1;
-	info->player.y = 3;
+	info->player.y = 8;
 	//printing info
 	printf("\nFOV: %d\n", FOV);
 	printf("WINDOW HEIGHT: %d\n", HEIGHT);
 	printf("WINDOW WIDTH: %d\n", WIDTH);
 	printf("\nray increment: %f\n", info->ray_increment);
 	printf("distance_to_plane: %f\n", info->distance_to_plane);
-	printf("player angle: %f\n", info->angle);
+	printf("player direction: %f\n", info->direction);
 	printf("player X: %f\n", info->player.x);
 	printf("player Y: %f\n\n", info->player.y);
 }
 
 
-t_point	horizontal_hit(t_raycasting info, char **map)
+t_point	horizontal_hit(t_point player, char **map, double angle)
 {
 	t_point	grid_player;
 	t_point	hit;
@@ -96,27 +96,32 @@ t_point	horizontal_hit(t_raycasting info, char **map)
 	printf("HORIZONTAL HITS\n");	
 
 	// pasamos de 1 x 1 a 64 x 64 y ponemos el punto en el medio
-	grid_player.x = info.player.x * TILE + TILE / 2;
-	grid_player.y = info.player.y * TILE + TILE / 2;
+	grid_player.x = player.x * TILE + TILE / 2;
+	grid_player.y = player.y * TILE + TILE / 2;
+	printf("plaxer: P(%f, %f)\n", grid_player.x, grid_player.y);
+	printf("scaled down: P(%d, %d)\n", (int)grid_player.x / TILE, (int)grid_player.y / TILE);
 
 	// 1. first point
 	hit.y = floor(grid_player.y / TILE) * TILE - 1; 
-	hit.x = grid_player.x + (grid_player.y - hit.y) / tan(degree_to_radian(info.angle));
+	hit.x = grid_player.x + (grid_player.y - hit.y) / tan(degree_to_radian(angle));
 	printf("1st hit: P(%f, %f)\n", hit.x, hit.y);
 	printf("scaled down: P(%d, %d)\n", (int)hit.x / TILE, (int)hit.y / TILE);
+
+	if ((int)hit.x / TILE < 0)
+		return (printf("first hit has -x\n"), hit);
 
 	if (map[(int)hit.y / TILE][(int)hit.x / TILE] == '1')
 		return (printf("theres a wall in first point\n"), hit);
 
 	// 2. Remaining points
 	// 2.1. Find y_increment & x_increment
-	if (info.angle >= 0 && info.angle <= 180) // if ray looks UP 
+	if (angle >= 0 && angle <= 180) // if ray looks UP 
 		y_increment = -TILE;
 	else
 		y_increment = TILE;
-	x_increment = floor(TILE / tan(degree_to_radian(info.angle)));
+	x_increment = TILE / tan(degree_to_radian(angle));
 	
-	x_increment = floor(x_increment); // DUDA
+//	x_increment = floor(x_increment); // SE VE PEOR
 	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
 	
 	while (map[(int)hit.y / TILE][(int)hit.x /TILE] == '0') 
@@ -125,16 +130,18 @@ t_point	horizontal_hit(t_raycasting info, char **map)
 		hit.x = hit.x + x_increment;
 		hit.y = hit.y + y_increment;
 
-		hit.x = floor(hit.x); // DUDA
-		hit.y = floor(hit.y); // DUDA
+	//	hit.x = floor(hit.x); // DUDA
+	//	hit.y = floor(hit.y); // DUDA
 
 		printf("next hit: (%f, %f)\n", hit.x, hit.y);
 		printf("scaled down: (%d, %d)\n\n", (int)hit.x / TILE, (int)hit.y / TILE);
+		if ((int)hit.x / TILE < 0)
+			return (printf("first hit has -x\n"), hit);
 	}
 	return (hit);
 }
 
-t_point	vertical_hit(t_raycasting info, char **map)
+t_point	vertical_hit(t_point player, char **map, double angle)
 {
 	t_point	grid_player;
 	t_point	hit;
@@ -144,30 +151,33 @@ t_point	vertical_hit(t_raycasting info, char **map)
 	printf("VERTICAL HITS\n");	
 
 	// pasamos de 1 x 1 a 64 x 64 y ponemos el punto en el medio
-	grid_player.x = info.player.x * TILE + TILE / 2;
-	grid_player.y = info.player.y * TILE + TILE / 2;
+	grid_player.x = player.x * TILE + TILE / 2;
+	grid_player.y = player.y * TILE + TILE / 2;
 
 		// 1. first point
-	if (info.angle <= 270 && info.angle >= 90) // if angle looks left  ??
+	if (angle <= 270 && angle >= 90) // if angle looks left  ??
 		hit.x = floor(grid_player.x / TILE) * TILE - 1;
 	else
 		hit.x = floor(grid_player.x / TILE) * TILE + TILE;
-	hit.y = grid_player.y + (grid_player.x - hit.x) * tan(degree_to_radian(info.angle));
+	hit.y = grid_player.y + (grid_player.x - hit.x) * tan(degree_to_radian(angle));
 	printf("1st hit: P(%f, %f)\n", hit.x, hit.y);
 	printf("scaled down: P(%d, %d)\n", (int)hit.x / TILE, (int)hit.y / TILE);
+	
+	if ((int)hit.y / TILE < 0)
+		return (printf("first hit has -y\n"), hit);
 
 	if (map[(int)hit.y / TILE][(int)hit.x / TILE] == '1')
 		return (printf("theres a wall in first point\n"), hit);
 
 	// 2. Remaining points
 	// 2.1. Find y_increment & x_increment
-	if (info.angle <= 270 && info.angle >= 90) // if angle looks left  ??
+	if (angle <= 270 && angle >= 90) // if angle looks left  ??
 		x_increment = -TILE;
 	else
 		x_increment = TILE;
-	y_increment = x_increment * tan(degree_to_radian(info.angle));
-	y_increment = floor(y_increment); // DUDA
-	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
+	y_increment = x_increment * tan(degree_to_radian(angle));
+//	y_increment = floor(y_increment); // DUDA
+//	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
 	
 	while (map[(int)hit.y / TILE][(int)hit.x /TILE] == '0')
 	{
@@ -175,11 +185,15 @@ t_point	vertical_hit(t_raycasting info, char **map)
 		hit.x = hit.x + x_increment;
 		hit.y = hit.y - y_increment; // !!! resta
 		
-		hit.x = floor(hit.x); // DUDA
-		hit.y = floor(hit.y); // DUDA
+//		hit.x = floor(hit.x); // DUDA
+//		hit.y = floor(hit.y); // DUDA
 
-		printf("next hit: (%f, %f)\n", hit.x, hit.y);
-		printf("scaled down: (%d, %d)\n\n", (int)hit.x / TILE, (int)hit.y / TILE);
+	//	printf("next hit: (%f, %f)\n", hit.x, hit.y);
+	//	printf("scaled down: (%d, %d)\n\n", (int)hit.x / TILE, (int)hit.y / TILE);
+		
+		if ((int)hit.y / TILE < 0)
+			return (printf("hit has -y\n"), hit);
+
 	}
 	return (hit);
 }
@@ -192,33 +206,39 @@ double	point_distance(t_point hit, t_point player)
 	player.y = player.y * TILE + TILE / 2;
 
 	distance = sqrt(pow((player.x - hit.x), 2) + pow((player.y - hit.y), 2));
-	printf("\ndistance: %f\n", distance);
+	printf("distance: %f\n", distance);
 	return (distance);
 }
 
 
-t_ray	*cast_ray(t_raycasting info, char **map)
+t_ray	*cast_ray(t_raycasting info, char **map, t_ray *ray)
 {
-	t_ray	*ray;
 	t_point	v_hit;
 	t_point	h_hit;
 	double	v_distance;
 	double	h_distance;
 
-	ray = malloc(sizeof(t_ray) * 1);
-	if (!ray)
-		return (ft_putstr_fd("malloc error\n", 2), NULL);
-
 	// HORIZONTAL intersections
-	h_hit = horizontal_hit(info, map);
+	h_hit = horizontal_hit(info.player, map, ray->angle);
+	printf("h hit: (%f, %f)\n", h_hit.x, h_hit.y);
+	printf("scaled down: (%d, %d)\n\n", (int)h_hit.x / TILE, (int)h_hit.y / TILE);
 
 	// VERTICAL intersections
-	v_hit = vertical_hit(info, map);
-
+	v_hit = vertical_hit(info.player, map, ray->angle);
+	printf("v hit: (%f, %f)\n", v_hit.x, v_hit.y);
+	printf("scaled down: (%d, %d)\n\n", (int)v_hit.x / TILE, (int)v_hit.y / TILE);
+	
 	// calculating DISTANCE
+	printf("DISTANCE\n");	
    	// find distance from player to each hit point (vertical & horizontal)
-	v_distance = point_distance(v_hit, info.player);
-	h_distance = point_distance(h_hit, info.player);
+	if (v_hit.y < 0 /*|| v_hit.y > MAP_HEIGHT * TILE*/)
+		v_distance = DBL_MAX;
+	else
+		v_distance = point_distance(v_hit, info.player);
+	if (h_hit.x < 0 /*|| h_hit.x > MAP_WIDTH * TILE*/)
+		h_distance = DBL_MAX;
+	else
+		h_distance = point_distance(h_hit, info.player);
 
 	// save shortest distance & point
 	if (v_distance < h_distance)
@@ -231,9 +251,14 @@ t_ray	*cast_ray(t_raycasting info, char **map)
 		ray->distance_to_wall = h_distance;
 		ray->hit_point = h_hit;
 	}
+/*	else
+	{
+		ray->distance_to_wall = 0;
+		ray->hit_point = info.player;
+	}*/
 	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 	printf("final hit point: (%f, %f)\n", ray->hit_point.x, ray->hit_point.y);
-	printf("scaled down: (%d, %d)\n\n", (int)ray->hit_point.x / TILE, (int)ray->hit_point.y / TILE);
+	printf("scaled down: (%d, %d)\n", (int)ray->hit_point.x / TILE, (int)ray->hit_point.y / TILE);
 
 	// Find projected wall height
 
@@ -245,27 +270,38 @@ t_ray	*cast_ray(t_raycasting info, char **map)
    // PWH = (TILE / ray->distance_to_wall) * ray->distance_to_plane;
 
 	ray->projection_height = (TILE / ray->distance_to_wall) * info.distance_to_plane;
+	printf("\nprojection height: %f\n", ray->projection_height);
+
+	// Function to check the value is correct		
+	printf("test.1: %f\n", ray->projection_height / info.distance_to_plane);
+	printf("test.2: %f\n", TILE / ray->distance_to_wall);
+	if ((ray->projection_height / info.distance_to_plane) - (TILE / ray->distance_to_wall) > 0.00001)
+	{
+	   return (printf("ERROR with projection heigth!\n"), NULL);
+	}
+
 	ray->projection_height = ceil(ray->projection_height); // round UP 
+	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
 
-	// need to do another function to check this value is correct		
 
-	// Find first wall point
+	// correct fish eye effect -> PENDING
+
+
+	// Find first wall pixel
 	t_point	center;
 
 	center.x = WIDTH / 2;
 	center.y = HEIGHT / 2;
 
-	// Find last wall point
-	
-	// PRINT PIXELS
-	// print pixels from y = 0 to the first wall point as ceiling color
-	// print pixels from first wall point to last wall point as wall color (later textures)
-	// print pixels from last wall point to end of screen (y = 1000) as ground color
+	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
+	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
+
+	// Find last wall pixel
+	ray->last_wall_pixel = ray->first_wall_pixel + ray->projection_height;
+	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
 
 	return (ray);
 }
-
-// funciona con el maps/test_map.cub
 
 /*int	main(int argc, char **argv)
 {
@@ -281,9 +317,56 @@ t_ray	*cast_ray(t_raycasting info, char **map)
 		ft_putstr_fd("failed to open file\n", 2);
 	map = hardcore_map(MAP_HEIGHT, MAP_WIDTH, fd);
 	hardcore_info(&info);
-	ray = cast_ray(info, map);
-//	loop to increment angle until we reach inital angle + 60	
-//	angle = ray->angle + info.ray_increment;
+	ray = malloc(sizeof(t_ray) * 1);
+	if (!ray)
+		return (ft_putstr_fd("malloc error\n", 2), 1);
+
+	ray->angle = info.direction + (FOV / 2);
+
+// PRINT PIXELS
+
+	int		x;
+	int		y;
+	mlx_t	*mlx;
+	mlx_image_t	*image;
+	
+	x = 0;
+
+	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
+    if (!mlx)
+		return (1);
+	
+	image = mlx_new_image(mlx, WIDTH, HEIGHT);
+	if (!image)
+		return (1);
+
+//	while (ray->angle <= 120 && ray->angle >=95)
+	while (ray->angle >= info.direction - (FOV / 2))
+	{
+		y = 0;
+		printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+		if (cast_ray(info, map, ray) == NULL)
+			return (1);
+		while (y < HEIGHT) // print column
+		{
+			if (y < ray->first_wall_pixel)
+				mlx_put_pixel(image, x, y, CEILING_COLOR);
+			else if (y >= ray->first_wall_pixel && y <= ray->last_wall_pixel)
+				mlx_put_pixel(image, x, y, WALL_COLOR);
+			else
+				mlx_put_pixel(image, x, y, FLOOR_COLOR);
+			y++;
+		}
+		// restar el incremento de angulo y volver a calcular
+		ray->angle = ray->angle - info.ray_increment;
+		x++;
+	}
+	printf("x is = %d\n", x);
+	printf("player X: %f\n", info.player.x);
+	printf("player Y: %f\n\n", info.player.y);
+
+	mlx_image_to_window(mlx, image, 0, 0);
+    mlx_loop(mlx);
+    mlx_terminate(mlx);
 	return (0);
-}
-*/
+}*/
