@@ -15,7 +15,7 @@
 
 # define WIDTH 1600
 # define HEIGHT 1000
-# define VALID_MAP_CHARS "10NSEW \n\t"
+# define VALID_MAP_CHARS "10NSEW \n"
 # define PI 3.141592653589793238462643383279502884197
 
 # define FOV 60
@@ -82,7 +82,7 @@ char	*trim_whitespace(char *str);
 int		is_valid_map_char(char c);
 void	set_file_lines(const char *filename, t_map *scene, int lines_count);
 int		get_lines_count(const char *filename);
-void	parse_main_textures(char *line, t_map *scene);
+void	parse_main_textures(char *line, t_map *scene, int map_started);
 void free_map(char **map);
 
 void parse_map(t_map *scene);

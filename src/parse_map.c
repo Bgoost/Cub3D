@@ -1,6 +1,5 @@
 #include "../inc/cub3d.h"
 
-
 void process_line(t_map *scene, int i, int *num_players, char **copy_map)
 {
     int j;
@@ -58,7 +57,7 @@ int is_valid_map(t_map *map, char **copy_map)
             return (0);
         y++;
     }
-    len = ft_strlen(map->lines[map->end]);
+    len = ft_strlen(ft_strtrim(map->lines[map->end], "\n"));
     if(map->lines[map->end][len - 1] != '1')
         return (-1);
     map->valid_map = 1;
@@ -111,6 +110,7 @@ void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
     int is_valid;
 
     is_valid = is_valid_map(scene, copy_map);
+    parse_map_errors(num_players);
     if (!is_valid || is_valid == -1)
     {
         free_map(copy_map);
@@ -120,7 +120,6 @@ void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
             exit_error("Error:\nMap is not surrounded by walls.");
     }
     flood_fill(copy_map, scene, scene->player_x, scene->player_y);
-    parse_map_errors(num_players);
     free_map(copy_map);
 }
 
@@ -142,6 +141,5 @@ void    parse_map(t_map *scene)
         i++;
     }
     flood_fill(copy_map, scene, scene->player_x, scene->player_y);
-
     validate_and_clean_map(scene, copy_map, num_players);
 }

@@ -105,7 +105,7 @@ static void parse_color(char *line, const char *identifier, int *color)
 }
 
 
-void parse_main_textures(char *line, t_map *scene)
+void parse_main_textures(char *line, t_map *scene, int map_started)
 {
     char *trimmed;
     
@@ -124,7 +124,7 @@ void parse_main_textures(char *line, t_map *scene)
         parse_color(trimmed, "F", scene->textures.floor_color);
     else if (ft_strncmp(trimmed, "C ", 2) == 0)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
-    else if (!is_strspace(trimmed))
+    else if (!is_strspace(trimmed) && !map_started)
     {
         printf("\033[31mError:\nInvalid identifier [%s] in file.\033[0m", trimmed);
         free(trimmed);
