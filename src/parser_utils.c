@@ -33,13 +33,16 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     line = get_next_line(fd);
     while(line != NULL)
     {
-        scene->lines[i] = line;
+        scene->lines[i] = ft_strdup(line);
         line = get_next_line(fd);
         i++;
     }
-
-
+    printf("lines:\n");
+    printf("i: %d\n", i);
+    for(int j = 0; j < lines_count; j++)
+        printf("%s\n", scene->lines[j]);
     scene->lines[i] = NULL;
+
     close(fd);
 }
 

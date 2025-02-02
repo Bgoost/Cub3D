@@ -1,0 +1,3 @@
+free(): invalid pointer
+zsh: IOT instruction (core dumped)  ./cub3D maps/c.cub
+When no map found and no next next line in vim.

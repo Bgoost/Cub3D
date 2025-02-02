@@ -3,8 +3,8 @@ NAME			= cub3D
 
 # Compiler and CFlags
 CC			= cc
-CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
-# CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
+# CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
+CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
 RM			= rm -f
 
 # Directories
@@ -42,7 +42,7 @@ $(NAME):	$(OBJ)
 			$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX_MAKE) $(LIBFT)
 			@echo "\n$(LGREEN)Executable $(NAME) created ✔$(RESET)\n"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES)
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES) Makefile
 			@mkdir -p $(dir $@)
 			$(CC) $(CFLAGS) -MMD -c $< -o $@
 			@echo "$(GREEN)Compiled $< ✔$(RESET)"

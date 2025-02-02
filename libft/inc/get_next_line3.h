@@ -23,10 +23,10 @@
 
 char	*get_next_line(int fd);
 int		my_strchr(char *s);
-size_t	ft_strlen_gnl(const char *s);
-char	*ft_substr_gnl(char const *s, unsigned int start, size_t len);
-// char	*ft_strjoin(char *s1, char *s2);
-char	*ft_strdup_gnl(const char *s1);
+size_t	ft_strlen(const char *s);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strdup(const char *s1);
 char	*get_clean(char *stash);
 char	*put_line(char *stash);
 char	*read_file(char *buffer, char *stash, int read_result, int fd);
