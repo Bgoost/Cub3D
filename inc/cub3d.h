@@ -51,7 +51,7 @@ typedef struct	s_raycasting
 {
 	double	ray_increment; // = FOV/WIDTH
 	double	distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
-	double	direction; // N(90), S(270), W(180), E(360)
+	double	direction; // N(90), S(270), W(180), E(0)
 	t_point	player;
 }	t_raycasting;
 
