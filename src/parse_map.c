@@ -1,30 +1,38 @@
 #include "../inc/cub3d.h"
 
+void set_map_chars(t_map *scene, int i, int j, int *num_players)
+{
+    if (ft_strchr("NSEW", scene->lines[i][j]))
+    {
+        scene->player_x = j;
+        scene->player_y = i - scene->start;
+        scene->player_c = scene->lines[i][j];
+        if (*num_players > 0)
+            exit_error("Error:\nMultiple player positions found.");
+        (*num_players)++;
+    }
+    if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
+    {
+        printf("\033[31mError:\nInvalid character [%c\033[0m", scene->lines[i][j]);
+        exit_error("] in map.");
+    }
+}
+
 void process_line(t_map *scene, int i, int *num_players, char **copy_map)
 {
     int j;
+    char *trimmed;
     
     j = 0;
-    scene->map[i - scene->start] = ft_strdup(ft_strtrim(scene->lines[i], "\n"));
-    copy_map[i - scene->start] = ft_strdup(scene->map[i - scene->start]);
-    if (!scene->map[i - scene->start] || !copy_map[i - scene->start])
-        exit_error("Error:\nMemory allocation for map line failed.");
+    trimmed = ft_strtrim(scene->lines[i], "\n");
+    if (!trimmed)
+        exit_error("Error:\nMemory allocation for trimmed line failed.");
+    scene->map[i - scene->start] = ft_strdup(trimmed);
+    copy_map[i - scene->start] = ft_strdup(trimmed);
+    free(trimmed);
     while (scene->lines[i][j] != '\0')
     {
-        if (ft_strchr("NSEW", scene->lines[i][j]))
-        {
-            scene->player_x = j;
-            scene->player_y = i - scene->start;
-            scene->player_c = scene->lines[i][j];
-            if (*num_players > 0)
-                exit_error("Error:\nMultiple player positions found.");
-            (*num_players)++;
-        }
-        if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
-        {
-            printf("\033[31mError:\nInvalid character [%c\033[0m", scene->lines[i][j]);
-            exit_error("] in map.");
-        }
+        set_map_chars(scene, i, j, num_players);
         j++;
     }
 }
@@ -39,25 +47,27 @@ void parse_map_errors(int num_players)
 
 int is_valid_map(t_map *map, char **copy_map)
 {
-    int x;
-    int y;
+    int xy[2];
     int len;
+    char *trimmed;
 
-    x = 0;
-    y = 0;
-    while(x < map->width)
+    xy[0] = 0;
+    xy[1] = 0;
+    while(xy[0] < map->width)
     {
-        if (copy_map[0][x] == 'F' || copy_map[map->height - 1][x] == 'F')
+        if (copy_map[0][xy[0]] == 'F' || copy_map[map->height - 1][xy[0]] == 'F')
             return (0);
-        x++;
+        xy[0]++;
     }
-    while(y < map->height)
+    while(xy[1] < map->height)
     {
-        if (copy_map[y][0] == 'F' || copy_map[y][map->width - 1] == 'F')
+        if (copy_map[xy[1]][0] == 'F' || copy_map[xy[1]][map->width - 1] == 'F')
             return (0);
-        y++;
+        xy[1]++;
     }
-    len = ft_strlen(ft_strtrim(map->lines[map->end], "\n"));
+    trimmed = ft_strtrim(map->lines[map->end], "\n");
+    len = ft_strlen(trimmed);
+    free(trimmed);
     if(map->lines[map->end][len - 1] != '1')
         return (-1);
     map->valid_map = 1;

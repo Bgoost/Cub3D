@@ -25,7 +25,11 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     int i;
     int fd;
     char *line;
-    scene->lines = malloc(sizeof(char *) * lines_count);
+    char *tmp;
+
+    scene->lines = malloc(sizeof(char *) * (lines_count + 1));
+    if (!scene->lines)
+        exit_error("Memory allocation error");
     fd = open(filename, O_RDONLY);
     if (fd < 0)
         exit_error("Error:\nFailed to open file.");
@@ -33,16 +37,15 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     line = get_next_line(fd);
     while(line != NULL)
     {
+        tmp = line;
         scene->lines[i] = ft_strdup(line);
+        if (!scene->lines[i])
+            exit_error("Memory allocation error");
+        free(tmp);
         line = get_next_line(fd);
         i++;
     }
-    printf("lines:\n");
-    printf("i: %d\n", i);
-    for(int j = 0; j < lines_count; j++)
-        printf("%s\n", scene->lines[j]);
     scene->lines[i] = NULL;
-
     close(fd);
 }
 
@@ -50,7 +53,6 @@ int is_valid_map_char(char c)
 {
     return c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W';
 }
-
 
 int is_strspace(char *str)
 {

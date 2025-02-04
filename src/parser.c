@@ -45,7 +45,6 @@ void errors_in_map(t_map *scene)
         exit_error("Error:\nMissing floor or ceiling color.");
     }
 }
-
 void parse_scene_file(const char *filename, t_map *scene)
 {
     int lines_count;
@@ -53,7 +52,6 @@ void parse_scene_file(const char *filename, t_map *scene)
     int empty_line;
 
     lines_count = get_lines_count(filename);
-    printf("lines_count: %d\n", lines_count);
     set_file_lines(filename, scene, lines_count);
     empty_line = 0;
     i = 0;

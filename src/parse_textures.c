@@ -47,6 +47,7 @@ static void parse_texture(char *line, const char *identifier, char **destination
 
     trimmed = ft_strtrim(line + ft_strlen(identifier), " \t\n");
     is_in_quotes = extract_texture_path(trimmed, result);
+    free(trimmed);
     if (is_in_quotes)
         exit_error("Error:\nUnmatched quotes in texture path.");
     validate_and_assign_texture_path(result, destination);
@@ -100,8 +101,12 @@ static void parse_color(char *line, const char *identifier, int *color)
         parse_number_and_comma(&current, color, &i, &comma_count);
     }
     if ((*current != '\0' && !ft_isspace(*current)) || i != 3 || comma_count != 2)
+    {
+        free(trimmed);
         exit_error("Error:\nInvalid color format.");
+    }
     free(trimmed);
+
 }
 
 
@@ -111,7 +116,10 @@ void parse_main_textures(char *line, t_map *scene, int map_started)
     
     trimmed = ft_strtrim(line, " \t\n");
     if (*trimmed == '\0')
+    {
+        free(trimmed);
         return;
+    }
     if (ft_strncmp(trimmed, "NO ", 3) == 0)
         parse_texture(trimmed, "NO", &scene->textures.north);
     else if (ft_strncmp(trimmed, "SO ", 3) == 0)
@@ -126,7 +134,7 @@ void parse_main_textures(char *line, t_map *scene, int map_started)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
     else if (!is_strspace(trimmed) && !map_started)
     {
-        printf("\033[31mError:\nInvalid identifier [%s] in file.\033[0m", ft_strtrim(trimmed, " "));
+        printf("\033[31mError:\nInvalid identifier [%s] in file.\033[0m", trimmed);
         free(trimmed);
         exit_error("");
     }

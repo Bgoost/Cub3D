@@ -93,9 +93,9 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*stash;
 	int			read_result;
-	int			i;
+	// int			i;
 
-	i = 0;
+	// i = 0;
 	if (fd < 0 || BUFFER_SIZE < 1 || fd > 10240)
 		return (NULL);
 	read_result = -1;
