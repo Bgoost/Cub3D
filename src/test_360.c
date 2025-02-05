@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/05 19:45:14 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:32:20 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	hardcode_info(t_raycasting *info)
 {
 	info->ray_increment = (double)FOV / (double)WIDTH;
 	info->distance_to_plane = (WIDTH / 2) / tan(degree_to_radian(FOV / 2));
-	info->direction = 60;
+	info->direction = 0;
 	info->player.x = 6;
 	info->player.y = 17;
 	//printing info
@@ -103,7 +103,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 	max_hit->x = DBL_MAX;
 	max_hit->y = DBL_MAX;
 
-	printf("HORIZONTAL HITS\n");	
+//	printf("HORIZONTAL HITS\n");	
 
 	// pasamos de 1 x 1 a 64 x 64 y ponemos el punto en el medio
 	grid_player.x = player.x * TILE + TILE / 2;
@@ -118,8 +118,8 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 		hit->y = floor(grid_player.y / TILE) * TILE + TILE; 
 	hit->x = grid_player.x + (grid_player.y - hit->y) / tan(degree_to_radian(angle));
 	
-	printf("1st hit: P(%f, %f)\n", hit->x, hit->y);
-	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
+//	printf("1st hit: P(%f, %f)\n", hit->x, hit->y);
+//	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
 
 	if ((int)hit->x / TILE < 0 || ((int)hit->x / TILE) >= MAP_WIDTH)
 		return (printf("x out of bounds in first hit\n"), hit);
@@ -142,7 +142,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 	
 //	x_increment = TILE / tan(degree_to_radian(angle));
 
-	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
+//	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
 	
 	while (map[(int)hit->y / TILE][(int)hit->x / TILE] == '0') 
 	{
@@ -150,8 +150,8 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 		hit->x = hit->x + x_increment;
 		hit->y = hit->y + y_increment;
 
-		printf("next hit: (%f, %f)\n", hit->x, hit->y);
-		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
+//		printf("next hit: (%f, %f)\n", hit->x, hit->y);
+//		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
 
 		if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
 			return (printf("y is out of bounds\n"), hit);
@@ -179,7 +179,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 	max_hit->x = DBL_MAX;
 	max_hit->y = DBL_MAX;
 
-	printf("VERTICAL HITS\n");	
+//	printf("VERTICAL HITS\n");	
 
 	// pasamos de 1 x 1 a 64 x 64 y ponemos el punto en el medio
 	grid_player.x = player.x * TILE + TILE / 2;
@@ -187,13 +187,13 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 
 		// 1-> first point
 	if (angle <= 270 && angle >= 90) // if angle looks left  ??
-		hit->x = floor(grid_player.x / TILE) * TILE - 0.0000000000001; 
+		hit->x = floor(grid_player.x / TILE) * TILE - 0.000000000001; 
 	else
 		hit->x = floor(grid_player.x / TILE) * TILE + TILE;
 	hit->y = grid_player.y + (grid_player.x - hit->x) * tan(degree_to_radian(angle));
 
-	printf("1st hit: P(%f, %f)\n", hit->x, hit->y);
-	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
+//	printf("1st hit: P(%f, %f)\n", hit->x, hit->y);
+//	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
 	
 	if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
 		return (printf("y out of bounds in first hit\n"), hit);
@@ -216,7 +216,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 	else
 		y_increment = fabs(TILE * tan(degree_to_radian(angle)));
 //	y_increment = TILE * tan(degree_to_radian(angle));
-	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
+//	printf("x_increment = %f\ny_increment = %f\n\n", x_increment, y_increment);	
 	
 	while (map[((int)hit->y / TILE)][(int)hit->x / TILE] == '0')
 	{
@@ -224,8 +224,8 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 		hit->x = hit->x + x_increment;
 		hit->y = hit->y + y_increment; // !!! antes tenia resta
 		
-		printf("next hit: (%f, %f)\n", hit->x, hit->y);
-		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
+//		printf("next hit: (%f, %f)\n", hit->x, hit->y);
+//		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
 		
 		if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
 			return (printf("y is out of bounds\n"), hit);
@@ -237,13 +237,14 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 
 double	point_distance(t_point hit, t_point player, char point)
 {
+	(void)point;
 	double	distance;
 	
 	player.x = player.x * TILE + TILE / 2;
 	player.y = player.y * TILE + TILE / 2;
 
 	distance = sqrt(pow((player.x - hit.x), 2) + pow((player.y - hit.y), 2));
-	printf("%c distance: %f\n", point, distance);
+//	printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -256,26 +257,27 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 	double	h_distance;
 
 
-	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+//	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+//	printf("direction: %f\n", info.direction);
 	// HORIZONTAL intersections
 	h_hit = horizontal_hit(info.player, map, ray->angle);
-	printf("h hit: (%f, %f)\n", h_hit->x, h_hit->y);
-	printf("scaled down: (%d, %d)\n\n", (int)h_hit->x / TILE, (int)h_hit->y / TILE);
+//	printf("h hit: (%f, %f)\n", h_hit->x, h_hit->y);
+//	printf("scaled down: (%d, %d)\n\n", (int)(h_hit->x / TILE), (int)(h_hit->y / TILE));
 
 	// VERTICAL intersections
 	v_hit = vertical_hit(info.player, map, ray->angle);
-	printf("v hit: (%f, %f)\n", v_hit->x, v_hit->y);
-	printf("scaled down: (%d, %d)\n\n", (int)v_hit->x / TILE, (int)v_hit->y / TILE);
+//	printf("v hit: (%f, %f)\n", v_hit->x, v_hit->y);
+//	printf("scaled down: (%d, %d)\n\n", (int)(v_hit->x / TILE), (int)(v_hit->y / TILE));
 	
 	// calculating DISTANCE
-	printf("DISTANCE\n");	
+//	printf("DISTANCE\n");	
    	// find distance from player to each hit point (vertical & horizontal)
-	if (v_hit->y < 0 /*|| v_hit.y > MAP_HEIGHT * TILE*/)
+	if (v_hit->y < 0 /*|| v_hit->y > MAP_HEIGHT * TILE*/)
 		v_distance = DBL_MAX;
 	else
 		v_distance = point_distance(*v_hit, info.player, 'v');
 	
-	if (h_hit->x < 0 /*|| h_hit.x > MAP_WIDTH * TILE*/)
+	if (h_hit->x < 0 /*|| h_hit->x > MAP_WIDTH * TILE*/)
 		h_distance = DBL_MAX;
 	else
 		h_distance = point_distance(*h_hit, info.player, 'h');
@@ -291,14 +293,14 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 		ray->distance_to_wall = h_distance;
 		ray->hit_point = *h_hit;
 	}
-	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+//	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 //	printf("final hit point: (%f, %f)\n", ray->hit_point.x, ray->hit_point.y);
 //	printf("scaled down: (%d, %d)\n", (int)ray->hit_point.x / TILE, (int)ray->hit_point.y / TILE);
 
 	// OJO DE PEZ
-	printf("\nFISHEYE CORRECTION\n");	
+//	printf("\nFISHEYE CORRECTION\n");	
 	ray->distance_to_wall = ray->distance_to_wall * cos(degree_to_radian(ray->angle - info.direction));
-	printf("corrected distance to wall: %f\n", ray->distance_to_wall);
+//	printf("corrected distance to wall: %f\n", ray->distance_to_wall);
 
 
 	/*Find projected wall height
@@ -311,16 +313,16 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
    	PWH = (TILE / ray->distance_to_wall) * ray->distance_to_plane;  */
 
 	ray->projection_height = (TILE / ray->distance_to_wall) * info.distance_to_plane;
-	printf("\nprojection height: %f\n", ray->projection_height);
+//	printf("\nprojection height: %f\n", ray->projection_height);
 
 	// Function to check the value is correct		
-	printf("test.1: %f\n", ray->projection_height / info.distance_to_plane);
-	printf("test.2: %f\n", TILE / ray->distance_to_wall);
+//	printf("test.1: %f\n", ray->projection_height / info.distance_to_plane);
+//	printf("test.2: %f\n", TILE / ray->distance_to_wall);
 	if ((ray->projection_height / info.distance_to_plane) - (TILE / ray->distance_to_wall) > 0.00001)
 	   printf("ERROR with projection heigth!\n");
 
 	ray->projection_height = ceil(ray->projection_height); // round UP 
-	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
+//	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
 
 
 	// Find first wall pixel
@@ -330,11 +332,11 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 	center.y = HEIGHT / 2;
 
 	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
-	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
+//	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
 
 	// Find last wall pixel
 	ray->last_wall_pixel = ray->first_wall_pixel + ray->projection_height;
-	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
+//	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
 }
 
 void	print_column(t_ray *ray, mlx_image_t *image, int x)
@@ -382,61 +384,119 @@ void	free_array(char **array)
 	free(array);
 }
 
+typedef struct s_game {
+    mlx_t *mlx;
+    mlx_image_t *image;
+    t_raycasting info;
+    t_ray *ray;
+    char **map;
+    int direction_step;
+} t_game;
+
+void	render(void *param)
+{
+	t_game	*game = (t_game *)param;
+	int	x;
+	
+	x = 0;
+	for (int i = 0; i < WIDTH * HEIGHT; i++)
+	{
+		game->image->pixels[i] = 0x000000; // Black background
+	}
+	
+	game->ray->angle = game->info.direction + (FOV / 2);
+	game->ray->angle = adjust_angle(game->ray->angle);	
+
+
+	while (x < WIDTH)
+	{
+		cast_ray(game->info, game->map, game->ray);
+		print_column(game->ray, game->image, x);
+		game->ray->angle = game->ray->angle - game->info.ray_increment;
+		game->ray->angle = adjust_angle(game->ray->angle);	
+		x++;
+	}
+
+	mlx_image_to_window(game->mlx, game->image, 0, 0);
+	
+	game->info.direction += 1;
+//	game->info.direction = adjust_angle(game->info.direction);
+	usleep(1500);
+  //  if (game->info.direction >= 360.0) // Stop after a full rotation
+    //    mlx_close_window(game->mlx); // Close the window and exit the loop
+}
+
 int	main(int argc, char **argv)
 {
 	(void)argc;
 	int	fd;
-	t_raycasting	info;
-	char	**map;
-	t_ray 	*ray;
-	int		x;
-	int		y;
+//	t_raycasting	info;
+//	char	**map;
+//	t_ray 	*ray;
+//	int		x;
+//	int		y;
+	t_game	game;
+//	double	right_angle;
+//	double	left_angle;
+//	int		angle_flag;
 
-	mlx_t	*mlx;
-	mlx_image_t	*image;
+//	mlx_t	*mlx;
+//	mlx_image_t	*image;
 
 	fd = -1;
 	fd = open(argv[1], O_RDWR);
 	if (fd == -1)
 		return(ft_putstr_fd("failed to open file\n", 2), 1);
-	map = hardcode_map(MAP_HEIGHT, MAP_WIDTH, fd);
-	hardcode_info(&info);
-	ray = malloc(sizeof(t_ray) * 1);
-	if (!ray)
+	game.map = hardcode_map(MAP_HEIGHT, MAP_WIDTH, fd);
+	hardcode_info(&game.info);
+	game.ray = malloc(sizeof(t_ray) * 1);
+	if (!game.ray)
 	{
-		free_array(map);
+		free_array(game.map);
 		return (ft_putstr_fd("malloc error\n", 2), 1);
 	}
-	ray->angle = info.direction + (FOV / 2);
-	ray->angle = adjust_angle(ray->angle);	
+	game.ray->angle = game.info.direction + (FOV / 2);
+	game.ray->angle = adjust_angle(game.ray->angle);	
 	
 	// PRINTING PIXELS
-	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
-    if (!mlx)
+	game.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
+    if (!game.mlx)
 		return (1);
-	image = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!image)
-	{
-		free_array(map);
-		free(mlx);
-		free(ray);
-		return (1);
-	}
+	game.image = mlx_new_image(game.mlx, WIDTH, HEIGHT);
+/*		if (!image)
+		{
+			free_array(map);
+			free(mlx);
+			free(ray);
+			return (1);
+		}*/
 
-	x = 0;
-	while (x < WIDTH)
+/*	info.direction = 30;
+	while (info.direction < 180.0)
 	{
-		y = 0;
-		cast_ray(info, map, ray);
-		print_column(ray, image, x);
-		ray->angle = ray->angle - info.ray_increment;
+		x = 0;	
+
+		//while (x < WIDTH)
+		printf("player direction: %f\n", info.direction);
+		ray->angle = info.direction + (FOV / 2);
 		ray->angle = adjust_angle(ray->angle);	
-		x++;
-	}
-	mlx_image_to_window(mlx, image, 0, 0);
-    
+		// ANGLE SHIT
+		while (x < WIDTH)
+		{
+			y = 0;
+			cast_ray(info, map, ray);
+			print_column(ray, image, x);
+			ray->angle = ray->angle - info.ray_increment;
+			ray->angle = adjust_angle(ray->angle);	
+			x++;
+		}
+		mlx_image_to_window(mlx, image, 0, 0);
+		sleep(2);
+		info.direction = info.direction + 10;
+	}*/
 	
-	mlx_loop(mlx);
-    mlx_terminate(mlx);
+	mlx_loop_hook(game.mlx, render, &game);
+	mlx_loop(game.mlx);
+    mlx_terminate(game.mlx);
 	return (0);
 }

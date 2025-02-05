@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 20:07:39 by martalop          #+#    #+#             */
-/*   Updated: 2025/01/22 23:31:31 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/03 22:39:24 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void exit_error(char* msg)
     exit(1);
 }
 
-int main(int argc, char **argv)
+/*int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     if(!main_checker(argc, argv, &map))
         return 1;
 
-}
+}*/
 
 // lo dejo comentado por si acaso, si quieres lo borrass
 /*void print_error(char *msg)
