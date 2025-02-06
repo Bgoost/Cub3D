@@ -42,7 +42,7 @@ $(NAME):	$(OBJ)
 			$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX_MAKE) $(LIBFT)
 			@echo "\n$(LGREEN)Executable $(NAME) created ✔$(RESET)\n"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES)
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c Makefile $(INCLUDES)
 			@mkdir -p $(dir $@)
 			$(CC) $(CFLAGS) -MMD -c $< -o $@
 			@echo "$(GREEN)Compiled $< ✔$(RESET)"

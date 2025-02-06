@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/05 19:45:14 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/06 14:32:53 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,22 @@ double	degree_to_radian(double degree)
 	return (radian);
 }
 
-void	hardcode_info(t_raycasting *info)
+int	hardcode_info(t_raycasting *info)
 {
 	info->ray_increment = (double)FOV / (double)WIDTH;
 	info->distance_to_plane = (WIDTH / 2) / tan(degree_to_radian(FOV / 2));
-	info->direction = 60;
+	info->direction = 360;
 	info->player.x = 6;
 	info->player.y = 17;
+	info->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
+    if (!info->mlx)
+		return (1);
+	info->image = mlx_new_image(info->mlx, WIDTH, HEIGHT);
+	if (!info->image)
+	{
+		free(info->mlx);
+		return (1);
+	}
 	//printing info
 	printf("\nFOV: %d\n", FOV);
 	printf("WINDOW HEIGHT: %d\n", HEIGHT);
@@ -83,6 +92,7 @@ void	hardcode_info(t_raycasting *info)
 	printf("player direction: %f\n", info->direction);
 	printf("player X: %f\n", info->player.x);
 	printf("player Y: %f\n\n", info->player.y);
+	return (0);
 }
 
 
@@ -382,6 +392,25 @@ void	free_array(char **array)
 	free(array);
 }
 
+void	print_scene(t_raycasting info, char **map, t_ray *ray)
+{
+	int		x;
+	int		y;
+	
+	x = 0;
+	y = 0;
+	while (x < WIDTH)
+	{
+		y = 0;
+		cast_ray(info, map, ray);
+		print_column(ray, info.image, x);
+		ray->angle = ray->angle - info.ray_increment;
+		ray->angle = adjust_angle(ray->angle);	
+		x++;
+	}
+	mlx_image_to_window(info.mlx, info.image, 0, 0);
+}
+
 int	main(int argc, char **argv)
 {
 	(void)argc;
@@ -389,18 +418,16 @@ int	main(int argc, char **argv)
 	t_raycasting	info;
 	char	**map;
 	t_ray 	*ray;
-	int		x;
-	int		y;
-
-	mlx_t	*mlx;
-	mlx_image_t	*image;
 
 	fd = -1;
 	fd = open(argv[1], O_RDWR);
 	if (fd == -1)
 		return(ft_putstr_fd("failed to open file\n", 2), 1);
 	map = hardcode_map(MAP_HEIGHT, MAP_WIDTH, fd);
-	hardcode_info(&info);
+	if (hardcode_info(&info) == 1)
+		return (ft_putstr_fd("malloc error\n", 2), 1);
+	
+	// RAY PREP
 	ray = malloc(sizeof(t_ray) * 1);
 	if (!ray)
 	{
@@ -410,33 +437,8 @@ int	main(int argc, char **argv)
 	ray->angle = info.direction + (FOV / 2);
 	ray->angle = adjust_angle(ray->angle);	
 	
-	// PRINTING PIXELS
-	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
-    if (!mlx)
-		return (1);
-	image = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!image)
-	{
-		free_array(map);
-		free(mlx);
-		free(ray);
-		return (1);
-	}
-
-	x = 0;
-	while (x < WIDTH)
-	{
-		y = 0;
-		cast_ray(info, map, ray);
-		print_column(ray, image, x);
-		ray->angle = ray->angle - info.ray_increment;
-		ray->angle = adjust_angle(ray->angle);	
-		x++;
-	}
-	mlx_image_to_window(mlx, image, 0, 0);
-    
-	
-	mlx_loop(mlx);
-    mlx_terminate(mlx);
+	print_scene(info, map, ray);
+	mlx_loop(info.mlx);
+    mlx_terminate(info.mlx);
 	return (0);
 }
