@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   test_360.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/05 19:32:20 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:05:36 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #define MAP_HEIGHT 22
 #define MAP_WIDTH 21
 
-char	**hardcode_map(int height, int width, int fd)
+/*char	**hardcode_map(int height, int width, int fd)
 {
 	int	x;
 	int	i;
@@ -100,8 +100,8 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 	max_hit = malloc(sizeof(t_point) * 1);
 	if (!max_hit)
 		return (NULL);
-	max_hit->x = DBL_MAX;
-	max_hit->y = DBL_MAX;
+	max_hit->x = DOUBLE_MAX;
+	max_hit->y = DOUBLE_MAX;
 
 //	printf("HORIZONTAL HITS\n");	
 
@@ -122,12 +122,20 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 //	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
 
 	if ((int)hit->x / TILE < 0 || ((int)hit->x / TILE) >= MAP_WIDTH)
-		return (printf("x out of bounds in first hit\n"), hit);
+	{
+	//	printf("x out of bounds in first hit\n");
+		return (hit);
+	}
 	if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
-		return (printf("y out of bounds in first hit\n"), hit);
-
+	{
+	//	printf("y out of bounds in first hit\n");
+		return (hit);
+	}
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1')
-		return (printf("theres a wall in first point\n"), hit);
+	{
+	//	printf("theres a wall in first point\n");
+		return (hit);
+	}
 
 	// 2. Remaining points
 	// 2.1. Find y_increment & x_increment
@@ -154,9 +162,15 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
 
 		if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
-			return (printf("y is out of bounds\n"), hit);
+		{
+//			printf("y is out of bounds\n");
+			return (hit);
+		}
 		if ((int)hit->x / TILE < 0 || ((int)hit->x / TILE) >= MAP_WIDTH)
-			return (printf("x is out of bounds\n"), hit);
+		{
+//			printf("x is out of bounds\n");
+			return (hit);
+		}
 	}
 	return (hit);
 }
@@ -176,8 +190,8 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 	if (!max_hit)
 		return (NULL);
 
-	max_hit->x = DBL_MAX;
-	max_hit->y = DBL_MAX;
+	max_hit->x = DOUBLE_MAX;
+	max_hit->y = DOUBLE_MAX;
 
 //	printf("VERTICAL HITS\n");	
 
@@ -196,13 +210,21 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 //	printf("scaled down: P(%d, %d)\n", (int)hit->x / TILE, (int)hit->y / TILE);
 	
 	if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
-		return (printf("y out of bounds in first hit\n"), hit);
-
+	{
+	//	printf("y out of bounds in first hit\n");
+		return (hit);
+	}
 	if ((int)hit->x / TILE < 0 || ((int)hit->x / TILE) >= MAP_WIDTH)
-		return (printf("x out of bounds in first hit\n"), hit);
+	{
+	//	printf("x out of bounds in first hit\n");
+		return (hit);
+	}
 
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1')
-		return (printf("theres a wall in first point\n"), hit);
+	{
+	//	printf("theres a wall in first point\n");
+		return (hit);
+	}
 
 	// 2. Remaining points
 	// 2.1. Find y_increment & x_increment
@@ -228,9 +250,15 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
 		
 		if ((int)hit->y / TILE < 0 || ((int)hit->y / TILE) >= MAP_HEIGHT)
-			return (printf("y is out of bounds\n"), hit);
+		{
+		//	printf("y is out of bounds\n");
+			return (hit);
+		}
 		if ((int)hit->x / TILE < 0 || ((int)hit->x / TILE) >= MAP_WIDTH)
-			return (printf("x is out of bounds\n"), hit);
+		{
+	//		printf("x is out of bounds\n");
+			return (hit);
+		}
 	}
 	return (hit);
 }
@@ -272,13 +300,13 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 	// calculating DISTANCE
 //	printf("DISTANCE\n");	
    	// find distance from player to each hit point (vertical & horizontal)
-	if (v_hit->y < 0 /*|| v_hit->y > MAP_HEIGHT * TILE*/)
-		v_distance = DBL_MAX;
+	if (v_hit->y < 0) //|| v_hit->y > MAP_HEIGHT * TILE)
+		v_distance = DOUBLE_MAX;
 	else
 		v_distance = point_distance(*v_hit, info.player, 'v');
 	
-	if (h_hit->x < 0 /*|| h_hit->x > MAP_WIDTH * TILE*/)
-		h_distance = DBL_MAX;
+	if (h_hit->x < 0) // || h_hit->x > MAP_WIDTH * TILE)
+		h_distance = DOUBLE_MAX;
 	else
 		h_distance = point_distance(*h_hit, info.player, 'h');
 
@@ -303,14 +331,14 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 //	printf("corrected distance to wall: %f\n", ray->distance_to_wall);
 
 
-	/*Find projected wall height
+//	Find projected wall height
 
-	Real wall height = TILE
-	Distance to plane = (WIDTH/2)/tan(FOV/2)
+//	Real wall height = TILE
+//	Distance to plane = (WIDTH/2)/tan(FOV/2)
 	
-    FORMULA
-    Projected Wall Height = (real wall height / distance to wall) * distance to projection plane
-   	PWH = (TILE / ray->distance_to_wall) * ray->distance_to_plane;  */
+  //  FORMULA
+  //  Projected Wall Height = (real wall height / distance to wall) * distance to projection plane
+  // 	PWH = (TILE / ray->distance_to_wall) * ray->distance_to_plane; 
 
 	ray->projection_height = (TILE / ray->distance_to_wall) * info.distance_to_plane;
 //	printf("\nprojection height: %f\n", ray->projection_height);
@@ -420,8 +448,9 @@ void	render(void *param)
 	mlx_image_to_window(game->mlx, game->image, 0, 0);
 	
 	game->info.direction += 1;
-//	game->info.direction = adjust_angle(game->info.direction);
-	usleep(1500);
+	game->info.direction = adjust_angle(game->info.direction);
+//	printf("direction = %f\n", game->info.direction);
+	usleep(15000);
   //  if (game->info.direction >= 360.0) // Stop after a full rotation
     //    mlx_close_window(game->mlx); // Close the window and exit the loop
 }
@@ -430,18 +459,7 @@ int	main(int argc, char **argv)
 {
 	(void)argc;
 	int	fd;
-//	t_raycasting	info;
-//	char	**map;
-//	t_ray 	*ray;
-//	int		x;
-//	int		y;
 	t_game	game;
-//	double	right_angle;
-//	double	left_angle;
-//	int		angle_flag;
-
-//	mlx_t	*mlx;
-//	mlx_image_t	*image;
 
 	fd = -1;
 	fd = open(argv[1], O_RDWR);
@@ -463,40 +481,9 @@ int	main(int argc, char **argv)
     if (!game.mlx)
 		return (1);
 	game.image = mlx_new_image(game.mlx, WIDTH, HEIGHT);
-/*		if (!image)
-		{
-			free_array(map);
-			free(mlx);
-			free(ray);
-			return (1);
-		}*/
-
-/*	info.direction = 30;
-	while (info.direction < 180.0)
-	{
-		x = 0;	
-
-		//while (x < WIDTH)
-		printf("player direction: %f\n", info.direction);
-		ray->angle = info.direction + (FOV / 2);
-		ray->angle = adjust_angle(ray->angle);	
-		// ANGLE SHIT
-		while (x < WIDTH)
-		{
-			y = 0;
-			cast_ray(info, map, ray);
-			print_column(ray, image, x);
-			ray->angle = ray->angle - info.ray_increment;
-			ray->angle = adjust_angle(ray->angle);	
-			x++;
-		}
-		mlx_image_to_window(mlx, image, 0, 0);
-		sleep(2);
-		info.direction = info.direction + 10;
-	}*/
 	
 	mlx_loop_hook(game.mlx, render, &game);
 	mlx_loop(game.mlx);
     mlx_terminate(game.mlx);
 	return (0);
-}
+}*/

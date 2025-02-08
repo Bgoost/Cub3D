@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
+/*   Updated: 2025/02/08 22:17:25 by martalop         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -13,8 +25,8 @@
 # include <unistd.h>
 # include <math.h>
 # include <limits.h>
-# include <float.h>
 
+# define DOUBLE_MAX 1.8 * pow(10, 308)
 # define WIDTH 1600
 # define HEIGHT 1000
 # define VALID_MAP_CHARS "10NSEW \n\t"
@@ -38,49 +50,49 @@ typedef struct s_point
 
 typedef struct s_ray
 {
-	int		wall_height;
 	int		first_wall_pixel;
 	int		last_wall_pixel;
 	double	projection_height; // amount of wall pixels
-	double	distance_to_wall; 
-	t_point	hit_point;
+	double	distance_to_wall;
 	double	angle;
+	t_point	*hit_point;
 }	t_ray;
 
-typedef struct	s_raycasting
+typedef struct s_raycasting
 {
-	double		ray_increment; // = FOV/WIDTH
-	double		distance_to_plane; // = (WIDTH/2)/tan(FOV/2)
+	double		ray_increment;
+	double		distance_to_plane;
 	double		direction; // N(90), S(270), W(180), E(0)
 	t_point		player;
 	mlx_t		*mlx;
 	mlx_image_t	*image;
+	int			*texture_buffer;
 }	t_raycasting;
 
-typedef struct  s_textures
+typedef struct s_textures
 {
-    char *north;
-    char *south;
-    char *west;
-    char *east;
-    int floor_color[3];
-    int ceiling_color[3];
-}               t_textures;
+	char	*north;
+	char	*south;
+	char	*west;
+	char	*east;
+	int		floor_color[3];
+	int		ceiling_color[3];
+}	t_textures;
 
-typedef struct  s_map
+typedef struct s_map
 {
-    char **lines;
-    char **map;
-    int start;
-    int end;
-    int width;
-    int height;
-    int valid_map;
-    int player_x;
-    int player_y;
-    char player_c;
-    t_textures textures;
-}               t_map;
+	char		**lines;
+	char		**map;
+	int			start;
+	int			end;
+	int			width;
+	int			height;
+	int			valid_map;
+	int			player_x;
+	int			player_y;
+	char		player_c;
+	t_textures	textures;
+}	t_map;
 
 // PARSING
 int		main_checker(int argc, char *argv[], t_map **map);
