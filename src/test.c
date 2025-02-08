@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/08 22:45:53 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/08 22:49:03 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,12 +319,12 @@ void	cast_ray(t_raycasting info, char **map, t_ray *ray)
 	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
 
 	// TEXTURES
-	mlx_texture_t	*texture;
-	t_point	wall_hit;
+//	mlx_texture_t	*texture;
+//	t_point	wall_hit;
 	
-	texture = mlx_load_png("BRICK_1A.PNG");
-	if (!texture)
-		return (ft_putstr_fd("Failed to load textures\n", 2), 1);
+//	texture = mlx_load_png("BRICK_1A.PNG");
+//	if (!texture)
+//		ft_putstr_fd("Failed to load textures\n", 2);
 		
 	
 	
