@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/08 22:17:25 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:15:24 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_ray
 	double	distance_to_wall;
 	double	angle;
 	t_point	*hit_point;
+	char	wall_hit;
 }	t_ray;
 
 typedef struct s_raycasting
@@ -66,7 +67,8 @@ typedef struct s_raycasting
 	t_point		player;
 	mlx_t		*mlx;
 	mlx_image_t	*image;
-	int			*texture_buffer;
+	char		**map;
+	t_ray		*ray;
 }	t_raycasting;
 
 typedef struct s_textures
@@ -111,10 +113,10 @@ double	degree_to_radian(double degree);
 t_point	*horizontal_hit(t_point player, char **map, double angle);
 t_point	*vertical_hit(t_point player, char **map, double angle);
 double	point_distance(t_point hit, t_point player, char point);
-void	cast_ray(t_raycasting info, char **map, t_ray *ray);
+void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
 void	print_column(t_ray *ray, mlx_image_t *image, int x);
 double	adjust_angle(double angle);
-void	print_scene(t_raycasting info, char **map, t_ray *ray);
+void	print_scene(t_raycasting *info, char **map, t_ray *ray);
 
 // UTILS
 void	free_map(char **map);
