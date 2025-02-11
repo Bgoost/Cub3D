@@ -84,6 +84,7 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count);
 int		get_lines_count(const char *filename);
 void	parse_main_textures(char *line, t_map *scene, int map_started);
 void free_map(char **map);
+int is_notvalid(char *str);
 
 void parse_map(t_map *scene);
 

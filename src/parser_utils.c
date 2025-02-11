@@ -49,10 +49,24 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     close(fd);
 }
 
-int is_valid_map_char(char c)
+int is_notvalid(char *str)
 {
-    return c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W';
+    int i;
+    int notvalid;
+
+    i = 0;
+    notvalid = 0;
+    while (str[i])
+    {
+        if (!ft_strchr(VALID_MAP_CHARS, str[i]))
+            notvalid++;
+        i++;
+    }
+    if(notvalid > 1)
+        return (0);
+    return (1);
 }
+
 
 int is_strspace(char *str)
 {

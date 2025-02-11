@@ -1,5 +1,28 @@
 #include "../inc/cub3d.h"
 
+void errors_map_chars(t_map *scene, int i, int j)
+{
+    char *trimmed;
+
+    if(is_strspace(scene->lines[i]))
+    {
+        printf("\033[31mError:\nEmpty lines not allowed in map.\033[0m");
+        exit_error("");
+    }
+    if(!is_notvalid(scene->lines[i]))
+    {
+        trimmed = ft_strtrim(scene->lines[i], "\n");
+        printf("\033[31mError:\nInvalid line [%s\033[0m", trimmed);
+        free(trimmed);
+        exit_error("] in map.");
+    }
+    if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
+    {
+        printf("\033[31mError:\nInvalid character [%c\033[0m", scene->lines[i][j]);
+        exit_error("] in map.");
+    }
+}
+
 void set_map_chars(t_map *scene, int i, int j, int *num_players)
 {
     if (ft_strchr("NSEW", scene->lines[i][j]))
@@ -11,25 +34,53 @@ void set_map_chars(t_map *scene, int i, int j, int *num_players)
             exit_error("Error:\nMultiple player positions found.");
         (*num_players)++;
     }
-    if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
+    errors_map_chars(scene, i, j);
+}
+
+char *pad_line_to_width(const char *line, int width)
+{
+    char *padded = malloc(width + 1);
+    int i = 0;
+
+    if (!padded)
+        exit_error("Error:\nMemory allocation for padded line failed.");
+
+    while (line[i] && i < width)
     {
-        printf("\033[31mError:\nInvalid character [%c\033[0m", scene->lines[i][j]);
-        exit_error("] in map.");
+        padded[i] = line[i];
+        i++;
     }
+    while (i < width)
+    {
+        padded[i] = ' ';
+        i++;
+    }
+    padded[width] = '\0';
+    return padded;
 }
 
 void process_line(t_map *scene, int i, int *num_players, char **copy_map)
 {
     int j;
     char *trimmed;
-    
+    char *padded_line;
+
     j = 0;
     trimmed = ft_strtrim(scene->lines[i], "\n");
     if (!trimmed)
         exit_error("Error:\nMemory allocation for trimmed line failed.");
-    scene->map[i - scene->start] = ft_strdup(trimmed);
-    copy_map[i - scene->start] = ft_strdup(trimmed);
+    padded_line = pad_line_to_width(trimmed, scene->width);
+    if (!padded_line)
+        exit_error("Error:\nMemory allocation for padded line failed.");
+    if (scene->map[i - scene->start])
+        free(scene->map[i - scene->start]);
+    if (copy_map[i - scene->start])
+        free(copy_map[i - scene->start]);
+    scene->map[i - scene->start] = padded_line;
+    copy_map[i - scene->start] = pad_line_to_width(trimmed, scene->width);
     free(trimmed);
+    if (!scene->map[i - scene->start] || !copy_map[i - scene->start])
+        exit_error("Error:\nMemory allocation for map line failed.");
     while (scene->lines[i][j] != '\0')
     {
         set_map_chars(scene, i, j, num_players);
@@ -47,29 +98,23 @@ void parse_map_errors(int num_players)
 
 int is_valid_map(t_map *map, char **copy_map)
 {
-    int xy[2];
-    int len;
-    char *trimmed;
+    int x;
+    int y;
 
-    xy[0] = 0;
-    xy[1] = 0;
-    while(xy[0] < map->width)
+    x = 0;
+    y = 0;
+    while (x < map->width) 
     {
-        if (copy_map[0][xy[0]] == 'F' || copy_map[map->height - 1][xy[0]] == 'F')
+        if (copy_map[0][x] == 'F' || copy_map[map->height - 1][x] == 'F')
             return (0);
-        xy[0]++;
+        x++;
     }
-    while(xy[1] < map->height)
-    {
-        if (copy_map[xy[1]][0] == 'F' || copy_map[xy[1]][map->width - 1] == 'F')
+    while(y < map->height )
+    { 
+        if (copy_map[y][0] == 'F' || copy_map[y][map->width - 1] == 'F')
             return (0);
-        xy[1]++;
+        y++;
     }
-    trimmed = ft_strtrim(map->lines[map->end], "\n");
-    len = ft_strlen(trimmed);
-    free(trimmed);
-    if(map->lines[map->end][len - 1] != '1')
-        return (-1);
     map->valid_map = 1;
     return (1);
 }
@@ -77,7 +122,7 @@ int is_valid_map(t_map *map, char **copy_map)
 static void	flood_fill(char **copy_map, t_map *map, int x, int y)
 {
     if(map->valid_map && copy_map[y][x] == ' ')
-        exit_error("Error:\nspaces not admited inside of the map.\n");
+        exit_error("Error:\nMap is not surrounded by walls.");
     if(!map->valid_map)
     {
         if (x < 0 || x >= map->width || y < 0 || y >= map->height
@@ -98,36 +143,44 @@ static void	flood_fill(char **copy_map, t_map *map, int x, int y)
 	flood_fill(copy_map, map, x, y - 1);
 }
 
-char    **init_allocate_map(int height)
+char **init_allocate_map(int height, int width)
 {
     char **map;
     int i;
 
     map = malloc(sizeof(char *) * (height + 1));
-    i = 0;
     if (!map)
         exit_error("Error:\nMemory allocation for map failed.");
-    while (i < height + 1)
+
+    for (i = 0; i < height; i++)
     {
-        (map)[i] = NULL;
-        i++;
+        map[i] = malloc(sizeof(char) * (width + 1));
+        if (!map[i])
+        {
+            while (i > 0)
+                free(map[--i]);
+            free(map);
+            exit_error("Error:\nMemory allocation for map row failed.");
+        }
+        ft_bzero(map[i], width);
+        map[i][width] = '\0';
     }
+    map[height] = NULL;
     return (map);
 }
+
 
 void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 {
     int is_valid;
 
     is_valid = is_valid_map(scene, copy_map);
+
     parse_map_errors(num_players);
     if (!is_valid || is_valid == -1)
     {
         free_map(copy_map);
-        if(is_valid == -1)
-            exit_error("Error:\nMap can't end in a enter.");
-        else
-            exit_error("Error:\nMap is not surrounded by walls.");
+        exit_error("Error:\nMap is not surrounded by walls.");
     }
     flood_fill(copy_map, scene, scene->player_x, scene->player_y);
     free_map(copy_map);
@@ -142,9 +195,15 @@ void    parse_map(t_map *scene)
     scene->height = scene->end - scene->start + 1;
     num_players = 0;
     i = scene->start;
-    scene->map = init_allocate_map(scene->height);
-    copy_map = init_allocate_map(scene->height);
-
+    scene->map = init_allocate_map(scene->height, scene->width);
+    if(!scene->map)
+        exit_error("Error:\nMemory allocation for map failed.");
+    copy_map = init_allocate_map(scene->height, scene->width);
+    if(!copy_map)
+    {
+        free_map(scene->map);
+        exit_error("Error:\nMemory allocation for map failed.");
+    }
     while (i <= scene->end)
     {
         process_line(scene, i, &num_players, copy_map);

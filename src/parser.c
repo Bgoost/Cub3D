@@ -61,8 +61,8 @@ void parse_scene_file(const char *filename, t_map *scene)
             && scene->textures.east && scene->textures.ceiling_color[0] != -1 
             && scene->textures.floor_color[0] != -1)
             {
-                find_delimiter(scene->lines[i], i, scene, &empty_line);
                 parse_main_textures(scene->lines[i], scene, 1);
+                find_delimiter(scene->lines[i], i, scene, &empty_line);
             }
         else
             parse_main_textures(scene->lines[i], scene, 0);
