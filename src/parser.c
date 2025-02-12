@@ -24,6 +24,7 @@ void find_delimiter(char *line, int i, t_map *scene, int *empty_lines)
     else if (scene->start == 0)
         (*empty_lines)++;
     scene->end = i;
+    scene->valid_map = 0;
 }
 
 void errors_in_map(t_map *scene)
@@ -45,6 +46,26 @@ void errors_in_map(t_map *scene)
         exit_error("Error:\nMissing floor or ceiling color.");
     }
 }
+
+void replace_space(t_map *scene)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (scene->map[i] != NULL)
+    {
+        j = 0;
+        while (scene->map[i][j] != '\0')
+        {
+            if (scene->map[i][j] == ' ')
+                scene->map[i][j] = '1';
+            j++;
+        }
+        i++;
+    }
+}
+
 void parse_scene_file(const char *filename, t_map *scene)
 {
     int lines_count;
@@ -61,7 +82,8 @@ void parse_scene_file(const char *filename, t_map *scene)
             && scene->textures.east && scene->textures.ceiling_color[0] != -1 
             && scene->textures.floor_color[0] != -1)
             {
-                parse_main_textures(scene->lines[i], scene, 1);
+                if(scene->valid_map == -1)
+                    parse_main_textures(scene->lines[i], scene, 1);
                 find_delimiter(scene->lines[i], i, scene, &empty_line);
             }
         else
@@ -71,5 +93,5 @@ void parse_scene_file(const char *filename, t_map *scene)
 
     errors_in_map(scene);
     parse_map(scene);
-
+    replace_space(scene);
 }

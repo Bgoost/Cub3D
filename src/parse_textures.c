@@ -109,6 +109,18 @@ static void parse_color(char *line, const char *identifier, int *color)
 
 }
 
+void error_invalid_identifier(char *trimmed)
+{
+    char **split_error;
+
+    split_error = ft_split(trimmed, ' ');
+    if (split_error == NULL)
+        exit_error("Error:\nMemory allocation failed for split error.");
+    printf("\033[31mError:\nInvalid texture identifier [%s] in file.\n\033[0m", split_error[0]);
+    printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
+    free(trimmed);
+    exit_error("");
+}
 
 void parse_main_textures(char *line, t_map *scene, int map_started)
 {
@@ -133,10 +145,6 @@ void parse_main_textures(char *line, t_map *scene, int map_started)
     else if (ft_strncmp(trimmed, "C ", 2) == 0)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
     else if (!is_strspace(trimmed) && !map_started)
-    {
-        printf("\033[31mError:\nInvalid texture identifier [%s] in file.\033[0m", trimmed);
-        free(trimmed);
-        exit_error("");
-    }
+        error_invalid_identifier(trimmed);
     free(trimmed);
 }
