@@ -477,6 +477,8 @@ void	print_scene(t_raycasting *info, char **map, t_ray *ray)
 		ray->angle = adjust_angle(ray->angle);	
 		x++;
 	}
+	// BONUS
+	// draw_minimap(info->image, info->map, info);
 	if (mlx_image_to_window(info->mlx, info->image, 0, 0) == -1)
 	{
 		mlx_close_window(info->mlx);
@@ -565,7 +567,7 @@ void	free_game(t_raycasting *game)
 //	free(game->image);
 //	free(game->mlx);
     mlx_terminate(game->mlx);
-	free_array(game->map);
+	//free_array(game->map);
 	free(game->ray);
 	free(game);
 }

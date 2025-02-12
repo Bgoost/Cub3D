@@ -47,9 +47,9 @@ int main_checker(int argc, char *argv[], t_map **map)
 
     *map = init_map();
     if (argc != 2)
-        exit_error("Usage: ./Cub3D t_map_name.cub");
+        exit_error("Usage: ./cub3D map.cub");
     if (cub_control(argv[1]) == -1)
-        return (exit_error("Invalid file extension:\nUsage: ./so_long name_map.ber"), 0);
+        return (exit_error("Invalid file extension:\nUsage: ./cub3D map.cub"), 0);
     fd = open(argv[1], O_RDONLY);
     if (fd == -1)
         return (exit_error(strerror(errno)), 0);

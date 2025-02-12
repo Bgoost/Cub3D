@@ -126,6 +126,10 @@ void	print_scene(t_raycasting *info, char **map, t_ray *ray);
 // KEYBOARD
 void	keyboard_input(mlx_key_data_t keydata, void *param);
 
+//MINIMAP
+void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
+
+
 // UTILS
 void	free_map(char **map);
 void	free_scene(t_map **scene);

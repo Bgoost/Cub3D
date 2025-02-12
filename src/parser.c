@@ -1,30 +1,24 @@
 #include "../inc/cub3d.h"
 
-void find_delimiter(char *line, int i, t_map *scene, int *empty_lines)
+void find_delimiter(char *line, int i, t_map *scene)
 {
     int width;
+    char *trimmed;
 
+    trimmed = ft_strtrim(line, " ");
     if (!is_strspace(line))
     {
-        width = ft_strlen(line);
+        width = ft_strlen(trimmed);
         if (line[width - 1] == '\n')
             width--;
         if (width > scene->width)
             scene->width = width;
         if (scene->start == 0)
-        {
             scene->start = i;
-            if (*empty_lines != 1)
-            {
-                free_scene(&scene);
-                exit_error("Error:\nMore/Less than 1 empty line between textures and map");
-            }
-        }
     }
-    else if (scene->start == 0)
-        (*empty_lines)++;
     scene->end = i;
     scene->valid_map = 0;
+    free(trimmed);
 }
 
 void errors_in_map(t_map *scene)
@@ -47,34 +41,32 @@ void errors_in_map(t_map *scene)
     }
 }
 
-void replace_space(t_map *scene)
-{
-    int i;
-    int j;
+// void replace_space(t_map *scene)
+// {
+//     int i;
+//     int j;
 
-    i = 0;
-    while (scene->map[i] != NULL)
-    {
-        j = 0;
-        while (scene->map[i][j] != '\0')
-        {
-            if (scene->map[i][j] == ' ')
-                scene->map[i][j] = '1';
-            j++;
-        }
-        i++;
-    }
-}
+//     i = 0;
+//     while (scene->map[i] != NULL)
+//     {
+//         j = 0;
+//         while (scene->map[i][j] != '\0')
+//         {
+//             if (scene->map[i][j] == ' ')
+//                 scene->map[i][j] = '1';
+//             j++;
+//         }
+//         i++;
+//     }
+// }
 
 void parse_scene_file(const char *filename, t_map *scene)
 {
     int lines_count;
     int i;
-    int empty_line;
 
     lines_count = get_lines_count(filename);
     set_file_lines(filename, scene, lines_count);
-    empty_line = 0;
     i = 0;
     while (scene->lines[i] != NULL)
     {
@@ -84,7 +76,7 @@ void parse_scene_file(const char *filename, t_map *scene)
             {
                 if(scene->valid_map == -1)
                     parse_main_textures(scene->lines[i], scene, 1);
-                find_delimiter(scene->lines[i], i, scene, &empty_line);
+                find_delimiter(scene->lines[i], i, scene);
             }
         else
             parse_main_textures(scene->lines[i], scene, 0);
@@ -93,5 +85,5 @@ void parse_scene_file(const char *filename, t_map *scene)
 
     errors_in_map(scene);
     parse_map(scene);
-    replace_space(scene);
+    // replace_space(scene);
 }

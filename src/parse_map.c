@@ -39,24 +39,29 @@ void set_map_chars(t_map *scene, int i, int j, int *num_players)
 
 char *pad_line_to_width(const char *line, int width)
 {
-    char *padded = malloc(width + 1);
+    char *trimmed;
+    // char *padded;
+    
+    trimmed = ft_strtrim(line, " ");
+    trimmed = malloc(width + 1);
+    if (!trimmed)
+        exit_error("Error:\nMemory allocation for padded line failed.");
+
     int i = 0;
 
-    if (!padded)
-        exit_error("Error:\nMemory allocation for padded line failed.");
 
     while (line[i] && i < width)
     {
-        padded[i] = line[i];
+        trimmed[i] = line[i];
         i++;
     }
     while (i < width)
     {
-        padded[i] = ' ';
+        trimmed[i] = ' ';
         i++;
     }
-    padded[width] = '\0';
-    return padded;
+    trimmed[width] = '\0';
+    return trimmed;
 }
 
 void process_line(t_map *scene, int i, int *num_players, char **copy_map)
@@ -66,7 +71,7 @@ void process_line(t_map *scene, int i, int *num_players, char **copy_map)
     char *padded_line;
 
     j = 0;
-    trimmed = ft_strtrim(scene->lines[i], "\n");
+    trimmed = ft_strtrim(scene->lines[i], " \n");
     if (!trimmed)
         exit_error("Error:\nMemory allocation for trimmed line failed.");
     padded_line = pad_line_to_width(trimmed, scene->width);
