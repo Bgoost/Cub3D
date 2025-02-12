@@ -18,18 +18,24 @@ void exit_error(char* msg)
     exit(1);
 }
 
-/*int main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
     t_map *map;
+    t_raycasting  *game;
     if(!main_checker(argc, argv, &map))
         return 1;
     printf("All good, freeing map\n");
+    game = init_raycasting(*map);
+    print_scene(game, game->map, game->ray);
+	mlx_key_hook(game->mlx, keyboard_input, game);
+	mlx_loop(game->mlx);
+	free_game(game);
     free_scene(&map);
     return 0;
 
-}*/
+}
 
 // lo dejo comentado por si acaso, si quieres lo borrass
 /*void print_error(char *msg)

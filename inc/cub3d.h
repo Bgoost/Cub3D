@@ -69,6 +69,8 @@ typedef struct s_raycasting
 	mlx_image_t	*image;
 	char		**map;
 	t_ray		*ray;
+	int			width;
+	int			height;
 }	t_raycasting;
 
 typedef struct s_textures
@@ -110,20 +112,26 @@ void	parse_map(t_map *scene);
 
 // RAYCASTING
 double	degree_to_radian(double degree);
-t_point	*horizontal_hit(t_point player, char **map, double angle);
-t_point	*vertical_hit(t_point player, char **map, double angle);
-double	point_distance(t_point hit, t_point player, char point);int is_notvalid(char *str);
+t_point	*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info);
+t_point	*vertical_hit(t_point player, char **map, double angle, t_raycasting *info);
+double	point_distance(t_point hit, t_point player, char point);
+int is_notvalid(char *str);
+t_raycasting	*init_raycasting(t_map map);
 
 void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
 void	print_column(t_ray *ray, mlx_image_t *image, int x);
 double	adjust_angle(double angle);
 void	print_scene(t_raycasting *info, char **map, t_ray *ray);
 
+// KEYBOARD
+void	keyboard_input(mlx_key_data_t keydata, void *param);
+
 // UTILS
 void	free_map(char **map);
 void	free_scene(t_map **scene);
 void	free_array(char **array);
 void	exit_error(char *msg);
+void	free_game(t_raycasting *game);
 void free_map(char **map);
 int is_notvalid(char *str);
 

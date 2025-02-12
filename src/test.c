@@ -12,7 +12,6 @@
 
 #include "../inc/cub3d.h"
 #include <stdint.h>
-
 # define MAP_HEIGHT 22
 # define MAP_WIDTH 21
 # define TEXTURE_WIDTH 64
@@ -133,14 +132,14 @@ void	horizontal_increments(double angle, t_point *increment)
 //	printf("x_increment = %f\ny_increment = %f\n\n", increment->x, increment->y);
 }
 
-int	safe_point(double x, double y)
+int	safe_point(double x, double y, int width, int height)
 {
-	if ((int)x / TILE < 0 || ((int)x / TILE) >= MAP_WIDTH)
+	if ((int)x / TILE < 0 || ((int)x / TILE) >= width)
 	{
 //		printf("x out of bounds\n");
 		return (0);
 	}
-	if ((int)y / TILE < 0 || ((int)y / TILE) >= MAP_HEIGHT)
+	if ((int)y / TILE < 0 || ((int)y / TILE) >= height)
 	{
 //		printf("y out of bounds\n");
 		return (0);
@@ -148,14 +147,14 @@ int	safe_point(double x, double y)
 	return (1);
 }
 
-int	safe_point2(double x, double y)
+int	safe_point2(double x, double y, int width, int height)
 {
-	if (x < 0 || ((int)x / TILE) >= MAP_WIDTH)
+	if (x < 0 || ((int)x / TILE) >= width)
 	{
 //		printf("x out of bounds\n");
 		return (0);
 	}
-	if (y < 0 || ((int)y / TILE) >= MAP_HEIGHT)
+	if (y < 0 || ((int)y / TILE) >= height)
 	{
 //		printf("y out of bounds\n");
 		return (0);
@@ -163,7 +162,7 @@ int	safe_point2(double x, double y)
 	return (1);
 }
 
-t_point	*horizontal_hit(t_point player, char **map, double angle)
+t_point	*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info)
 {
 	t_point	*hit;
 	t_point	increment;
@@ -172,7 +171,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 	hit = first_h_hit(angle, player);
 	if (!hit)
 		return (NULL);
-	if (!safe_point(hit->x, hit->y))
+	if (!safe_point(hit->x, hit->y, info->width, info->height))
 		return (hit);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1') // we find WALL, we stop
 		return (printf("theres a wall in first point\n"), hit);
@@ -183,7 +182,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle)
 		hit->y = hit->y + increment.y;
 //		printf("next hit: (%f, %f)\n", hit->x, hit->y);
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
-		if (!safe_point(hit->x, hit->y))
+		if (!safe_point(hit->x, hit->y, info->width, info->height))
 			return (hit);
 	}
 	return (hit);
@@ -225,7 +224,7 @@ void	vertical_increment(double angle, t_point *increment)
 //	printf("x_increment = %f\ny_increment = %f\n\n", increment->x, increment->y);
 }
 
-t_point	*vertical_hit(t_point player, char **map, double angle)
+t_point	*vertical_hit(t_point player, char **map, double angle, t_raycasting *info)
 {
 	t_point	*hit;
 	t_point	increment;
@@ -234,7 +233,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 	hit = first_v_hit(angle, player);	
 	if (!hit)
 		return (NULL);
-	if (!safe_point(hit->x, hit->y))
+	if (!safe_point(hit->x, hit->y, info->width, info->height))
 		return (hit);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1')
 		return (printf("theres a wall in first point\n"), hit);
@@ -245,7 +244,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle)
 		hit->y = hit->y + increment.y;
 //		printf("next hit: (%f, %f)\n", hit->x, hit->y);
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
-		if (!safe_point(hit->x, hit->y))
+		if (!safe_point(hit->x, hit->y, info->width, info->height))
 			return (hit);
 	}
 	return (hit);
@@ -271,12 +270,12 @@ void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_raycasting *inf
 	
 	printf("DISTANCE\n");	
    	// find distance from player to each hit point (vertical & horizontal)
-	if (v_hit->y < 0 || ((int)v_hit->y / TILE) > MAP_HEIGHT || v_hit->x < 0 || ((int)v_hit->x / TILE) > MAP_WIDTH)
+	if (v_hit->y < 0 || ((int)v_hit->y / TILE) > info->height || v_hit->x < 0 || ((int)v_hit->x / TILE) > info->width)
 		v_distance = DOUBLE_MAX;
 	else
 		v_distance = point_distance(*v_hit, info->player, 'v');
 	
-	if (h_hit->y < 0 || ((int)h_hit->y / TILE) > MAP_HEIGHT || h_hit->x < 0 || ((int)h_hit->x / TILE) > MAP_WIDTH)
+	if (h_hit->y < 0 || ((int)h_hit->y / TILE) > info->height || h_hit->x < 0 || ((int)h_hit->x / TILE) > info->width)
 		h_distance = DOUBLE_MAX;
 	else
 		h_distance = point_distance(*h_hit, info->player, 'h');
@@ -311,12 +310,12 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
 	printf("player: (%f, %f)\n", info->player.x, info->player.y);
 	// HORIZONTAL intersections
-	h_hit = horizontal_hit(info->player, map, ray->angle);
+	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 	printf("h hit: (%f, %f)\n", h_hit->x, h_hit->y);
 	printf("scaled down: (%d, %d)\n\n", (int)h_hit->x / TILE, (int)h_hit->y / TILE);
 
 	// VERTICAL intersections
-	v_hit = vertical_hit(info->player, map, ray->angle);
+	v_hit = vertical_hit(info->player, map, ray->angle, info);
 	printf("v hit: (%f, %f)\n", v_hit->x, v_hit->y);
 	printf("scaled down: (%d, %d)\n\n", (int)v_hit->x / TILE, (int)v_hit->y / TILE);
 	
@@ -338,9 +337,7 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 	ray->projection_height = ceil(ray->projection_height); // round UP 
 	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
 
-	// need to do another function to check this value is correct		
-
-	// Find first wall point
+	// Find first wall pixel
 	t_point	center;
 
 	center.x = WIDTH / 2;
@@ -525,7 +522,7 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
 		tmp.x += 0.5 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
-		if (safe_point2(tmp.x, tmp.y))
+		if (safe_point2(tmp.x, tmp.y, info->width, info->height))
 		{
 			info->player = tmp;
 			print_scene(info, info->map, info->ray);
@@ -535,7 +532,7 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	{
 		tmp.y += 0.5 * sin(degree_to_radian(info->direction));
 		tmp.x -= 0.5 * cos(degree_to_radian(info->direction));
-		if (safe_point2(tmp.x, tmp.y))
+		if (safe_point2(tmp.x, tmp.y, info->width, info->height))
 		{
 			info->player = tmp;
 			print_scene(info, info->map, info->ray);
@@ -545,7 +542,7 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	{
 		tmp.x -= 0.5 * sin(degree_to_radian(info->direction));
 		tmp.y -= 0.5 * cos(degree_to_radian(info->direction));
-		if (safe_point2(tmp.x, tmp.y))
+		if (safe_point2(tmp.x, tmp.y, info->width, info->height))
 		{
 			info->player = tmp;
 			print_scene(info, info->map, info->ray);
@@ -555,7 +552,7 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	{
 		tmp.x += 0.5 * sin(degree_to_radian(info->direction));
 		tmp.y += 0.5 * cos(degree_to_radian(info->direction));
-		if (safe_point2(tmp.x, tmp.y))
+		if (safe_point2(tmp.x, tmp.y, info->width, info->height))
 		{
 			info->player = tmp;
 			print_scene(info, info->map, info->ray);
@@ -573,7 +570,7 @@ void	free_game(t_raycasting *game)
 	free(game);
 }
 
-int	main(int argc, char **argv)
+/*int	main(int argc, char **argv)
 {
 	(void)argc;
 	int				fd;
@@ -603,4 +600,4 @@ int	main(int argc, char **argv)
 	mlx_loop(info->mlx);
 	free_game(info);
 	return (0);
-}
+}*/

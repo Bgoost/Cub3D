@@ -3,8 +3,8 @@ NAME			= cub3D
 
 # Compiler and CFlags
 CC			= cc
-# CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
-CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
+CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
+# CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
 RM			= rm -f
 
 # Directories
@@ -29,7 +29,7 @@ RED				= \033[1;91m
 RESET			= \033[0m
 
 # Source Files
-SRC			= main.c main_checker.c parser.c parser_utils.c parse_textures.c parse_map.c test.c test_360.c
+SRC			= main.c main_checker.c parser.c parser_utils.c parse_textures.c parse_map.c test.c test_360.c raycasting.c
 SRCS		= $(addprefix $(SRC_DIR), $(SRC))
 
 # Object Files
