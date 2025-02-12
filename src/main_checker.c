@@ -30,7 +30,7 @@ t_map *init_map()
     map->textures.ceiling_color[0] = -1;
     map->textures.ceiling_color[1] = -1;
     map->textures.ceiling_color[2] = -1;
-    map->valid_map = 0;
+    map->valid_map = -1;
     map->start = 0;
     map->end = 0;
     map->width = 0;

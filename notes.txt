@@ -1,4 +1,4 @@
-hacer un while dentro del if despues de tener todas las textura, que se detenga cuando encuentre el mapa y mire si hay identifiers repetidos. 
-hacer el split de los identifiers.
-poner el error de expected textures, 
+hacer un while dentro del if despues de tener todas las textura, que se detenga cuando encuentre el mapa y mire si hay identifiers repetidos. okk.
+hacer el split de los identifiers. okk
+poner el error de expected textures, okk
 despues de que sea valido el mapa, cambiar los espacios por 1.
