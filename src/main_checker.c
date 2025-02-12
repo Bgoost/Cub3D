@@ -17,8 +17,7 @@ t_map *init_map()
     t_map *map;
     map = malloc(sizeof(t_map));
     if (map == NULL)
-        exit_error("Error: Memory allocation failed for map.");
-    
+        exit_error("Error:\nMemory allocation failed for map.");
     map->lines = NULL;
     map->map = NULL;
     map->textures.north = NULL;
@@ -31,6 +30,7 @@ t_map *init_map()
     map->textures.ceiling_color[0] = -1;
     map->textures.ceiling_color[1] = -1;
     map->textures.ceiling_color[2] = -1;
+    map->valid_map = 0;
     map->start = 0;
     map->end = 0;
     map->width = 0;
@@ -69,8 +69,6 @@ int main_checker(int argc, char *argv[], t_map **map)
     printf("Map:\n");
     for (int i = 0; i < ((*map)->end - (*map)->start) + 1; i++)
         printf("%s\n", (*map)->map[i]);
-
-    free_scene(map);
     printf("Parsing successful!\n");
 
     return 1;

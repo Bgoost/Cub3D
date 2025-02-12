@@ -338,7 +338,9 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 	ray->projection_height = ceil(ray->projection_height); // round UP 
 	printf("\nprojection height rounded UP: %f\n", ray->projection_height);
 
-	// Find first wall pixel
+	// need to do another function to check this value is correct		
+
+	// Find first wall point
 	t_point	center;
 
 	center.x = WIDTH / 2;

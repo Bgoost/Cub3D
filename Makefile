@@ -3,8 +3,8 @@ NAME			= cub3D
 
 # Compiler and CFlags
 CC			= cc
-CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
-# CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
+# CFLAGS		= -Wall -Werror -Wextra -I$(MLX_DIR)/include
+CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address -I$(MLX_DIR)/include
 RM			= rm -f
 
 # Directories

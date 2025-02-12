@@ -25,6 +25,9 @@ void exit_error(char* msg)
     t_map *map;
     if(!main_checker(argc, argv, &map))
         return 1;
+    printf("All good, freeing map\n");
+    free_scene(&map);
+    return 0;
 
 }*/
 

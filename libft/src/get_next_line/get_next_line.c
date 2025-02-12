@@ -3,109 +3,136 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: crmanzan <crmanzan@student.42barcel>       +#+  +:+       +#+        */
+/*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 16:09:10 by crmanzan          #+#    #+#             */
-/*   Updated: 2024/05/11 18:15:04 by crmanzan         ###   ########.fr       */
+/*   Created: 2024/02/22 16:57:21 by martalop          #+#    #+#             */
+/*   Updated: 2024/09/10 14:39:05 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../inc/get_next_line.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "get_next_line.h"
 
-char	*free_all_gnl(char **storage)
+size_t	ft_strlen_gnl(const char *s)
 {
-	free(*storage);
-	*storage = NULL;
-	return (NULL);
+	size_t	indx;
+
+	indx = 0;
+	while (s[indx] != '\0')
+		indx++;
+	return (indx);
 }
 
-static char	*update_storage(char *storage)
+char	*get_clean(char *stash)
 {
-	char	*new;
+	char	*str;
 	int		i;
 
 	i = 0;
-	if (!storage)
-		return (NULL);
-	while (storage[i] != '\n' && storage[i] != '\0')
+	while (stash[i] != '\n' && stash[i] != '\0')
 		i++;
-	i++;
-	new = ft_substr_gnl(storage, i, ft_strlen(storage));
-	free(storage);
-	return (new);
+	if (stash[i] == '\n')
+		i++;
+	str = ft_substr_gnl(stash, i, (ft_strlen_gnl(stash) - i));
+	free(stash);
+	if (!str)
+		return (NULL);
+	return (str);
 }
 
-static char	*get_storage(int fd, char *storage)
+char	*put_line(char *stash)
 {
-	char	*buffer;
-	int		num_bytes;
+	int		i;
+	char	*s;
 
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
-		return (free_all_gnl(&storage));
-	buffer[0] = '\0';
-	num_bytes = 1;
-	while (num_bytes > 0 && !ft_strchr(buffer, '\n'))
+	i = 0;
+	while (stash[i] != '\n' && stash[i] != '\0' )
+		i++;
+	if (stash[i] == '\n')
+		i++;
+	s = ft_substr_gnl(stash, 0, i);
+	if (!s)
+		return (NULL);
+	return (s);
+}
+
+char	*read_file(char *buffer, char *stash, int read_result, int fd)
+{
+	if (stash == NULL)
 	{
-		num_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (num_bytes == -1)
-		{
-			free(buffer);
-			return (free_all_gnl(&storage));
-		}
-		if (num_bytes > 0)
-		{
-			buffer[num_bytes] = '\0';
-			storage = ft_strjoin_gnl(storage, buffer);
-		}
+		stash = ft_strdup_gnl("");
+		if (!stash)
+			return (free(buffer), NULL);
+	}
+	while (my_strchr(stash) == 0 && read_result != 0)
+	{
+		read_result = read(fd, buffer, BUFFER_SIZE);
+		if (read_result < 0)
+			return (free(buffer), free(stash), NULL);
+		else if (read_result == 0)
+			break ;
+		buffer[read_result] = '\0';
+		stash = free_strjoin(stash, buffer);
+		if (!stash)
+			return (free(buffer), NULL);
 	}
 	free(buffer);
-	return (storage);
-}
-
-static char	*the_line(char *storage)
-{
-	char	*line;
-	int		i;
-
-	i = 0;
-	if (!storage)
+	if (stash[0] == '\0' && read_result == 0)
+	{
+		free(stash);
 		return (NULL);
-	while (storage[i] != '\n' && storage[i] != '\0')
-		i++;
-	i++;
-	line = ft_substr_gnl(storage, 0, i);
-	return (line);
+	}
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*storage = NULL;
+	char		*buffer;
 	char		*line;
+	static char	*stash;
+	int			read_result;
+	// int			i;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	// i = 0;
+	if (fd < 0 || BUFFER_SIZE < 1 || fd > 10240)
 		return (NULL);
-	storage = get_storage(fd, storage);
-	if (!storage)
+	read_result = -1;
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (free(stash), stash = NULL, NULL);
+	stash = read_file(buffer, stash, read_result, fd);
+	if (!stash)
 		return (NULL);
-	line = the_line(storage);
+	line = put_line(stash);
 	if (!line)
-	{
-		return (free_all_gnl(&storage));
-	}
-	storage = update_storage(storage);
+		return (free(stash), stash = NULL, NULL);
+	stash = get_clean(stash);
+	if (!stash)
+		return (free(line), NULL);
 	return (line);
 }
-//  int main()
-//  {
-//      int fd;
-//      char    *line;
-//  	int i = 1;
-//	    fd = open("text.txt", O_RDONLY);
-//      while((line = get_next_line(fd)) != NULL)
-//      {
-//         printf("LINE %i: %s", i, line);
-//         free(line);
-//  	   i++;
-//      }
-//          return(0);
-//  }
+
+// int	main(void)
+// {
+// 	int	fd;
+// 	char	*str;;
+// 	int	i;
+
+// 	i = 1;
+// 	fd = open("infile", O_RDWR);
+// //	printf("%d\n", fd);
+// 	str = get_next_line(fd);
+// 	while (str != NULL)
+// 	{
+// 		printf("line %d: %s", i, str);
+// 		free(str);
+// 		str = get_next_line(fd);
+// 		i++;
+// 		if (str == NULL)
+// 			printf("line %d: %s", i, str);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }

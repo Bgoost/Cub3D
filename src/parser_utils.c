@@ -8,7 +8,7 @@ int get_lines_count(const char *filename)
     fd = open(filename, O_RDONLY);
     lines_count = 0;
     if (fd < 0)
-        exit_error("Error: Failed to open file.");
+        exit_error("Error:\nFailed to open file.");
     line = get_next_line(fd);
     while(line != NULL)
     {
@@ -25,49 +25,48 @@ void set_file_lines(const char *filename, t_map *scene, int lines_count)
     int i;
     int fd;
     char *line;
-    scene->lines = malloc(sizeof(char *) * lines_count);
+    char *tmp;
+
+    scene->lines = malloc(sizeof(char *) * (lines_count + 1));
+    if (!scene->lines)
+        exit_error("Memory allocation error");
     fd = open(filename, O_RDONLY);
     if (fd < 0)
-        exit_error("Error: Failed to open file.");
+        exit_error("Error:\nFailed to open file.");
     i = 0;
     line = get_next_line(fd);
     while(line != NULL)
     {
-        scene->lines[i] = line;
+        tmp = line;
+        scene->lines[i] = ft_strdup(line);
+        if (!scene->lines[i])
+            exit_error("Memory allocation error");
+        free(tmp);
         line = get_next_line(fd);
         i++;
     }
-
-
     scene->lines[i] = NULL;
     close(fd);
 }
 
-int is_valid_map_char(char c)
+int is_notvalid(char *str)
 {
-    return c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W';
+    int i;
+    int notvalid;
+
+    i = 0;
+    notvalid = 0;
+    while (str[i])
+    {
+        if (!ft_strchr(VALID_MAP_CHARS, str[i]))
+            notvalid++;
+        i++;
+    }
+    if(notvalid > 1)
+        return (0);
+    return (1);
 }
 
-char *trim_whitespace(char *str)
-{
-    char *end;
-    char *trimmed;
-
-    trimmed = malloc(ft_strlen(str) + 1);
-    if (!trimmed)
-        exit_error("Error: Memory allocation failed for trimmed string.");
-    ft_strcpy(trimmed, str);
-    while (ft_isspace(*trimmed))
-        trimmed++;
-    if (*trimmed == 0)
-        return trimmed; // All spaces
-
-    end = trimmed + ft_strlen(trimmed) - 1;
-    while (end > trimmed && ft_isspace(*end))
-        end--;
-    end[1] = '\0';
-    return trimmed;
-}
 
 int is_strspace(char *str)
 {

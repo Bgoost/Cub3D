@@ -105,14 +105,15 @@ char	*trim_whitespace(char *str);
 int		is_valid_map_char(char c);
 void	set_file_lines(const char *filename, t_map *scene, int lines_count);
 int		get_lines_count(const char *filename);
-void	parse_main_textures(char *line, t_map *scene);
+void	parse_main_textures(char *line, t_map *scene, int map_started);
 void	parse_map(t_map *scene);
 
 // RAYCASTING
 double	degree_to_radian(double degree);
 t_point	*horizontal_hit(t_point player, char **map, double angle);
 t_point	*vertical_hit(t_point player, char **map, double angle);
-double	point_distance(t_point hit, t_point player, char point);
+double	point_distance(t_point hit, t_point player, char point);int is_notvalid(char *str);
+
 void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
 void	print_column(t_ray *ray, mlx_image_t *image, int x);
 double	adjust_angle(double angle);
@@ -123,5 +124,7 @@ void	free_map(char **map);
 void	free_scene(t_map **scene);
 void	free_array(char **array);
 void	exit_error(char *msg);
+void free_map(char **map);
+int is_notvalid(char *str);
 
 #endif
