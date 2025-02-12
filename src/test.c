@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/10 21:32:21 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:25:52 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ int	hardcode_info(t_raycasting *info)
 	info->ray_increment = (double)FOV / (double)WIDTH;
 	info->distance_to_plane = (WIDTH / 2) / tan(degree_to_radian(FOV / 2));
 	info->direction = 90;
-	info->player.x = 6;
-	info->player.y = 17;
+	info->player.x = 3;
+	info->player.y = 20;
 	info->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
     if (!info->mlx)
 		return (1);
@@ -141,6 +141,21 @@ int	safe_point(double x, double y)
 		return (0);
 	}
 	if ((int)y / TILE < 0 || ((int)y / TILE) >= MAP_HEIGHT)
+	{
+//		printf("y out of bounds\n");
+		return (0);
+	}
+	return (1);
+}
+
+int	safe_point2(double x, double y)
+{
+	if (x < 0 || ((int)x / TILE) >= MAP_WIDTH)
+	{
+//		printf("x out of bounds\n");
+		return (0);
+	}
+	if (y < 0 || ((int)y / TILE) >= MAP_HEIGHT)
 	{
 //		printf("y out of bounds\n");
 		return (0);
@@ -256,12 +271,12 @@ void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_raycasting *inf
 	
 	printf("DISTANCE\n");	
    	// find distance from player to each hit point (vertical & horizontal)
-	if (v_hit->y < 0) //|| v_hit.y > MAP_HEIGHT * TILE)
+	if (v_hit->y < 0 || ((int)v_hit->y / TILE) > MAP_HEIGHT || v_hit->x < 0 || ((int)v_hit->x / TILE) > MAP_WIDTH)
 		v_distance = DOUBLE_MAX;
 	else
 		v_distance = point_distance(*v_hit, info->player, 'v');
 	
-	if (h_hit->x < 0) // || h_hit->x > MAP_WIDTH * TILE)
+	if (h_hit->y < 0 || ((int)h_hit->y / TILE) > MAP_HEIGHT || h_hit->x < 0 || ((int)h_hit->x / TILE) > MAP_WIDTH)
 		h_distance = DOUBLE_MAX;
 	else
 		h_distance = point_distance(*h_hit, info->player, 'h');
@@ -356,7 +371,7 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, double x, double y)
 	if (x < 0 || x >= texture->width || y < 0 || y >= texture->height)
         return 0x00000000; //transparent black
 	
-	pixel_index = (y * texture->width + x) * 4; // 4 son bytes por pixel
+	pixel_index = (y * texture->width + x) * 4; // 4 = bytes por pixel
     
 	r = texture->pixels[pixel_index];     
     g = texture->pixels[pixel_index + 1];
@@ -381,8 +396,8 @@ void	print_column(t_ray *ray, mlx_image_t *image, int x)
 			mlx_put_pixel(image, x, y, CEILING_COLOR);
 		else if (y >= ray->first_wall_pixel && y <= ray->last_wall_pixel)
 		{
-	/*		// TEXTURES
-			texture = mlx_load_png("BRICK_1A.PNG");
+		// TEXTURES
+/*			texture = mlx_load_png("./textures/BRICK_1A.PNG");
 			if (!texture)
 				ft_putstr_fd("Failed to load textures\n", 2);
 
@@ -394,17 +409,17 @@ void	print_column(t_ray *ray, mlx_image_t *image, int x)
 			else
 				texture_in.x = ray->hit_point->x - floor(ray->hit_point->x);
 			
- 			printf("texture_in x: %f\n", texture_in.x); 
+ 	//		printf("texture_in x: %f\n", texture_in.x); 
 			texture_in.x = texture_in.x * TEXTURE_WIDTH;
  			printf("texture_in x: %f\n", texture_in.x); 
 			while (y < ray->last_wall_pixel) 
 			{
 				texture_in.y = (int)text_pos % TEXTURE_HEIGHT;
- 				printf("first y: %f, x: %f, width: %d\n", texture_in.y, texture_in.x, texture->width); 
+// 				printf("first y: %f, x: %f, width: %d\n", texture_in.y, texture_in.x, texture->width); 
 				text_pos += step;
- 				printf("first texture_pos: %f\n\n", text_pos); 
-				texture_color = get_texture_pixel(texture, texture_in.x, texture_in.y);
- 				printf("\ntexture color: %u\n\n", texture_color); 
+ 	//			printf("first texture_pos: %f\n\n", text_pos); 
+				texture_color = get_texture_pixel(texture, x, texture_in.y);
+ //				printf("\ntexture color: %u\n\n", texture_color); 
 				mlx_put_pixel(image, x, y, texture_color);
 				y++;
 			}*/
@@ -475,9 +490,12 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 {
 	mlx_t			*mlx;
 	t_raycasting	*info;
+	t_point			tmp;
 	
 	info = (t_raycasting *)param;
 	mlx = (mlx_t *)info->mlx;
+
+	tmp = info->player;
 	printf("key = %d\n", keydata.key);
 	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
 	{
@@ -501,30 +519,56 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	// no estan bien, hay que moverse segun el ángulo del personaje!!
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
-		info->player.y -= 0.5 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.5 * sin(degree_to_radian(info->direction));
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
-		info->player.x += 0.5 * cos(degree_to_radian(info->direction));
+		tmp.x += 0.5 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
-		print_scene(info, info->map, info->ray);
+		if (safe_point2(tmp.x, tmp.y))
+		{
+			info->player = tmp;
+			print_scene(info, info->map, info->ray);
+		}
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_S))
 	{
-		info->player.y += 0.5 * sin(degree_to_radian(info->direction));
-		info->player.x -= 0.5 * cos(degree_to_radian(info->direction));
-		print_scene(info, info->map, info->ray);
+		tmp.y += 0.5 * sin(degree_to_radian(info->direction));
+		tmp.x -= 0.5 * cos(degree_to_radian(info->direction));
+		if (safe_point2(tmp.x, tmp.y))
+		{
+			info->player = tmp;
+			print_scene(info, info->map, info->ray);
+		}
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_A))
 	{
-		info->player.x -= 0.5 * sin(degree_to_radian(info->direction));
-		info->player.y -= 0.5 * cos(degree_to_radian(info->direction));
-		print_scene(info, info->map, info->ray);
+		tmp.x -= 0.5 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.5 * cos(degree_to_radian(info->direction));
+		if (safe_point2(tmp.x, tmp.y))
+		{
+			info->player = tmp;
+			print_scene(info, info->map, info->ray);
+		}
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_D))
 	{
-		info->player.x += 0.5 * sin(degree_to_radian(info->direction));
-		info->player.y += 0.5 * cos(degree_to_radian(info->direction));
-		print_scene(info, info->map, info->ray);
+		tmp.x += 0.5 * sin(degree_to_radian(info->direction));
+		tmp.y += 0.5 * cos(degree_to_radian(info->direction));
+		if (safe_point2(tmp.x, tmp.y))
+		{
+			info->player = tmp;
+			print_scene(info, info->map, info->ray);
+		}
 	}
+}
+
+void	free_game(t_raycasting *game)
+{
+//	free(game->image);
+//	free(game->mlx);
+    mlx_terminate(game->mlx);
+	free_array(game->map);
+	free(game->ray);
+	free(game);
 }
 
 int	main(int argc, char **argv)
@@ -554,8 +598,7 @@ int	main(int argc, char **argv)
 
 	print_scene(info, info->map, info->ray);
 	mlx_key_hook(info->mlx, keyboard_input, info);
-
 	mlx_loop(info->mlx);
-    mlx_terminate(info->mlx);
+	free_game(info);
 	return (0);
 }
