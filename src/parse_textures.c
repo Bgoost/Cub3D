@@ -134,7 +134,7 @@ void parse_main_textures(char *line, t_map *scene, int map_started)
         parse_color(trimmed, "C", scene->textures.ceiling_color);
     else if (!is_strspace(trimmed) && !map_started)
     {
-        printf("\033[31mError:\nInvalid identifier [%s] in file.\033[0m", trimmed);
+        printf("\033[31mError:\nInvalid texture identifier [%s] in file.\033[0m", trimmed);
         free(trimmed);
         exit_error("");
     }
