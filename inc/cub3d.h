@@ -109,6 +109,10 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count);
 int		get_lines_count(const char *filename);
 void	parse_main_textures(char *line, t_map *scene, int map_started);
 void	parse_map(t_map *scene);
+char **init_allocate_map(int height, int width);
+void set_map_chars(t_map *scene, int i, int j, int *num_players);
+void parse_map_errors(int num_players);
+char *pad_line_to_width(const char *line, int width);
 
 // RAYCASTING
 double	degree_to_radian(double degree);

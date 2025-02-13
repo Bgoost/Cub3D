@@ -1,69 +1,5 @@
 #include "../inc/cub3d.h"
 
-void errors_map_chars(t_map *scene, int i, int j)
-{
-    char *trimmed;
-
-    if(is_strspace(scene->lines[i]))
-    {
-        printf("\033[31mError:\nEmpty lines not allowed in map.\033[0m");
-        exit_error("");
-    }
-    if(!is_notvalid(scene->lines[i]))
-    {
-        trimmed = ft_strtrim(scene->lines[i], "\n");
-        printf("\033[31mError:\nInvalid line [%s\033[0m", trimmed);
-        free(trimmed);
-        exit_error("] in map.");
-    }
-    if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
-    {
-        printf("\033[31mError:\nInvalid character [%c\033[0m", scene->lines[i][j]);
-        exit_error("] in map.");
-    }
-}
-
-void set_map_chars(t_map *scene, int i, int j, int *num_players)
-{
-    if (ft_strchr("NSEW", scene->lines[i][j]))
-    {
-        scene->player_x = j;
-        scene->player_y = i - scene->start;
-        scene->player_c = scene->lines[i][j];
-        if (*num_players > 0)
-            exit_error("Error:\nMultiple player positions found.");
-        (*num_players)++;
-    }
-    errors_map_chars(scene, i, j);
-}
-
-char *pad_line_to_width(const char *line, int width)
-{
-    char *trimmed;
-    // char *padded;
-    
-    trimmed = ft_strtrim(line, " ");
-    trimmed = malloc(width + 1);
-    if (!trimmed)
-        exit_error("Error:\nMemory allocation for padded line failed.");
-
-    int i = 0;
-
-
-    while (line[i] && i < width)
-    {
-        trimmed[i] = line[i];
-        i++;
-    }
-    while (i < width)
-    {
-        trimmed[i] = ' ';
-        i++;
-    }
-    trimmed[width] = '\0';
-    return trimmed;
-}
-
 void process_line(t_map *scene, int i, int *num_players, char **copy_map)
 {
     int j;
@@ -91,14 +27,6 @@ void process_line(t_map *scene, int i, int *num_players, char **copy_map)
         set_map_chars(scene, i, j, num_players);
         j++;
     }
-}
-
-void parse_map_errors(int num_players)
-{
-    if (num_players == 0)
-        exit_error("Error:\nNo player position found.");
-    if (num_players > 1)
-        exit_error("Error:\nMultiple player positions found.");
 }
 
 int is_valid_map(t_map *map, char **copy_map)
@@ -146,32 +74,6 @@ static void	flood_fill(char **copy_map, t_map *map, int x, int y)
 	flood_fill(copy_map, map, x - 1, y);
 	flood_fill(copy_map, map, x, y + 1);
 	flood_fill(copy_map, map, x, y - 1);
-}
-
-char **init_allocate_map(int height, int width)
-{
-    char **map;
-    int i;
-
-    map = malloc(sizeof(char *) * (height + 1));
-    if (!map)
-        exit_error("Error:\nMemory allocation for map failed.");
-
-    for (i = 0; i < height; i++)
-    {
-        map[i] = malloc(sizeof(char) * (width + 1));
-        if (!map[i])
-        {
-            while (i > 0)
-                free(map[--i]);
-            free(map);
-            exit_error("Error:\nMemory allocation for map row failed.");
-        }
-        ft_bzero(map[i], width);
-        map[i][width] = '\0';
-    }
-    map[height] = NULL;
-    return (map);
 }
 
 

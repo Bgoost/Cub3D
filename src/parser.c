@@ -5,12 +5,10 @@ void find_delimiter(char *line, int i, t_map *scene)
     int width;
     char *trimmed;
 
-    trimmed = ft_strtrim(line, " ");
+    trimmed = ft_strtrim(line, " \n");
     if (!is_strspace(line))
     {
         width = ft_strlen(trimmed);
-        if (line[width - 1] == '\n')
-            width--;
         if (width > scene->width)
             scene->width = width;
         if (scene->start == 0)

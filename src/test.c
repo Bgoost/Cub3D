@@ -461,16 +461,16 @@ void	free_array(char **array)
 void	print_scene(t_raycasting *info, char **map, t_ray *ray)
 {
 	int		x;
-	int		y;
+	// int		y;
 	
 	x = 0;
-	y = 0;
+	// y = 0;
 	ray->angle = info->direction + (FOV / 2);
 	ray->angle = adjust_angle(ray->angle);
 	printf("direction = %f\n", info->direction);
 	while (x < WIDTH)
 	{
-		y = 0;
+		// y = 0;
 		cast_ray(info, map, ray);
 		print_column(ray, info->image, x);
 		ray->angle = ray->angle - info->ray_increment;
@@ -478,7 +478,7 @@ void	print_scene(t_raycasting *info, char **map, t_ray *ray)
 		x++;
 	}
 	// BONUS
-	// draw_minimap(info->image, info->map, info);
+	draw_minimap(info->image, info->map, info);
 	if (mlx_image_to_window(info->mlx, info->image, 0, 0) == -1)
 	{
 		mlx_close_window(info->mlx);
