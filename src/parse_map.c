@@ -82,7 +82,6 @@ void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
     int is_valid;
 
     is_valid = is_valid_map(scene, copy_map);
-
     parse_map_errors(num_players);
     if (!is_valid || is_valid == -1)
     {
@@ -117,5 +116,9 @@ void    parse_map(t_map *scene)
         i++;
     }
     flood_fill(copy_map, scene, scene->player_x, scene->player_y);
+    printf("copy_map:\n");
+    for(int i = 0; i < scene->height; i++)
+        printf("%s\n", copy_map[i]);
+
     validate_and_clean_map(scene, copy_map, num_players);
 }

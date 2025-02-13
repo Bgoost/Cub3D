@@ -113,6 +113,9 @@ char **init_allocate_map(int height, int width);
 void set_map_chars(t_map *scene, int i, int j, int *num_players);
 void parse_map_errors(int num_players);
 char *pad_line_to_width(const char *line, int width);
+int	extract_texture_path(const char *trimmed, char *result);
+void	error_invalid_identifier(char *trimmed);
+
 
 // RAYCASTING
 double	degree_to_radian(double degree);
