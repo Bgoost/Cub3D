@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/10 16:15:24 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:48:16 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ typedef struct s_raycasting
 	mlx_image_t	*image;
 	char		**map;
 	t_ray		*ray;
-	int			width;
-	int			height;
+	int			map_width;
+	int			map_height;
 }	t_raycasting;
 
 typedef struct s_textures

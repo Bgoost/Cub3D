@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/01/27 20:33:58 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:02:39 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ t_raycasting	*init_raycasting(t_map map)
 		info->direction = 0;
 	info->player.x = map.player_x;
 	info->player.y = map.player_y;
-	info->height = map.height;
-	info->width = map.width;
+	info->map_height = map.height;
+	info->map_width = map.width;
 	info->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", false);
     if (!info->mlx)
 		return (NULL);

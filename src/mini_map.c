@@ -58,8 +58,8 @@ void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info)
     int map_width;
     int color;
 
-    map_height = info->height;
-    map_width = info->width;
+    map_height = info->map_height;
+    map_width = info->map_width;
     // Aqui le pasaremos el map->height y map->width cuando incorpuremos el parser
     y = 0;
     while(y < map_height)
@@ -82,8 +82,6 @@ void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info)
         }
         y++;
     }
-    printf("player x: %f, player y: %f\n", info->player.x, info->player.y);
-
+  //  printf("player x: %f, player y: %f\n", info->player.x, info->player.y);
     draw_player(info, image);
-    printf("adios\n");
 }
