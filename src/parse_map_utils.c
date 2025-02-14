@@ -6,7 +6,7 @@ char *pad_line_to_width(const char *line, int width)
     char *padded;
     int i;
 
-    trimmed = ft_strtrim(line, " \n");
+    trimmed = ft_strtrim(line, "\n");
     if (!trimmed)
         exit_error("Error:\nMemory allocation for trimmed line failed.");
     padded = malloc(width + 1);
