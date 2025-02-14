@@ -6,7 +6,7 @@
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 19:16:00 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/02/13 19:24:39 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:45:15 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	error_invalid_identifier(char *trimmed)
 	split_error = ft_split(trimmed, ' ');
 	if (split_error == NULL)
 		exit_error("Error:\nMemory allocation failed for split error.");
-	printf("\033[31mError:\nInvalid texture identifier [%s]i \
-					in file.\n\033[0m", split_error[0]);
+	printf("\033[31mError:\nInvalid texture identifier [%s] in file.\n\033[0m",
+		split_error[0]);
 	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
 	free(trimmed);
 	exit_error("");
