@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/13 22:08:36 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/16 00:10:46 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,7 +374,7 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 //	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
 }
 
-uint32_t	get_texture_pixel(mlx_texture_t *texture, double x, double y)
+uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 {
 	/*double	pixel;
 
@@ -386,18 +386,26 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, double x, double y)
 	uint8_t b;
 	uint8_t a;
 
- 	printf("y: %f, x: %f, width: %d\n", y, x, texture->width); 
+ //	printf("y: %f, x: %f, width: %d\n", y, x, texture->width); 
 
-	if (x < 0 || x >= texture->width || y < 0 || y >= texture->height)
+	if (x < 0 || x >= TEXTURE_WIDTH || y < 0 || y >= TEXTURE_HEIGHT)
         return 0x00000000; //transparent black
 	
-	pixel_index = (y * texture->width + x) * 4; // 4 = bytes por pixel
+	pixel_index = (y * texture->width + x) * texture->bytes_per_pixel; // 4 = bytes por pixel
     
 	r = texture->pixels[pixel_index];     
     g = texture->pixels[pixel_index + 1];
     b = texture->pixels[pixel_index + 2];
     a = texture->pixels[pixel_index + 3];
-    return ((a << 24) | (r << 16) | (g << 8) | b);
+
+  	if (a != 255)
+   	{
+        r = (r * a) / 255; // Premultiplied alpha handling
+        g = (g * a) / 255;
+        b = (b * a) / 255;
+    }
+	return (r << 24 | g << 16 | b << 8 | a);
+//    return ((a << 24) | (r << 16) | (g << 8) | b);
 }
 
 void	print_column(t_ray *ray, mlx_image_t *image, int x)
@@ -421,7 +429,7 @@ void	print_column(t_ray *ray, mlx_image_t *image, int x)
 			if (!texture)
 				ft_putstr_fd("Failed to load textures\n", 2);
 
-			step = (double)TEXTURE_HEIGHT / ray->projection_height;
+			step = (double)texture->height / ray->projection_height;
 			text_pos = (ray->first_wall_pixel - HEIGHT / 2 + ray->projection_height / 2) * step;
 			
 			if (ray->wall_hit == 'v')
@@ -429,17 +437,20 @@ void	print_column(t_ray *ray, mlx_image_t *image, int x)
 			else
 				texture_in.x = ray->hit_point->x - floor(ray->hit_point->x);
 			
- 	//		printf("texture_in x: %f\n", texture_in.x); 
-			texture_in.x = texture_in.x * TEXTURE_WIDTH;
- 			printf("texture_in x: %f\n", texture_in.x); 
+			texture_in.x *= texture->width;
+			
+			texture_in.x = (int)texture_in.x % texture->width;
+			if (texture_in.x < 0)
+				texture_in.x += texture->width;
+
 			while (y < ray->last_wall_pixel) 
 			{
-				texture_in.y = (int)text_pos % TEXTURE_HEIGHT;
-// 				printf("first y: %f, x: %f, width: %d\n", texture_in.y, texture_in.x, texture->width); 
+				texture_in.y = (int)text_pos % texture->height;
+				if (texture_in.y < 0)
+					texture_in.y += texture->height;
+
 				text_pos += step;
- 	//			printf("first texture_pos: %f\n\n", text_pos); 
-				texture_color = get_texture_pixel(texture, x, texture_in.y);
- //				printf("\ntexture color: %u\n\n", texture_color); 
+				texture_color = get_texture_pixel(texture, texture_in.x, texture_in.y);
 				mlx_put_pixel(image, x, y, texture_color);
 				y++;
 			}*/
@@ -541,9 +552,9 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	// MOVIMIENTOS (WSAD)
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
-		tmp.y -= 0.5 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.25 * sin(degree_to_radian(info->direction));
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
-		tmp.x += 0.5 * cos(degree_to_radian(info->direction));
+		tmp.x += 0.25 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
 		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_point2(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
