@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/13 18:02:39 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/17 21:23:54 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ t_raycasting	*init_raycasting(t_map map)
 		free_array(info->map);
 		return (ft_putstr_fd("malloc error\n", 2), NULL);
 	}
+	info->ray->wall_hit = '\0';
 	info->map = map.map;
+	info->textures = map.textures;
 	printf("ray increment: %f\n", info->ray_increment);
 	printf("distance_to_plane: %f\n", info->distance_to_plane);
 	printf("angle: %f\n", info->direction);

@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 20:07:39 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/13 17:47:35 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/17 21:50:03 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ int main(int argc, char **argv)
 	mlx_key_hook(game->mlx, keyboard_input, game);
 	mlx_loop(game->mlx);
 	free_game(game);
-    free_scene(&map);
+	free_scene(&map);
     return 0;
-
 }
 
 /*void print_error(char *msg)

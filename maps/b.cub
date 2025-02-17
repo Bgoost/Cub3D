@@ -1,8 +1,8 @@
-NO assets/textures/wall.xpm
+NO ./textures/BRICK_1A.PNG 
 F 220,100,1
-SO assets/img/"bar rel.xpm42"
-EA ./hola/aa.xmp
-WE ./hola/"a a".xmp
+SO ./textures/BRICK_3B.PNG
+EA ./textures/BRICK_2B.PNG
+WE ./textures/TILE_2C.PNG
 C 250,    30     ,1
 
 1101111111111

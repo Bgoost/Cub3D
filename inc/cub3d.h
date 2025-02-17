@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/13 18:48:16 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/17 21:23:42 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,6 @@ typedef struct s_point
 	double	y;
 }	t_point;
 
-typedef struct s_ray
-{
-	int		first_wall_pixel;
-	int		last_wall_pixel;
-	double	projection_height; // amount of wall pixels
-	double	distance_to_wall;
-	double	angle;
-	t_point	*hit_point;
-	char	wall_hit;
-}	t_ray;
-
-typedef struct s_raycasting
-{
-	double		ray_increment;
-	double		distance_to_plane;
-	double		direction; // N(90), S(270), W(180), E(0)
-	t_point		player;
-	mlx_t		*mlx;
-	mlx_image_t	*image;
-	char		**map;
-	t_ray		*ray;
-	int			map_width;
-	int			map_height;
-}	t_raycasting;
-
 typedef struct s_textures
 {
 	char	*north;
@@ -82,6 +57,33 @@ typedef struct s_textures
 	int		floor_color[3];
 	int		ceiling_color[3];
 }	t_textures;
+
+typedef struct s_ray
+{
+	int				first_wall_pixel;
+	int				last_wall_pixel;
+	double			projection_height; // amount of wall pixels
+	double			distance_to_wall;
+	double			angle;
+	t_point			*hit_point;
+	char			wall_hit;
+	mlx_texture_t	*wall_texture;
+}	t_ray;
+
+typedef struct s_raycasting
+{
+	double			ray_increment;
+	double			distance_to_plane;
+	double			direction; // N(90), S(270), W(180), E(0)
+	t_point			player;
+	mlx_t			*mlx;
+	mlx_image_t		*image;
+	char			**map;
+	t_ray			*ray;
+	int				map_width;
+	int				map_height;
+	t_textures		textures;
+}	t_raycasting;
 
 typedef struct s_map
 {
@@ -119,7 +121,7 @@ int is_notvalid(char *str);
 t_raycasting	*init_raycasting(t_map map);
 
 void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
-void	print_column(t_ray *ray, mlx_image_t *image, int x);
+void	print_column(t_ray *ray, t_textures textures, mlx_image_t *image, int x);
 double	adjust_angle(double angle);
 void	print_scene(t_raycasting *info, char **map, t_ray *ray);
 

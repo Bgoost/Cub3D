@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/16 00:10:46 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/17 23:01:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,8 +278,8 @@ double	point_distance(t_point hit, t_point player, char point)
 	double	distance;
 	t_point	grid_player;
 	
-	grid_player.x = player.x * TILE + TILE / 2;
-	grid_player.y = player.y * TILE + TILE / 2;
+	grid_player.x = (player.x * TILE) + (TILE / 2);
+	grid_player.y = (player.y * TILE) + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
 //	printf("%c distance: %f\n", point, distance);
@@ -316,6 +316,7 @@ void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_raycasting *inf
 		ray->hit_point = h_hit;
 		ray->wall_hit = 'h';
 	}
+	printf("wall hit =  %c\n", ray->wall_hit);
 //	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 	
 	// OJO DE PEZ
@@ -336,12 +337,15 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 //	printf("h hit: (%f, %f)\n", h_hit->x, h_hit->y);
 //	printf("scaled down: (%d, %d)\n\n", (int)h_hit->x / TILE, (int)h_hit->y / TILE);
-
+	if (!h_hit)
+		return ;
 	// VERTICAL intersections
 	v_hit = vertical_hit(info->player, map, ray->angle, info);
 //	printf("v hit: (%f, %f)\n", v_hit->x, v_hit->y);
 //	printf("scaled down: (%d, %d)\n\n", (int)v_hit->x / TILE, (int)v_hit->y / TILE);
-	
+	if (!v_hit)
+		return ;
+
 	// calculating DISTANCE of each and choosing the shortest
 	find_distance(v_hit, h_hit, ray, info);
 
@@ -367,11 +371,11 @@ void	cast_ray(t_raycasting *info, char **map, t_ray *ray)
 	center.y = HEIGHT / 2;
 
 	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
-//	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
+	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
 
 	// Find last wall pixel
 	ray->last_wall_pixel = ray->first_wall_pixel + ray->projection_height;
-//	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
+	printf("last_wall_pixel: %d\n", ray->last_wall_pixel);
 }
 
 uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
@@ -391,7 +395,7 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 	if (x < 0 || x >= TEXTURE_WIDTH || y < 0 || y >= TEXTURE_HEIGHT)
         return 0x00000000; //transparent black
 	
-	pixel_index = (y * texture->width + x) * texture->bytes_per_pixel; // 4 = bytes por pixel
+	pixel_index = (y * texture->width + x) * texture->bytes_per_pixel;
     
 	r = texture->pixels[pixel_index];     
     g = texture->pixels[pixel_index + 1];
@@ -408,53 +412,108 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 //    return ((a << 24) | (r << 16) | (g << 8) | b);
 }
 
-void	print_column(t_ray *ray, mlx_image_t *image, int x)
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures, int num)
+{
+	(void)num;
+	mlx_texture_t *texture;
+
+	texture = NULL;
+//	printf("\ntexture address = %p\n", texture);
+//	printf("\nmap texture address = %p\n", &textures);
+
+//	if (num == 1)
+//		texture = mlx_load_png("./textures/BRICK_1A.PNG");
+//	if (!texture)
+//		ft_putstr_fd("Failed to load textures\n", 2);
+//	return (texture);
+	
+	
+	if ((ray->angle >= 270 || ray->angle < 90) && ray->wall_hit == 'v')
+	{
+//		printf("west: %s\n", textures.west);
+		texture = mlx_load_png(textures.west);
+	}
+	else if ((ray->angle < 270 && ray->angle >= 90) && ray->wall_hit == 'v')
+	{
+//		printf("east: %s\n", textures.east);
+		texture = mlx_load_png(textures.east);
+	}
+	else if ((ray->angle >= 0 && ray->angle <= 180) && ray->wall_hit == 'h')
+	{
+//		printf("south: %s\n", textures.south);
+		texture = mlx_load_png(textures.south);
+	}
+	else if ((ray->angle < 360 && ray->angle > 180) && ray->wall_hit == 'h')
+	{
+//		printf("north: %s\n", textures.north);
+		texture = mlx_load_png(textures.north);
+	}
+//	else
+//		printf("NO TEXTURE FOUND\n");
+	if (!texture)
+		ft_putstr_fd("Failed to load textures\n", 2);
+	return (texture);
+}
+
+void	print_column(t_ray *ray, t_textures textures, mlx_image_t *image, int x)
 {
 	int				y;
-//	uint32_t		texture_color;
-//	double			text_pos;
-//	double 			step;
-//	mlx_texture_t	*texture;
-//	t_point			texture_in;
+	uint32_t		texture_color;
+	double			text_pos;
+	double 			step;
+	t_point			texture_in;
 	
 	y = 0;
-	while (y < HEIGHT) // print column
+
+	ray->wall_texture = get_wall_texture(ray, textures, 1);
+	if (!ray->wall_texture)
+		return ;	
+
+	step = (double)ray->wall_texture->height / ray->projection_height;
+	text_pos = (ray->first_wall_pixel - HEIGHT / 2 + ray->projection_height / 2) * step;
+
+	if (ray->wall_hit == 'v')
+		texture_in.x = fmod(ray->hit_point->y, TILE);
+//		texture_in.x = ray->hit_point->y - floor(ray->hit_point->y);
+	else 
+		texture_in.x = fmod(ray->hit_point->x, TILE);
+//		texture_in.x = ray->hit_point->x - floor(ray->hit_point->x);
+
+	texture_in.x = (texture_in.x / TILE) * ray->wall_texture->width;
+
+	// No veo que cambie nada si lo pongo
+//	texture_in.x = (int)texture_in.x % ray->wall_texture->width;
+//	if (texture_in.x < 0)
+//		texture_in.x += ray->wall_texture->width;
+
+	
+	while (y < HEIGHT - 1) // print column
 	{
 		if (y < ray->first_wall_pixel)
 			mlx_put_pixel(image, x, y, CEILING_COLOR);
 		else if (y >= ray->first_wall_pixel && y <= ray->last_wall_pixel)
 		{
-		// TEXTURES
-/*			texture = mlx_load_png("./textures/BRICK_1A.PNG");
-			if (!texture)
-				ft_putstr_fd("Failed to load textures\n", 2);
-
-			step = (double)texture->height / ray->projection_height;
-			text_pos = (ray->first_wall_pixel - HEIGHT / 2 + ray->projection_height / 2) * step;
-			
-			if (ray->wall_hit == 'v')
-				texture_in.x = ray->hit_point->y - floor(ray->hit_point->y);
-			else
-				texture_in.x = ray->hit_point->x - floor(ray->hit_point->x);
-			
-			texture_in.x *= texture->width;
-			
-			texture_in.x = (int)texture_in.x % texture->width;
-			if (texture_in.x < 0)
-				texture_in.x += texture->width;
-
 			while (y < ray->last_wall_pixel) 
 			{
-				texture_in.y = (int)text_pos % texture->height;
+				texture_in.y = (int)text_pos % ray->wall_texture->height;
 				if (texture_in.y < 0)
-					texture_in.y += texture->height;
+					texture_in.y += ray->wall_texture->height;
 
 				text_pos += step;
-				texture_color = get_texture_pixel(texture, texture_in.x, texture_in.y);
+				//printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
+				
+				texture_color = get_texture_pixel(ray->wall_texture, texture_in.x, texture_in.y);
+				if (!texture_color)
+				{
+					printf("EXITING\n");
+					return ;
+				}
 				mlx_put_pixel(image, x, y, texture_color);
+				if (y >= HEIGHT - 1)
+					return ;
 				y++;
-			}*/
-			mlx_put_pixel(image, x, y, WALL_COLOR);
+			}
+			//mlx_put_pixel(image, x, y, WALL_COLOR);
 		}
 		else
 			mlx_put_pixel(image, x, y, FLOOR_COLOR);
@@ -469,10 +528,8 @@ double	adjust_angle(double angle)
 	res = 0;
 	res = fmod(angle, 360.0);
 	if (res <= 0.0)
-		res = res + 360.0;	
-//	printf("angle: %f\n", angle);
-//	printf("res: %f\n", res);
-   	return (res);	
+		res = res + 360.0;
+   	return (res);
 }
 
 void	free_array(char **array)
@@ -500,11 +557,11 @@ void	print_scene(t_raycasting *info, char **map, t_ray *ray)
 	ray->angle = info->direction + (FOV / 2);
 	ray->angle = adjust_angle(ray->angle);
 //	printf("direction = %f\n", info->direction);
-	while (x < WIDTH)
+	while (x < WIDTH - 1)
 	{
 		y = 0;
 		cast_ray(info, map, ray);
-		print_column(ray, info->image, x);
+		print_column(ray, info->textures, info->image, x);
 		ray->angle = ray->angle - info->ray_increment;
 		ray->angle = adjust_angle(ray->angle);	
 		x++;
@@ -528,7 +585,8 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	info = (t_raycasting *)param;
 	mlx = (mlx_t *)info->mlx;
 
-	tmp = info->player;
+	tmp.x = info->player.x;
+	tmp.y = info->player.y;
 //	printf("KEY\nplayer x = %f, y = %f\n\n", info->player.x, info->player.y);
 	printf("key = %d\n", keydata.key);
 	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
@@ -541,12 +599,12 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	// ROTACIÓN FOV (flechitas)
 	if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
 	{
-		info->direction += 10;
+		info->direction += 5;
 		print_scene(info, info->map, info->ray);
 	}	
 	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
 	{
-		info->direction -= 10;
+		info->direction -= 5;
 		print_scene(info, info->map, info->ray);
 	}	
 	// MOVIMIENTOS (WSAD)
@@ -558,7 +616,8 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
 		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_point2(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
-			info->player = tmp;
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
 			//printf("KEY after: player x = %f, y = %f\n\n", info->player.x, info->player.y);
 			print_scene(info, info->map, info->ray);
 		}
@@ -569,7 +628,8 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 		tmp.x -= 0.25 * cos(degree_to_radian(info->direction));
 		if (/*!is_wall(tmp.x, tmp.y, info->map) ||*/ safe_point2(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
-			info->player = tmp;
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
 		}
 	}
@@ -579,7 +639,8 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 		tmp.y -= 0.25 * cos(degree_to_radian(info->direction));
 		if (/*!is_wall(tmp.x, tmp.y, info->map) ||*/ safe_point2(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
-			info->player = tmp;
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
 		}
 	}
@@ -589,7 +650,8 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 		tmp.y += 0.25 * cos(degree_to_radian(info->direction));
 		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_point2(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
-			info->player = tmp;
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
 		}
 	}
