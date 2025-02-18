@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/17 21:23:42 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/18 19:16:30 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include <limits.h>
 
 # define DOUBLE_MAX 1.8 * pow(10, 308)
-# define WIDTH 1600
-# define HEIGHT 1000
+# define WIN_WIDTH 1600
+# define WIN_HEIGHT 1000
 # define VALID_MAP_CHARS "10NSEW \n\t"
 
 # define FOV 60
@@ -83,6 +83,8 @@ typedef struct s_raycasting
 	int				map_width;
 	int				map_height;
 	t_textures		textures;
+	uint32_t		ceiling_color;
+	uint32_t		floor_color;
 }	t_raycasting;
 
 typedef struct s_map
@@ -113,24 +115,29 @@ void	parse_main_textures(char *line, t_map *scene, int map_started);
 void	parse_map(t_map *scene);
 
 // RAYCASTING
-double	degree_to_radian(double degree);
-t_point	*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info);
-t_point	*vertical_hit(t_point player, char **map, double angle, t_raycasting *info);
-double	point_distance(t_point hit, t_point player, char point);
-int is_notvalid(char *str);
+double			degree_to_radian(double degree);
+t_point			*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info);
+t_point			*vertical_hit(t_point player, char **map, double angle, t_raycasting *info);
+double			point_distance(t_point hit, t_point player, char point);
 t_raycasting	*init_raycasting(t_map map);
-
-void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
-void	print_column(t_ray *ray, t_textures textures, mlx_image_t *image, int x);
-double	adjust_angle(double angle);
-void	print_scene(t_raycasting *info, char **map, t_ray *ray);
+int				cast_ray(t_raycasting *info, char **map, t_ray *ray);
+void			print_column(t_ray *ray, t_raycasting *info, int x);
+double			adjust_angle(double angle);
+void			print_scene(t_raycasting *info, char **map, t_ray *ray);
 
 // KEYBOARD
 void	keyboard_input(mlx_key_data_t keydata, void *param);
+void	player_movements(void *param);
 
-//MINIMAP
+// MINIMAP
 void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
 
+// COLOR/TEXTURE STUFF
+void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
+uint32_t		get_ceiling_color(int *ceiling_color);
+uint32_t		get_floor_color(int *floor_color);
+uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures);
 
 // UTILS
 void	free_map(char **map);
