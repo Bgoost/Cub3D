@@ -6,7 +6,7 @@
 #define PLAYER_COLOR 0xFF0000FF
 #define TRANSPARENT 0xffffff00
 
-static void paint_minimap(t_raycasting *info, int x, int y, int color)
+static void paint_minimap(t_game *info, int x, int y, int color)
 {
     int map_x;
     int map_y;
@@ -26,7 +26,7 @@ static void paint_minimap(t_raycasting *info, int x, int y, int color)
     }
 }
 
-static void draw_player(t_raycasting *info, mlx_image_t *image)
+static void draw_player(t_game *info, mlx_image_t *image)
 {
     int map_x;
     int map_y;
@@ -50,7 +50,7 @@ static void draw_player(t_raycasting *info, mlx_image_t *image)
     }
 }
 
-void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info)
+void draw_minimap(mlx_image_t *image, char **map, t_game *info)
 {
     int x;
     int y;

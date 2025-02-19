@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/18 19:16:30 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 16:40:51 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <math.h>
 # include <limits.h>
 
-# define DOUBLE_MAX 1.8 * pow(10, 308)
 # define WIN_WIDTH 1600
 # define WIN_HEIGHT 1000
 # define VALID_MAP_CHARS "10NSEW \n\t"
@@ -70,7 +69,7 @@ typedef struct s_ray
 	mlx_texture_t	*wall_texture;
 }	t_ray;
 
-typedef struct s_raycasting
+typedef struct s_game
 {
 	double			ray_increment;
 	double			distance_to_plane;
@@ -85,7 +84,7 @@ typedef struct s_raycasting
 	t_textures		textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
-}	t_raycasting;
+}	t_game;
 
 typedef struct s_map
 {
@@ -103,34 +102,36 @@ typedef struct s_map
 }	t_map;
 
 // PARSING
-int		main_checker(int argc, char *argv[], t_map **map);
-int		cub_control(char *argv);
-void	parse_scene_file(const char *filename, t_map *scene);
-int		is_strspace(char *str);
-char	*trim_whitespace(char *str);
-int		is_valid_map_char(char c);
-void	set_file_lines(const char *filename, t_map *scene, int lines_count);
-int		get_lines_count(const char *filename);
-void	parse_main_textures(char *line, t_map *scene, int map_started);
-void	parse_map(t_map *scene);
+int				main_checker(int argc, char *argv[], t_map **map);
+int				cub_control(char *argv);
+void			parse_scene_file(const char *filename, t_map *scene);
+int				is_strspace(char *str);
+char			*trim_whitespace(char *str);
+int				is_valid_map_char(char c);
+void			set_file_lines(const char *filename, t_map *scene, \
+								int lines_count);
+int				get_lines_count(const char *filename);
+void			parse_main_textures(char *line, t_map *scene, int map_started);
+void			parse_map(t_map *scene);
 
 // RAYCASTING
 double			degree_to_radian(double degree);
-t_point			*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info);
-t_point			*vertical_hit(t_point player, char **map, double angle, t_raycasting *info);
+t_point			*horizontal_hit(t_point player, char **map, double angle, \
+																t_game *info);
+t_point			*vertical_hit(t_point player, char **map, double angle, \
+																t_game *info);
 double			point_distance(t_point hit, t_point player, char point);
-t_raycasting	*init_raycasting(t_map map);
-int				cast_ray(t_raycasting *info, char **map, t_ray *ray);
-void			print_column(t_ray *ray, t_raycasting *info, int x);
+t_game			*init_raycasting(t_map map);
+int				cast_ray(t_game *info, char **map, t_ray *ray);
+void			print_column(t_ray *ray, t_game *info, int x);
 double			adjust_angle(double angle);
-void			print_scene(t_raycasting *info, char **map, t_ray *ray);
+void			print_scene(t_game *info, char **map, t_ray *ray);
 
 // KEYBOARD
-void	keyboard_input(mlx_key_data_t keydata, void *param);
-void	player_movements(void *param);
+void			player_movements(void *param);
 
 // MINIMAP
-void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
+void			draw_minimap(mlx_image_t *image, char **map, t_game *info);
 
 // COLOR/TEXTURE STUFF
 void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
@@ -140,12 +141,10 @@ uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures);
 
 // UTILS
-void	free_map(char **map);
-void	free_scene(t_map **scene);
-void	free_array(char **array);
-void	exit_error(char *msg);
-void	free_game(t_raycasting *game);
-void free_map(char **map);
-int is_notvalid(char *str);
+void			free_map(char **map);
+void			free_scene(t_map **scene);
+void			exit_error(char *msg);
+void			free_game(t_game *game);
+int				is_notvalid(char *str);
 
 #endif

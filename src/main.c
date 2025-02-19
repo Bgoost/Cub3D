@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 20:07:39 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/18 20:07:50 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 16:28:24 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	exit_error(char *msg)
 
 int	main(int argc, char **argv)
 {
-	t_map			*map;
-	t_raycasting	*game;
+	t_map	*map;
+	t_game	*game;
 
 	if (!main_checker(argc, argv, &map))
 		return (1);

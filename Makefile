@@ -30,7 +30,7 @@ RESET			= \033[0m
 
 # Source Files
 SRC			=	main.c main_checker.c parser.c parser_utils.c parse_textures.c parse_map.c \
-				test.c test_360.c raycasting.c mini_map.c pixels.c
+				test.c test_360.c init_raycasting.c mini_map.c pixels.c
 SRCS		= $(addprefix $(SRC_DIR), $(SRC))
 
 # Object Files
