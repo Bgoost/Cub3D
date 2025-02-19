@@ -199,7 +199,7 @@ static void paint_minimap(t_raycasting *info, int x, int y, int color)
     }
 }
 
-void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info)
+void draw_minimap(mlx_image_t *image, char **map, t_game *info)
 {
     int x;
     int y;
@@ -208,8 +208,8 @@ void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info)
     int color;
     (void)image;
 
-    map_height = info->height;
-    map_width = info->width;
+    map_height = info->map_height;
+    map_width = info->map_width;
     // Aqui le pasaremos el map->height y map->width cuando incorpuremos el parser
     y = 0;
     while(y < map_height)
