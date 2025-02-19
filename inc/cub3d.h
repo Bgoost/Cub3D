@@ -59,6 +59,37 @@ typedef struct s_ray
 	char	wall_hit;
 }	t_ray;
 
+typedef struct s_sprite
+{
+	mlx_image_t	*sprite;
+	struct s_sprite *next;
+}	t_sprite;
+
+typedef struct s_anim
+{
+	// mlx_image_t	*player_sprites[9];
+	mlx_texture_t	*frame1;
+	mlx_texture_t	*frame2;
+	mlx_texture_t	*frame3;
+	mlx_texture_t	*frame4;
+	mlx_texture_t	*frame5;
+	mlx_texture_t	*frame6;
+	mlx_texture_t	*frame7;
+	mlx_texture_t	*frame8;
+	mlx_texture_t	*frame9;
+	mlx_texture_t	*frame10;
+	mlx_image_t		*curren_img;
+	mlx_image_t		*player_sprites[9];
+	mlx_instance_t		*player_instance;
+	int frame_speed;
+	double 	accum;
+	t_sprite *sprites;
+	int		 index;
+	int		 time;
+	int         current_frame;
+	int         frame_counter;
+}	t_anim;
+
 typedef struct s_raycasting
 {
 	double		ray_increment;
@@ -71,6 +102,7 @@ typedef struct s_raycasting
 	t_ray		*ray;
 	int			width;
 	int			height;
+	t_anim		anim;
 }	t_raycasting;
 
 typedef struct s_textures
@@ -135,6 +167,16 @@ void	keyboard_input(mlx_key_data_t keydata, void *param);
 
 //MINIMAP
 void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
+void animate_player(void *param);
+void load_player_sprite(t_raycasting *info);
+void	animation_loop(void *param);
+void animate(void *param);
+void load_sprites(t_raycasting *info);
+void draw_player(t_raycasting *info);
+void	animation_loop2(t_raycasting *game);
+void	init_anim(t_raycasting *game);
+void update(void * ptr);
+
 
 
 // UTILS
@@ -145,5 +187,6 @@ void	exit_error(char *msg);
 void	free_game(t_raycasting *game);
 void free_map(char **map);
 int is_notvalid(char *str);
+
 
 #endif

@@ -477,14 +477,28 @@ void	print_scene(t_raycasting *info, char **map, t_ray *ray)
 		ray->angle = adjust_angle(ray->angle);	
 		x++;
 	}
-	// BONUS
-	draw_minimap(info->image, info->map, info);
+	printf("hola que ases\n");
+
 	if (mlx_image_to_window(info->mlx, info->image, 0, 0) == -1)
 	{
 		mlx_close_window(info->mlx);
 		//free
 		exit(1);
 	}
+	printf("BONUS\n");
+	// BONUS
+	// if (mlx_image_to_window(info->mlx, info->anim.frame1, 0, 0) == -1)
+	// {
+	// 	mlx_close_window(info->mlx);
+	// 	//free
+	// 	exit(1);
+	// }
+	draw_minimap(info->image, info->map, info);
+	draw_player(info);
+
+	// animation_loop(info);
+	//every 100 frame draw playe
+	// draw_player(info);
 }
 
 void	keyboard_input(mlx_key_data_t keydata, void *param)
