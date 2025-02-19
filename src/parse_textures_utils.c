@@ -51,6 +51,7 @@ void	error_invalid_identifier(char *trimmed)
 	printf("\033[31mError:\nInvalid texture identifier [%s] in file.\n\033[0m",
 		split_error[0]);
 	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
+	free_words(split_error);
 	free(trimmed);
 	exit_error("");
 }

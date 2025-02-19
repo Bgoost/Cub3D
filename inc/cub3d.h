@@ -194,5 +194,7 @@ void			free_scene(t_map **scene);
 void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
+void			free_sprites(t_sprite **lst);
+
 
 #endif

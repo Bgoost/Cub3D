@@ -70,3 +70,20 @@ void	free_scene(t_map **scene)
 	free(*scene);
 	*scene = NULL;
 }
+void	free_sprites(t_sprite **lst)
+{
+	t_sprite	*tmp;
+	t_sprite	*next;
+
+	if (*lst && lst)
+	{
+		tmp = *lst;
+		while (tmp)
+		{
+			next = tmp->next;
+			free(tmp);
+			tmp = next;
+		}
+		*lst = NULL;
+	}
+}

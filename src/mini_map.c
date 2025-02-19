@@ -20,37 +20,42 @@ t_sprite	*ft_lstnew(void *sprite)
 	return (new);
 }
 
-t_sprite	*ft_lstlast(t_sprite *lst)
+t_sprite *ft_lstlast(t_sprite *lst)
 {
-	if (!lst)
-		return (NULL);
-	while (lst)
-	{
-		if (lst->next == NULL)
-			return (lst);
-		lst = lst->next;
-	}
-	return (lst);
+    if (!lst) // Avoid NULL dereference
+        return (NULL);
+    while (lst->next)
+    {
+        lst = lst->next;
+    }
+    return (lst);
 }
+
 
 void	ft_spriteadd_back(t_sprite **lst, t_sprite *new)
 {
-	t_sprite	*tmp;
+    t_sprite	*tmp;
 
-	if (!*lst)
-		*lst = new;
-	else if (lst && new)
-	{
-		tmp = ft_lstlast(*lst);
-		tmp->next = new;
-	}
+    if (!new)
+        return;
+    if (!*lst)  // If the list is empty, set new as the first element
+    {
+        *lst = new;
+        return;
+    }
+    tmp = ft_lstlast(*lst);
+    if (!tmp)  // Safety check to prevent dereferencing NULL
+        return;
+    tmp->next = new;
 }
+
 
 void load_player_sprite(t_game *game)
 {
     int i;
     game->anim.current_frame = 0;
     game->anim.frame_counter = 0;
+    game->anim.sprites = NULL;  // Ensure it's properly initialized
     mlx_texture_t *texture;
     mlx_image_t* frame;
     char *sprite_paths[9] = {
@@ -65,21 +70,31 @@ void load_player_sprite(t_game *game)
         texture = mlx_load_png(sprite_paths[i]);
         if (!texture)
         {
-            printf("\033[31mError:\nFailed to load sprite: %s\033[0m", sprite_paths[i]);
+            printf("\033[31mError:\nFailed to load sprite: %s\033[0m\n", sprite_paths[i]);
             exit_error("");
         }
         game->anim.player_sprites[i] = mlx_texture_to_image(game->mlx, texture);
         if (!game->anim.player_sprites[i])
         {
-            printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m", i);
+            printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", i);
             exit_error("");
         }
-        frame = mlx_new_image(game->mlx, MINIMAP_Y_OFFSET + (game->player.x * MINIMAP_SCALE), MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE));
-        ft_spriteadd_back(&game->anim.sprites, ft_lstnew(frame));
+        frame = mlx_new_image(game->mlx, MINIMAP_Y_OFFSET + (game->player.x * MINIMAP_SCALE), 
+                              MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE));
+        
+        t_sprite *new_sprite = ft_lstnew(frame);
+        if (!new_sprite) 
+        {
+            printf("\033[31mError:\nMemory allocation failed for new sprite node\033[0m\n");
+            exit_error("");
+        }
+        
+        ft_spriteadd_back(&game->anim.sprites, new_sprite);
         mlx_delete_texture(texture);
         i++;
     }
 }
+
 static int get_rgba(int r, int g, int b, int a)
 {
     return (r << 24 | g << 16 | b << 8 | a);

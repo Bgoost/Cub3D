@@ -379,15 +379,12 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 		ray->angle = ray->angle - info->ray_increment;
 		x++;
 	}
-	printf("hola que ases\n");
-
 	if (mlx_image_to_window(info->mlx, info->image, 0, 0) == -1)
 	{
 		mlx_close_window(info->mlx);
 		//free
 		exit(1);
 	}
-	printf("BONUS\n");
 	// BONUS
 	// if (mlx_image_to_window(info->mlx, info->anim.frame1, 0, 0) == -1)
 	// {
@@ -434,6 +431,35 @@ void	keyboard_input(mlx_key_data_t keydata, void *param)
 	}	
 	// MOVIMIENTOS (WSAD)
 	// no estan bien, hay que moverse segun el ángulo del personaje!!
+	if (mlx_is_key_down(mlx, MLX_KEY_W))
+	{
+		tmp.y -= 0.20 * sin(degree_to_radian(info->direction));
+		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
+		tmp.x += 0.20 * cos(degree_to_radian(info->direction));
+		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
+		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+		//	printf("KEY after: player x = %f, y = %f\n\n", info->player.x, info->player.y);
+			print_scene(info, info->map, info->ray);
+		}
+	}
+	if (mlx_is_key_down(mlx, MLX_KEY_S))
+	{
+		tmp.y += 0.20 * sin(degree_to_radian(info->direction));
+		tmp.x -= 0.20 * cos(degree_to_radian(info->direction));
+		if (/*!is_wall(tmp.x, tmp.y, info->map) ||*/ safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+			print_scene(info, info->map, info->ray);
+		}
+	}
+}
+
+void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
+{
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
 		tmp.y -= 0.20 * sin(degree_to_radian(info->direction));
@@ -518,6 +544,7 @@ void	free_game(t_game *game)
 {
 	mlx_delete_image(game->mlx, game->image);
     mlx_terminate(game->mlx);
+	free_sprites(&game->anim.sprites);
 	free(game->ray);
 	free(game);
 }
