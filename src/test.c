@@ -363,14 +363,14 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// int		y;
 	
 	x = 0;
-	y = 0;
+	// y = 0;
 
 	ray->angle = info->direction + (FOV / 2);
 	info->ceiling_color = get_ceiling_color(info->textures.ceiling_color);
 	info->floor_color = get_floor_color(info->textures.floor_color);
 	while (x < WIN_WIDTH - 1)
 	{
-		y = 0;
+		// y = 0;
 		ray->angle = adjust_angle(ray->angle);
 		if (!cast_ray(info, map, ray)) // malloc error
 			exit (1);
@@ -406,10 +406,10 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 void	keyboard_input(mlx_key_data_t keydata, void *param)
 {
 	mlx_t			*mlx;
-	t_raycasting	*info;
+	t_game	*info;
 	t_point			tmp;
 	
-	info = (t_raycasting *)param;
+	info = (t_game *)param;
 	mlx = (mlx_t *)info->mlx;
 
 	tmp = info->player;

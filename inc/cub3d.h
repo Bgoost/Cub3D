@@ -115,6 +115,7 @@ typedef struct s_game
 	t_textures		textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
+	t_anim			anim;
 }	t_game;
 
 typedef struct s_map
@@ -163,20 +164,26 @@ int				cast_ray(t_game *info, char **map, t_ray *ray);
 void			print_column(t_ray *ray, t_game *info, int x);
 double			adjust_angle(double angle);
 void			print_scene(t_game *info, char **map, t_ray *ray);
+void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
+uint32_t		get_ceiling_color(int *ceiling_color);
+uint32_t		get_floor_color(int *floor_color);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures);
+uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
+
 
 // KEYBOARD
 void			player_movements(void *param);
 
 //MINIMAP
-void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
+void draw_minimap(mlx_image_t *image, char **map, t_game *info);
 void animate_player(void *param);
-void load_player_sprite(t_raycasting *info);
+void load_player_sprite(t_game *info);
 void	animation_loop(void *param);
 void animate(void *param);
-void load_sprites(t_raycasting *info);
-void draw_player(t_raycasting *info);
-void	animation_loop2(t_raycasting *game);
-void	init_anim(t_raycasting *game);
+void load_sprites(t_game *info);
+void draw_player(t_game *info);
+void	animation_loop2(t_game *game);
+void	init_anim(t_game *game);
 void update(void * ptr);
 
 

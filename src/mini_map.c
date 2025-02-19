@@ -46,11 +46,11 @@ void	ft_spriteadd_back(t_sprite **lst, t_sprite *new)
 	}
 }
 
-void load_player_sprite(t_raycasting *info)
+void load_player_sprite(t_game *game)
 {
     int i;
-    info->anim.current_frame = 0;
-    info->anim.frame_counter = 0;
+    game->anim.current_frame = 0;
+    game->anim.frame_counter = 0;
     mlx_texture_t *texture;
     mlx_image_t* frame;
     char *sprite_paths[9] = {
@@ -68,14 +68,14 @@ void load_player_sprite(t_raycasting *info)
             printf("\033[31mError:\nFailed to load sprite: %s\033[0m", sprite_paths[i]);
             exit_error("");
         }
-        info->anim.player_sprites[i] = mlx_texture_to_image(info->mlx, texture);
-        if (!info->anim.player_sprites[i])
+        game->anim.player_sprites[i] = mlx_texture_to_image(game->mlx, texture);
+        if (!game->anim.player_sprites[i])
         {
             printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m", i);
             exit_error("");
         }
-        frame = mlx_new_image(info->mlx, MINIMAP_Y_OFFSET + (info->player.x * MINIMAP_SCALE), MINIMAP_Y_OFFSET + (info->player.y * MINIMAP_SCALE));
-        ft_spriteadd_back(&info->anim.sprites, ft_lstnew(frame));
+        frame = mlx_new_image(game->mlx, MINIMAP_Y_OFFSET + (game->player.x * MINIMAP_SCALE), MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE));
+        ft_spriteadd_back(&game->anim.sprites, ft_lstnew(frame));
         mlx_delete_texture(texture);
         i++;
     }
@@ -95,37 +95,37 @@ int32_t mlx_get_pixel(mlx_image_t* image, uint32_t x, uint32_t y)
       * (pixelstart + 2), *(pixelstart + 3));
 }
 
-void draw_player(t_raycasting *info)
+void draw_player(t_game *game)
 {
     int next_frame;
     mlx_image_t *new_sprite;
     
-    next_frame = (info->anim.current_frame + 1) % 9;
-    new_sprite = info->anim.player_sprites[next_frame];
+    next_frame = (game->anim.current_frame + 1) % 9;
+    new_sprite = game->anim.player_sprites[next_frame];
     if (!new_sprite)
     {
         printf("\033[31mError: Player sprite at frame %d is NULL\033[0m\n", next_frame);
         return;
     }
 
-    int player_x = MINIMAP_X_OFFSET + (info->player.x * MINIMAP_SCALE);
-    int player_y = MINIMAP_Y_OFFSET + (info->player.y * MINIMAP_SCALE);
+    int player_x = MINIMAP_X_OFFSET + (game->player.x * MINIMAP_SCALE);
+    int player_y = MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE);
 
-    mlx_image_to_window(info->mlx, new_sprite, player_x, player_y);
+    mlx_image_to_window(game->mlx, new_sprite, player_x, player_y);
 
-    info->anim.current_frame = next_frame;
+    game->anim.current_frame = next_frame;
 }
-void  put_img_to_img(t_raycasting *info) 
+void  put_img_to_img(t_game *game) 
 {
     int i;
     int j;
-    int player_x = MINIMAP_X_OFFSET + (info->player.x * MINIMAP_SCALE);
-    int player_y = MINIMAP_Y_OFFSET + (info->player.y * MINIMAP_SCALE);
+    int player_x = MINIMAP_X_OFFSET + (game->player.x * MINIMAP_SCALE);
+    int player_y = MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE);
     i = 0;
-    while(i < info->width) {
+    while(i < game->map_width) {
       j = 0;
-      while (j < info->height) {
-          mlx_put_pixel(info->image, player_x + i, player_y + j, mlx_get_pixel(info->image, i, j));
+      while (j < game->map_height) {
+          mlx_put_pixel(game->image, player_x + i, player_y + j, mlx_get_pixel(game->image, i, j));
         j++;
       }
       i++;
@@ -170,16 +170,16 @@ int	ft_lstsize(t_sprite *lst)
 
 void update(void * ptr)
 {
-    t_raycasting *info = (t_raycasting*)ptr;
+    t_game *game = (t_game*)ptr;
 
-    mlx_image_t *frame = (mlx_image_t *)ft_lstget(info->anim.sprites, info->anim.current_frame)->sprite;
+    mlx_image_t *frame = (mlx_image_t *)ft_lstget(game->anim.sprites, game->anim.current_frame)->sprite;
     if (!frame)
         exit(1);
-    put_img_to_img(info);
-    update_animation(&info->anim, info->mlx->delta_time);
+    put_img_to_img(game);
+    update_animation(&game->anim, game->mlx->delta_time);
 }
 
-static void paint_minimap(t_raycasting *info, int x, int y, int color)
+static void paint_minimap(t_game *game, int x, int y, int color)
 {
     int map_x;
     int map_y;
@@ -191,7 +191,7 @@ static void paint_minimap(t_raycasting *info, int x, int y, int color)
         map_x = 0;
         while(map_x < MINIMAP_SCALE)
         {
-            mlx_put_pixel(info->image, MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x,
+            mlx_put_pixel(game->image, MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x,
                             MINIMAP_Y_OFFSET + (y * MINIMAP_SCALE) + map_y, color);
             map_x++;
         }
@@ -199,7 +199,7 @@ static void paint_minimap(t_raycasting *info, int x, int y, int color)
     }
 }
 
-void draw_minimap(mlx_image_t *image, char **map, t_game *info)
+void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 {
     int x;
     int y;
@@ -208,8 +208,8 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *info)
     int color;
     (void)image;
 
-    map_height = info->map_height;
-    map_width = info->map_width;
+    map_height = game->map_height;
+    map_width = game->map_width;
     // Aqui le pasaremos el map->height y map->width cuando incorpuremos el parser
     y = 0;
     while(y < map_height)
@@ -225,11 +225,11 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *info)
                 color = FLOORCOLOR;
             else if(map[y][x] == ' ')
                 color = TRANSPARENT;
-            paint_minimap(info, x, y, color);
+            paint_minimap(game, x, y, color);
             x++;
         }
         y++;
     }
-	// animation_loop2(info);
+	// animation_loop2(game);
 
 }

@@ -12,7 +12,7 @@
 
 #include "../inc/cub3d.h"
 
-void	update_animation(t_raycasting *game)
+void	update_animation(t_game *game)
 {
 	static long long	last_time = 0;
 	long long			current_time;
@@ -27,7 +27,7 @@ void	update_animation(t_raycasting *game)
 	}
 }
 
-void	draw_animation(t_raycasting *game)
+void	draw_animation(t_game *game)
 {
 	if (game->anim.curren_img)
 		mlx_delete_image(game->mlx, game->anim.curren_img);
@@ -51,7 +51,7 @@ void	draw_animation(t_raycasting *game)
 		draw_animation_pixel(game, game->anim.frame9);
 }
 
-void	init_anim(t_raycasting *game)
+void	init_anim(t_game *game)
 {
 	game->anim.frame1 = mlx_load_png("./assets/animation/frame1.png");
 	game->anim.frame2 = mlx_load_png("./assets/animation/frame2.png");
@@ -68,9 +68,9 @@ void	init_anim(t_raycasting *game)
 
 void	animation_loop(void *param)
 {
-	t_raycasting	*game;
+	t_game	*game;
 
-	game = (t_raycasting *)param;
+	game = (t_game *)param;
 	update_animation(game);
 	draw_animation(game);
 }
@@ -91,7 +91,7 @@ static int32_t	mlx_get_pixel_png(mlx_image_t *image, uint32_t x, uint32_t y)
 					*(pixelstart + 2), *(pixelstart + 3)));
 }
 
-void	draw_animation_pixel(t_raycasting *game, mlx_texture_t *texture)
+void	draw_animation_pixel(t_game *game, mlx_texture_t *texture)
 {
 	int	i;
 	int	j;
