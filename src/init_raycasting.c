@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 16:25:50 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 22:56:02 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,46 @@ int	init_textures(t_game *info, t_textures textures)
 	return (0);
 }
 
+int	is_same_char(char a, char b)
+{
+	if (a == b)
+		return (1);
+	return (0);
+}
+
+void	replace_player_pos(char **map, char id)
+{
+	int	x;	
+	int	y;	
+
+	y = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			if (is_same_char(map[y][x], id))
+				map[y][x] = '0';
+			x++;
+		}
+		y++;
+	}
+}
+
+void	print_map(char **map)
+{
+	int	y;	
+
+	y = 0;
+	while (map[y])
+	{
+
+		printf("map[%d] = %s\n", y, map[y]);
+		y++;
+	}
+	printf("\n");
+}
+
 t_game	*init_raycasting(t_map map)
 {
 	t_game	*info;
@@ -94,6 +134,7 @@ t_game	*init_raycasting(t_map map)
 	info->distance_to_plane = (WIN_WIDTH / 2) / tan(degree_to_radian(FOV / 2));
 	init_player(map.player_c, map.player_x, map.player_y, info);
 	info->map = map.map;
+	replace_player_pos(info->map, map.player_c);
 	info->map_height = map.height;
 	info->map_width = map.width;
 	if (init_mlx(info) == 1)

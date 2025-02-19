@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 16:40:51 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 22:48:02 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,14 @@ typedef struct s_point
 	double	x;
 	double	y;
 }	t_point;
+
+typedef struct s_math_texture
+{
+	double	text_pos;
+	double	step;
+	t_point	texture_in;
+}	t_math_texture;
+
 
 typedef struct s_textures
 {
@@ -146,5 +154,6 @@ void			free_scene(t_map **scene);
 void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
+void			print_map(char **map);
 
 #endif

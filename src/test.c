@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 16:40:54 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 22:52:51 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,16 @@ void	horizontal_increments(double angle, t_point *increment)
 //	printf("x_increment = %f\ny_increment = %f\n\n", increment->x, increment->y);
 }
 
-int	safe_hit_point(double x, double y, int width, int height)
+int	safe_hit_point(double x, double y, int width, int height, char id)
 {
 	if ((int)x / TILE < 0 || ((int)x / TILE) >= width)
 	{
-//		printf("x out of bounds\n");
+		printf("x out of bounds at %f for %c hit\n", x, id);
 		return (0);
 	}
 	if ((int)y / TILE < 0 || ((int)y / TILE) >= height)
 	{
-//		printf("y out of bounds\n");
+		printf("y out of bounds at %f for %c hit\n", y, id);
 		return (0);
 	}
 	return (1);
@@ -76,9 +76,13 @@ int	is_wall(double x, double y, char **map)
 	int	x_;
 	int	y_;
 
-	x_ = (int)floor(x);
-	y_ = (int)floor(y);
-	if (map[y_ - 1][x_ - 1] == '1')
+//	x_ = (int)floor(x);
+//	y_ = (int)floor(y);
+	printf("want to move to: x = %f y = %f\n", x, y);
+	x_ = floor(x);
+	y_ = floor(y);
+	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
+	if (map[y_][x_] == '1')
 	{
 		printf("wall found at x = %f y = %f\n", x, y);
 		return (1);
@@ -111,8 +115,8 @@ t_point	*horizontal_hit(t_point player, char **map, double angle, t_game *info)
 	hit = first_h_hit(angle, player);
 	if (!hit)
 		return (NULL);
-	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height))
-		return (hit);
+	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'h'))
+		return (printf("first point out\n"), hit);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1') // we find WALL, we stop
 	{															
 //		printf("theres a wall in first point\n");
@@ -125,7 +129,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle, t_game *info)
 		hit->y = hit->y + increment.y;
 //		printf("next hit: (%f, %f)\n", hit->x, hit->y);
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
-		if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height))
+		if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'h'))
 			return (hit);
 	}
 	return (hit);
@@ -175,7 +179,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle, t_game *info)
 	hit = first_v_hit(angle, player);	
 	if (!hit)
 		return (NULL);
-	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height))
+	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'v'))
 		return (hit);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1')
 	{
@@ -189,7 +193,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle, t_game *info)
 		hit->y = hit->y + increment.y;
 //		printf("next hit: (%f, %f)\n", hit->x, hit->y);
 //		printf("scaled down: (%d, %d)\n\n", (int)hit->x / TILE, (int)hit->y / TILE);
-		if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height))
+		if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'v'))
 			return (hit);
 	}
 	return (hit);
@@ -205,7 +209,7 @@ double	point_distance(t_point hit, t_point player, char point)
 	grid_player.y = (player.y * TILE) + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
-//	printf("%c distance: %f\n", point, distance);
+	printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -214,7 +218,7 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 	ray->distance_to_wall = distance;
 	ray->hit_point = hit_point;
 	ray->wall_hit = id;
-//	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 }
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
@@ -226,14 +230,14 @@ void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
 	double_max = 1.8 * pow(10, 308);
 //	printf("DISTANCE\n");	
 //	if (v_hit->y < 0 || ((int)v_hit->y / TILE) > info->map_height || v_hit->x < 0 || ((int)v_hit->x / TILE) > info->map_width)
-	if (!safe_hit_point(v_hit->x, v_hit->y, info->map_width, info->map_height))
-		v_distance = double_max;
-	else
+//	if (!safe_hit_point(v_hit->x, v_hit->y, info->map_width, info->map_height, 'v'))
+//		v_distance = double_max;
+//	else
 		v_distance = point_distance(*v_hit, info->player, 'v');
 //	if (h_hit->y < 0 || ((int)h_hit->y / TILE) > info->map_height || h_hit->x < 0 || ((int)h_hit->x / TILE) > info->map_width)
-	if (!safe_hit_point(h_hit->x, h_hit->y, info->map_width, info->map_height))
-		h_distance = double_max;
-	else
+//	if (!safe_hit_point(h_hit->x, h_hit->y, info->map_width, info->map_height, 'h'))
+//		h_distance = double_max;
+//	else
 		h_distance = point_distance(*h_hit, info->player, 'h');
 	if (v_distance < h_distance)
 	{
@@ -258,8 +262,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	center.x = WIN_WIDTH / 2;
 	center.y = WIN_HEIGHT / 2;
 
-//	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
-//	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
+	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
 	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 	if (!h_hit) 
 		return (0); // malloc error
@@ -291,13 +295,45 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	return (1);
 }
 
+void	handle_y_texture(t_math_texture *t, mlx_texture_t *wall_texture)
+{
+	t->texture_in.y = (int)t->text_pos % wall_texture->height;
+	if (t->texture_in.y < 0)
+		t->texture_in.y += wall_texture->height;
+	t->text_pos += t->step;
+	//printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
+}
+
+void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
+{
+	uint32_t		texture_color;
+	
+	while (*y < info->ray->last_wall_pixel) 
+	{
+		handle_y_texture(t, info->ray->wall_texture);
+		texture_color = get_texture_pixel(info->ray->wall_texture, t->texture_in.x, t->texture_in.y);
+		mlx_put_pixel(info->image, x, *y, texture_color);
+		if (*y >= WIN_HEIGHT - 1)
+			return ;
+		*y += 1;
+	}
+}
+
+void	handle_xy_texture(t_math_texture *t, t_ray *ray)
+{
+	t->step = (double)ray->wall_texture->height / ray->projection_height;
+	t->text_pos = (ray->first_wall_pixel - WIN_HEIGHT / 2 + ray->projection_height / 2) * t->step;
+	if (ray->wall_hit == 'v')
+		t->texture_in.x = fmod(ray->hit_point->y, TILE);
+	else 
+		t->texture_in.x = fmod(ray->hit_point->x, TILE);
+	t->texture_in.x = (t->texture_in.x / TILE) * ray->wall_texture->width;
+}
+
 void	print_column(t_ray *ray, t_game *info, int x)
 {
 	int				y;
-	uint32_t		texture_color;
-	double			text_pos;
-	double 			step;
-	t_point			texture_in;
+	t_math_texture	text_info;
 	
 	y = 0;
 	ray->wall_texture = get_wall_texture(ray, info->textures);
@@ -305,40 +341,14 @@ void	print_column(t_ray *ray, t_game *info, int x)
 	{
 		//mlx_load_image failed
 		exit(1);	
-	}	
-
-	step = (double)ray->wall_texture->height / ray->projection_height;
-	text_pos = (ray->first_wall_pixel - WIN_HEIGHT / 2 + ray->projection_height / 2) * step;
-
-	if (ray->wall_hit == 'v')
-		texture_in.x = fmod(ray->hit_point->y, TILE);
-	else 
-		texture_in.x = fmod(ray->hit_point->x, TILE);
-	texture_in.x = (texture_in.x / TILE) * ray->wall_texture->width;
-
-	while (y < WIN_HEIGHT - 1) // print column
+	}
+	handle_xy_texture(&text_info, ray);
+	while (y < WIN_HEIGHT - 1)
 	{
 		if (y < ray->first_wall_pixel)
 			mlx_put_pixel(info->image, x, y, info->ceiling_color);
 		else if (y >= ray->first_wall_pixel && y <= ray->last_wall_pixel)
-		{
-			while (y < ray->last_wall_pixel) 
-			{
-				texture_in.y = (int)text_pos % ray->wall_texture->height;
-				if (texture_in.y < 0)
-					texture_in.y += ray->wall_texture->height;
-
-				text_pos += step;
-				//printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
-				
-				texture_color = get_texture_pixel(ray->wall_texture, texture_in.x, texture_in.y);
-				mlx_put_pixel(info->image, x, y, texture_color);
-				if (y >= WIN_HEIGHT - 1)
-					return ;
-				y++;
-			}
-			//mlx_put_pixel(info->image, x, y, WALL_COLOR);
-		}
+			print_wall(x, &y, info, &text_info);
 		else
 			mlx_put_pixel(info->image, x, y, info->floor_color);
 		y++;
@@ -363,8 +373,6 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	int		y;
 	
 	x = 0;
-	y = 0;
-
 	ray->angle = info->direction + (FOV / 2);
 	info->ceiling_color = get_ceiling_color(info->textures.ceiling_color);
 	info->floor_color = get_floor_color(info->textures.floor_color);
@@ -391,7 +399,7 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
 		tmp.x += 0.20 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
-		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
@@ -403,7 +411,7 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	{
 		tmp.y += 0.20 * sin(degree_to_radian(info->direction));
 		tmp.x -= 0.20 * cos(degree_to_radian(info->direction));
-		if (/*!is_wall(tmp.x, tmp.y, info->map) ||*/ safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
@@ -418,8 +426,9 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	{
 		tmp.x -= 0.20 * sin(degree_to_radian(info->direction));
 		tmp.y -= 0.20 * cos(degree_to_radian(info->direction));
-		if (/*!is_wall(tmp.x, tmp.y, info->map) ||*/ safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
 		{
+			printf("entro\n");
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
@@ -429,7 +438,7 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	{
 		tmp.x += 0.20 * sin(degree_to_radian(info->direction));
 		tmp.y += 0.20 * cos(degree_to_radian(info->direction));
-		if (/*!is_wall(tmp.x, tmp.y, info->map) || */safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
