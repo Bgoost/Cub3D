@@ -1,4 +1,6 @@
-hacer un while dentro del if despues de tener todas las textura, que se detenga cuando encuentre el mapa y mire si hay identifiers repetidos. okk.
-hacer el split de los identifiers. okk
-poner el error de expected textures, okk
-despues de que sea valido el mapa, cambiar los espacios por 1.
+- Hacer el sprite mas pequeno
+- Encontrar un buen sprite
+- Cambiar colores de mini mapa por sprites(si no se puede, cambiar a colores maritimos)
+- Buscar texturas maritimas
+- Intentar printear una linea de direccion de minimapa
+

@@ -64,6 +64,7 @@ size_t			ft_strlen(const char *s);
 size_t			ft_strlcat(char *dest, char *src, size_t size);
 size_t			ft_strlcpy(char *dest, char *src, size_t size);
 int				ft_isspace(char c);
+void			free_words(char	**words);
 
 
 #endif

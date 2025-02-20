@@ -67,7 +67,7 @@ double	degree_to_radian(double degree)
 	return (radian);
 }
 
-void	hardcode_info(t_raycasting *info)
+void	hardcode_info(t_game *info)
 {
 	info->ray_increment = (double)FOV / (double)WIDTH;
 	info->distance_to_plane = (WIDTH / 2) / tan(degree_to_radian(FOV / 2));
@@ -277,7 +277,7 @@ double	point_distance(t_point hit, t_point player, char point)
 }
 
 
-void	cast_ray(t_raycasting info, char **map, t_ray *ray)
+void	cast_ray(t_game info, char **map, t_ray *ray)
 {
 	t_point	*v_hit;
 	t_point	*h_hit;
@@ -415,7 +415,7 @@ void	free_array(char **array)
 typedef struct s_game {
     mlx_t *mlx;
     mlx_image_t *image;
-    t_raycasting info;
+    t_game info;
     t_ray *ray;
     char **map;
     int direction_step;

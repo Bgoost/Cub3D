@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/10 16:15:24 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/19 22:48:02 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@
 # include <math.h>
 # include <limits.h>
 
-# define DOUBLE_MAX 1.8 * pow(10, 308)
-# define WIDTH 1600
-# define HEIGHT 1000
+# define WIN_WIDTH 1600
+# define WIN_HEIGHT 1000
 # define VALID_MAP_CHARS "10NSEW \n\t"
 
 # define FOV 60
@@ -42,36 +41,50 @@
 # define WALL_COLOR 0xB76841ff
 # define FLOOR_COLOR 0x869292ff
 
+typedef struct s_sprite
+{
+	mlx_image_t	*sprite;
+	struct s_sprite *next;
+}	t_sprite;
+
+typedef struct s_anim
+{
+	// mlx_image_t	*player_sprites[9];
+	mlx_texture_t	*frame1;
+	mlx_texture_t	*frame2;
+	mlx_texture_t	*frame3;
+	mlx_texture_t	*frame4;
+	mlx_texture_t	*frame5;
+	mlx_texture_t	*frame6;
+	mlx_texture_t	*frame7;
+	mlx_texture_t	*frame8;
+	mlx_texture_t	*frame9;
+	mlx_texture_t	*frame10;
+	mlx_image_t		*curren_img;
+	mlx_image_t		*player_sprites[9];
+	mlx_instance_t		*player_instance;
+	int frame_speed;
+	double 	accum;
+	t_sprite *sprites;
+	int		 index;
+	int		 time;
+	int         current_frame;
+	int         frame_counter;
+}	t_anim;
+
 typedef struct s_point
 {
 	double	x;
 	double	y;
 }	t_point;
 
-typedef struct s_ray
+typedef struct s_math_texture
 {
-	int		first_wall_pixel;
-	int		last_wall_pixel;
-	double	projection_height; // amount of wall pixels
-	double	distance_to_wall;
-	double	angle;
-	t_point	*hit_point;
-	char	wall_hit;
-}	t_ray;
+	double	text_pos;
+	double	step;
+	t_point	texture_in;
+}	t_math_texture;
 
-typedef struct s_raycasting
-{
-	double		ray_increment;
-	double		distance_to_plane;
-	double		direction; // N(90), S(270), W(180), E(0)
-	t_point		player;
-	mlx_t		*mlx;
-	mlx_image_t	*image;
-	char		**map;
-	t_ray		*ray;
-	int			width;
-	int			height;
-}	t_raycasting;
 
 typedef struct s_textures
 {
@@ -82,6 +95,36 @@ typedef struct s_textures
 	int		floor_color[3];
 	int		ceiling_color[3];
 }	t_textures;
+
+typedef struct s_ray
+{
+	int				first_wall_pixel;
+	int				last_wall_pixel;
+	double			projection_height; // amount of wall pixels
+	double			distance_to_wall;
+	double			angle;
+	t_point			*hit_point;
+	char			wall_hit;
+	mlx_texture_t	*wall_texture;
+}	t_ray;
+
+typedef struct s_game
+{
+	double			ray_increment;
+	double			distance_to_plane;
+	double			direction; // N(90), S(270), W(180), E(0)
+	t_point			player;
+	mlx_t			*mlx;
+	mlx_image_t		*image;
+	char			**map;
+	t_ray			*ray;
+	int				map_width;
+	int				map_height;
+	t_textures		textures;
+	uint32_t		ceiling_color;
+	uint32_t		floor_color;
+	t_anim			anim;
+}	t_game;
 
 typedef struct s_map
 {
@@ -118,32 +161,49 @@ void	error_invalid_identifier(char *trimmed);
 
 
 // RAYCASTING
-double	degree_to_radian(double degree);
-t_point	*horizontal_hit(t_point player, char **map, double angle, t_raycasting *info);
-t_point	*vertical_hit(t_point player, char **map, double angle, t_raycasting *info);
-double	point_distance(t_point hit, t_point player, char point);
-int is_notvalid(char *str);
-t_raycasting	*init_raycasting(t_map map);
+double			degree_to_radian(double degree);
+t_point			*horizontal_hit(t_point player, char **map, double angle, \
+																t_game *info);
+t_point			*vertical_hit(t_point player, char **map, double angle, \
+																t_game *info);
+double			point_distance(t_point hit, t_point player, char point);
+t_game			*init_raycasting(t_map map);
+int				cast_ray(t_game *info, char **map, t_ray *ray);
+void			print_column(t_ray *ray, t_game *info, int x);
+double			adjust_angle(double angle);
+void			print_scene(t_game *info, char **map, t_ray *ray);
+void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
+uint32_t		get_ceiling_color(int *ceiling_color);
+uint32_t		get_floor_color(int *floor_color);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures);
+uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 
-void	cast_ray(t_raycasting *info, char **map, t_ray *ray);
-void	print_column(t_ray *ray, mlx_image_t *image, int x);
-double	adjust_angle(double angle);
-void	print_scene(t_raycasting *info, char **map, t_ray *ray);
 
 // KEYBOARD
-void	keyboard_input(mlx_key_data_t keydata, void *param);
+void			player_movements(void *param);
 
 //MINIMAP
-void draw_minimap(mlx_image_t *image, char **map, t_raycasting *info);
+void draw_minimap(mlx_image_t *image, char **map, t_game *info);
+void animate_player(void *param);
+void load_player_sprite(t_game *info);
+void	animation_loop(void *param);
+void animate(void *param);
+void load_sprites(t_game *info);
+void draw_player(t_game *info);
+void	animation_loop2(t_game *game);
+void	init_anim(t_game *game);
+void update(void * ptr);
+
 
 
 // UTILS
-void	free_map(char **map);
-void	free_scene(t_map **scene);
-void	free_array(char **array);
-void	exit_error(char *msg);
-void	free_game(t_raycasting *game);
-void free_map(char **map);
-int is_notvalid(char *str);
+void			free_map(char **map);
+void			free_scene(t_map **scene);
+void			exit_error(char *msg);
+void			free_game(t_game *game);
+int				is_notvalid(char *str);
+void			print_map(char **map);
+void			free_sprites(t_sprite **lst);
+
 
 #endif
