@@ -58,6 +58,7 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *info)
     int map_width;
     int color;
 
+	color = 0;
     map_height = info->map_height;
     map_width = info->map_width;
     // Aqui le pasaremos el map->height y map->width cuando incorpuremos el parser

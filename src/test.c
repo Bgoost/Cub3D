@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/20 15:55:12 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/20 18:56:40 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,11 +231,11 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
 {
-	float	double_max;
+	//float	double_max;
 	double	v_distance;
 	double	h_distance;
 	
-	double_max = 1.8 * pow(10, 308);
+//	double_max = 1.8 * pow(10, 308);
 //	printf("DISTANCE\n");	
 //	if (v_hit->y < 0 || ((int)v_hit->y / TILE) > info->map_height || v_hit->x < 0 || ((int)v_hit->x / TILE) > info->map_width)
 //	if (!safe_hit_point(v_hit->x, v_hit->y, info->map_width, info->map_height, 'v'))
@@ -378,7 +378,6 @@ double	adjust_angle(double angle)
 void	print_scene(t_game *info, char **map, t_ray *ray)
 {
 	int		x;
-	int		y;
 	
 	x = 0;
 	ray->angle = info->direction + (FOV / 2);
@@ -386,7 +385,6 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	info->floor_color = get_floor_color(info->textures.floor_color);
 	while (x < WIN_WIDTH - 1)
 	{
-		y = 0;
 		ray->angle = adjust_angle(ray->angle);
 		if (!cast_ray(info, map, ray)) // malloc error
 			exit (1);
