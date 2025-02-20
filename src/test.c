@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 22:52:51 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:55:12 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,18 +71,25 @@ int	safe_hit_point(double x, double y, int width, int height, char id)
 	return (1);
 }
 
-int	is_wall(double x, double y, char **map)
+int	is_wall(double x, double y, t_game *info)
 {
 	int	x_;
 	int	y_;
 
-//	x_ = (int)floor(x);
-//	y_ = (int)floor(y);
+//	x_ = floor(x);
+//	y_ = floor(y);
 	printf("want to move to: x = %f y = %f\n", x, y);
-	x_ = floor(x);
-	y_ = floor(y);
+	if (x - floor(x) < 0.500000)
+		x_ = floor(x);
+	else
+		x_ = ceil(x);
+	if (y - floor(y) < 0.500000)
+		y_ = floor(y);
+	else
+		y_ = ceil(y);
+	print_map(info->map);
 	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
-	if (map[y_][x_] == '1')
+	if (info->map[y_][x_] == '1')
 	{
 		printf("wall found at x = %f y = %f\n", x, y);
 		return (1);
@@ -117,6 +124,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle, t_game *info)
 		return (NULL);
 	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'h'))
 		return (printf("first point out\n"), hit);
+	printf("rounded h hit: hit->x = %d hit->y = %d\n", (int)hit->x / TILE, (int)hit->y / TILE);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1') // we find WALL, we stop
 	{															
 //		printf("theres a wall in first point\n");
@@ -388,7 +396,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 		x++;
 	}
 //	BONUS
-	draw_minimap(info->image, info->map, info);
+//	draw_minimap(info->image, info->map, info);
 }
 
 void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
@@ -399,24 +407,35 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
 		tmp.x += 0.20 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
-		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
+		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
-		//	printf("KEY after: player x = %f, y = %f\n\n", info->player.x, info->player.y);
 			print_scene(info, info->map, info->ray);
-		}
+		}*/
+		// BONUS - COLISIONES
+		if (safe_map_point(tmp.x, info->player.y, info->map_width, info->map_height) && !is_wall(tmp.x, info->player.y, info))
+			info->player.x = tmp.x;
+		if (safe_map_point(info->player.x, tmp.y, info->map_width, info->map_height) && !is_wall(info->player.x, tmp.y, info))
+			info->player.y = tmp.y;
+		print_scene(info, info->map, info->ray);
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_S))
 	{
 		tmp.y += 0.20 * sin(degree_to_radian(info->direction));
 		tmp.x -= 0.20 * cos(degree_to_radian(info->direction));
-		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
+		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
-		}
+		}*/
+		// BONUS - COLISIONES
+		if (safe_map_point(tmp.x, info->player.y, info->map_width, info->map_height) && !is_wall(tmp.x, info->player.y, info))
+			info->player.x = tmp.x;
+		if (safe_map_point(info->player.x, tmp.y, info->map_width, info->map_height) && !is_wall(info->player.x, tmp.y, info))
+			info->player.y = tmp.y;
+		print_scene(info, info->map, info->ray);
 	}
 }
 
@@ -426,24 +445,35 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	{
 		tmp.x -= 0.20 * sin(degree_to_radian(info->direction));
 		tmp.y -= 0.20 * cos(degree_to_radian(info->direction));
-		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
+		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
-			printf("entro\n");
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
-		}
+		}*/
+		// BONUS - COLISIONES
+		if (safe_map_point(tmp.x, info->player.y, info->map_width, info->map_height) && !is_wall(tmp.x, info->player.y, info))
+			info->player.x = tmp.x;
+		if (safe_map_point(info->player.x, tmp.y, info->map_width, info->map_height) && !is_wall(info->player.x, tmp.y, info))
+			info->player.y = tmp.y;
+		print_scene(info, info->map, info->ray);
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_D))
 	{
 		tmp.x += 0.20 * sin(degree_to_radian(info->direction));
 		tmp.y += 0.20 * cos(degree_to_radian(info->direction));
-		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height) /*&& !is_wall(tmp.x, tmp.y, info->map)*/)
+		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
 			info->player.y = tmp.y;
 			print_scene(info, info->map, info->ray);
-		}
+		}*/
+		// BONUS - COLISIONES
+		if (safe_map_point(tmp.x, info->player.y, info->map_width, info->map_height) && !is_wall(tmp.x, info->player.y, info))
+			info->player.x = tmp.x;
+		if (safe_map_point(info->player.x, tmp.y, info->map_width, info->map_height) && !is_wall(info->player.x, tmp.y, info))
+			info->player.y = tmp.y;
+		print_scene(info, info->map, info->ray);
 	}
 }
 
@@ -454,6 +484,7 @@ void	player_movements(void *param)
 
 	info = (t_game *)param;
 	tmp = info->player;
+	printf("someone pressed a key\n");
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
 		mlx_delete_image(info->mlx, info->image);
