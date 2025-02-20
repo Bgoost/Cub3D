@@ -407,7 +407,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// 	exit(1);
 	// }
 	draw_minimap(info->image, info->map, info);
-	draw_player(info);
+	// draw_player(info);
 
 	// animation_loop(info);
 	//every 100 frame draw playe
@@ -499,7 +499,8 @@ void	player_movements(void *param)
 
 	info = (t_game *)param;
 	tmp = info->player;
-	printf("someone pressed a key\n");
+	update(info);
+	//printf("someone pressed a key\n");
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
 		mlx_delete_image(info->mlx, info->image);

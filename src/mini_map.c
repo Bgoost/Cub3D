@@ -55,17 +55,19 @@ void load_player_sprite(t_game *game)
     int i;
     game->anim.current_frame = 0;
     game->anim.frame_counter = 0;
+    game->anim.frame_speed = 10000000;
     game->anim.sprites = NULL;  // Ensure it's properly initialized
     mlx_texture_t *texture;
     mlx_image_t* frame;
-    char *sprite_paths[9] = {
+    char *sprite_paths[10] = {
         "sprites/anim/sprite_01.png", "sprites/anim/sprite_02.png", "sprites/anim/sprite_03.png",
         "sprites/anim/sprite_04.png", "sprites/anim/sprite_05.png", "sprites/anim/sprite_06.png",
-        "sprites/anim/sprite_07.png", "sprites/anim/sprite_08.png", "sprites/anim/sprite_09.png"
+        "sprites/anim/sprite_07.png", "sprites/anim/sprite_08.png", "sprites/anim/sprite_09.png",
+        "sprites/anim/sprite_10.png"
     };
     
     i = 0;
-    while(i < 9)
+    while(i < 10)
     {
         texture = mlx_load_png(sprite_paths[i]);
         if (!texture)
@@ -115,7 +117,7 @@ void draw_player(t_game *game)
     int next_frame;
     mlx_image_t *new_sprite;
     
-    next_frame = (game->anim.current_frame + 1) % 9;
+    next_frame = (game->anim.current_frame + 1) % 10;
     new_sprite = game->anim.player_sprites[next_frame];
     if (!new_sprite)
     {
@@ -130,21 +132,25 @@ void draw_player(t_game *game)
 
     game->anim.current_frame = next_frame;
 }
-void  put_img_to_img(t_game *game) 
+void  put_img_to_img(t_game *game, mlx_image_t *frame) 
 {
     int i;
     int j;
     int player_x = MINIMAP_X_OFFSET + (game->player.x * MINIMAP_SCALE);
     int player_y = MINIMAP_Y_OFFSET + (game->player.y * MINIMAP_SCALE);
     i = 0;
-    while(i < game->map_width) {
+    while(i < 64) {
       j = 0;
-      while (j < game->map_height) {
-          mlx_put_pixel(game->image, player_x + i, player_y + j, mlx_get_pixel(game->image, i, j));
+      while (j < 64) {
+        printf("i: %d, j: %d\n", i, j);
+        printf("player_x: %d, player_y: %d\n", player_x, player_y);
+          mlx_put_pixel(frame, 0, 0, mlx_get_pixel(frame, i, j));
         j++;
       }
       i++;
     }
+    if (mlx_image_to_window(game->mlx, frame, 0, 0) < 0)
+        exit_error("Failed to put image to window");
 }
 
 int	ft_lstsize(t_sprite *lst)
@@ -173,7 +179,7 @@ int	ft_lstsize(t_sprite *lst)
   {
     if (anim) 
     {
-      anim->accum += dt * 1000;
+      anim->accum += dt * 10000;
       if (anim->accum > anim->frame_speed)
       {
         anim->accum -= anim->frame_speed;
@@ -190,7 +196,9 @@ void update(void * ptr)
     mlx_image_t *frame = (mlx_image_t *)ft_lstget(game->anim.sprites, game->anim.current_frame)->sprite;
     if (!frame)
         exit(1);
-    put_img_to_img(game);
+    printf("frame: %p\n", frame);
+    // put_img_to_img(game, frame);
+    draw_player(game);
     update_animation(&game->anim, game->mlx->delta_time);
 }
 
@@ -206,8 +214,35 @@ static void paint_minimap(t_game *game, int x, int y, int color)
         map_x = 0;
         while(map_x < MINIMAP_SCALE)
         {
-            mlx_put_pixel(game->image, MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x,
-                            MINIMAP_Y_OFFSET + (y * MINIMAP_SCALE) + map_y, color);
+
+            int tmp_x = MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x;
+            int tmp_y = MINIMAP_Y_OFFSET + (y * MINIMAP_SCALE) + map_y;
+            mlx_put_pixel(game->image, tmp_x,
+                            tmp_y, color);
+            map_x++;
+        }
+        map_y++;
+    }
+}
+
+static void draw_player_pixel(t_game *info, mlx_image_t *image)
+{
+    int map_x;
+    int map_y;
+    int player_x;
+    int player_y;
+
+    player_y = MINIMAP_Y_OFFSET + (info->player.y * MINIMAP_SCALE);
+    player_x = MINIMAP_X_OFFSET + (info->player.x * MINIMAP_SCALE);
+
+    map_x = 0;
+    map_y = 0;
+    while(map_y <= 1)
+    {
+        map_x = 0;
+        while(map_x <= 1)
+        {
+            mlx_put_pixel(image, player_x + map_x, player_y + map_y, PLAYER_COLOR);
             map_x++;
         }
         map_y++;
@@ -236,9 +271,9 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *game)
             if (map[y] == NULL || x >= (int)ft_strlen(map[y]))
                 continue;
             if(map[y][x] == '1')
-                color = WALLCOLOR;
+                color = WALL_COLOR;
             if(map[y][x] == '0')
-                color = FLOORCOLOR;
+                color = FLOOR_COLOR;
             else if(map[y][x] == ' ')
                 color = TRANSPARENT;
             paint_minimap(game, x, y, color);
@@ -247,5 +282,5 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *game)
         y++;
     }
 	// animation_loop2(game);
-
+    draw_player_pixel(game, image);
 }

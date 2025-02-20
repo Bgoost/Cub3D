@@ -37,7 +37,7 @@ int	main(int argc, char **argv)
 	print_scene(game, game->map, game->ray);
 //	mlx_key_hook(game->mlx, keyboard_input, game);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);
-    mlx_loop_hook(game->mlx, update, game);
+    // mlx_loop_hook(game->mlx, update, game);
 	mlx_loop(game->mlx);
 	free_game(game);
 	free_scene(&map);
