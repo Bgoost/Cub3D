@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/24 19:58:40 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:18:09 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,12 @@ int	safe_hit_point(double x, double y, int width, int height, char id)
 	(void)id;
 	if ((int)x / TILE < 0 || ((int)x / TILE) >= width)
 	{
-//		printf("x out of bounds at %f for %c hit\n", x, id);
+		// printf("x out of bounds at %f for %c hit\n", x, id);
 		return (0);
 	}
 	if ((int)y / TILE < 0 || ((int)y / TILE) >= height)
 	{
-//		printf("y out of bounds at %f for %c hit\n", y, id);
+		// printf("y out of bounds at %f for %c hit\n", y, id);
 		return (0);
 	}
 	return (1);
@@ -79,7 +79,7 @@ int	is_wall(double x, double y, t_game *info)
 
 //	x_ = floor(x);
 //	y_ = floor(y);
-//	printf("want to move to: x = %f y = %f\n", x, y);
+	// printf("want to move to: x = %f y = %f\n", x, y);
 	if (x - floor(x) < 0.500000)
 		x_ = floor(x);
 	else
@@ -89,7 +89,7 @@ int	is_wall(double x, double y, t_game *info)
 	else
 		y_ = ceil(y);
 //	print_map(info->map);
-//	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
+// 	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
 	if (info->map[y_][x_] == '1')
 	{
 //		printf("wall found at x = %f y = %f\n", x, y);
@@ -218,7 +218,7 @@ double	point_distance(t_point hit, t_point player, char point)
 	grid_player.y = (player.y * TILE) + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
-//	printf("%c distance: %f\n", point, distance);
+	// printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -227,7 +227,7 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 	ray->distance_to_wall = distance;
 	ray->hit_point = hit_point;
 	ray->wall_hit = id;
-//	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+	// printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 }
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
