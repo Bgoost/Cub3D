@@ -125,24 +125,31 @@ static void paint_minimap(t_game *game, int x, int y, int color)
     }
 }
 
-static void draw_player_pixel(t_game *info, mlx_image_t *image)
+static void draw_player_pixel(t_game *game, mlx_image_t *image)
 {
-    int center_x;
-    int center_y;
+    double center_x;
+    double center_y;
     int map_x;
     int map_y;
 
     map_x = -2;
     map_y = -2;
-    center_y = MINIMAP_Y_OFFSET + (MINIMAP_RADIUS * MINIMAP_SCALE);
-    center_x = MINIMAP_X_OFFSET + (MINIMAP_RADIUS * MINIMAP_SCALE);
-    (void)info;
-    while(map_y <= 2)
+    center_y = MINIMAP_Y_OFFSET + ((game->player.y - (int)game->player.y) + MINIMAP_RADIUS) * MINIMAP_SCALE;
+    center_x = MINIMAP_X_OFFSET + ((game->player.x - (int)game->player.x) + MINIMAP_RADIUS) * MINIMAP_SCALE;
+    printf("player x: %f, player y: %f\n", game->player.x, game->player.y);
+    printf("center x: %f, center y: %f\n", center_x, center_y);
+    if(center_x < 90.0)
+        center_x = 90.0;
+    if(center_y > 80.0)
+        center_y = 80.0;
+    printf("------ center x: %f, center y: %f\n", center_x, center_y);
+
+    while (map_y <= 2)
     {
         map_x = -2;
-        while(map_x <= 2)
+        while (map_x <= 2)
         {
-            mlx_put_pixel(image, center_x + map_x, center_y + map_y, PLAYER_COLOR);
+            mlx_put_pixel(image, (int)(center_x + map_x), (int)(center_y + map_y), PLAYER_COLOR);
             map_x++;
         }
         map_y++;
@@ -151,39 +158,36 @@ static void draw_player_pixel(t_game *info, mlx_image_t *image)
 
 void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 {
-    int x;
-    int y;
+    int x, y;
     int color;
-    int player_x;
-    int player_y;
-    
+    double player_x = game->player.x;
+    double player_y = game->player.y;
+
     y = -MINIMAP_RADIUS;
-    x = -MINIMAP_RADIUS;
-    player_y = game->player.y;
-    player_x = game->player.x;
-    while(y <= MINIMAP_RADIUS)
+    while (y <= MINIMAP_RADIUS)
     {
         x = -MINIMAP_RADIUS;
-        while(x <= MINIMAP_RADIUS)
+        while (x <= MINIMAP_RADIUS)
         {
-            int map_x = player_x + x;
-            int map_y = player_y + y;
+            int map_x = (int)(player_x + x);
+            int map_y = (int)(player_y + y);
             if (map_y < 0 || map_y >= game->map_height || map_x < 0 || map_x >= game->map_width)
-                color = TRANSPARENT; // Out of bounds
+                color = TRANSPARENT;
             else if (map[map_y][map_x] == '1')
-                color = WALLCOLOR;
+                color = WALL_COLOR;
             else if (map[map_y][map_x] == '0')
-                color = FLOORCOLOR;
+                color = FLOOR_COLOR;
             else
                 color = TRANSPARENT;
-            
-            paint_minimap(game, x + MINIMAP_RADIUS, y + MINIMAP_RADIUS, color);
+
+            paint_minimap(game, (x + MINIMAP_RADIUS), (y + MINIMAP_RADIUS), color);
             x++;
         }
         y++;
     }
     draw_player_pixel(game, image);
 }
+
 
 // static void paint_minimap(t_game *game, int x, int y, int color)
 // {

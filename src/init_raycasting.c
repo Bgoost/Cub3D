@@ -117,7 +117,7 @@ void	print_map(char **map)
 	while (map[y])
 	{
 
-		printf("map[%d] = %s\n", y, map[y]);
+		// printf("map[%d] = %s\n", y, map[y]);
 		y++;
 	}
 	printf("\n");

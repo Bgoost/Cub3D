@@ -58,14 +58,15 @@ void	horizontal_increments(double angle, t_point *increment)
 
 int	safe_hit_point(double x, double y, int width, int height, char id)
 {
+	(void)id;
 	if ((int)x / TILE < 0 || ((int)x / TILE) >= width)
 	{
-		printf("x out of bounds at %f for %c hit\n", x, id);
+		// printf("x out of bounds at %f for %c hit\n", x, id);
 		return (0);
 	}
 	if ((int)y / TILE < 0 || ((int)y / TILE) >= height)
 	{
-		printf("y out of bounds at %f for %c hit\n", y, id);
+		// printf("y out of bounds at %f for %c hit\n", y, id);
 		return (0);
 	}
 	return (1);
@@ -78,7 +79,7 @@ int	is_wall(double x, double y, t_game *info)
 
 //	x_ = floor(x);
 //	y_ = floor(y);
-	printf("want to move to: x = %f y = %f\n", x, y);
+	// printf("want to move to: x = %f y = %f\n", x, y);
 	if (x - floor(x) < 0.500000)
 		x_ = floor(x);
 	else
@@ -88,7 +89,7 @@ int	is_wall(double x, double y, t_game *info)
 	else
 		y_ = ceil(y);
 	print_map(info->map);
-	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
+	// printf("checking wall at: x = %d y = %d\n\n", x_, y_);
 	if (info->map[y_][x_] == '1')
 	{
 		printf("wall found at x = %f y = %f\n", x, y);
@@ -124,7 +125,7 @@ t_point	*horizontal_hit(t_point player, char **map, double angle, t_game *info)
 		return (NULL);
 	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'h'))
 		return (printf("first point out\n"), hit);
-	printf("rounded h hit: hit->x = %d hit->y = %d\n", (int)hit->x / TILE, (int)hit->y / TILE);
+	// printf("rounded h hit: hit->x = %d hit->y = %d\n", (int)hit->x / TILE, (int)hit->y / TILE);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1') // we find WALL, we stop
 	{															
 //		printf("theres a wall in first point\n");
@@ -217,7 +218,7 @@ double	point_distance(t_point hit, t_point player, char point)
 	grid_player.y = (player.y * TILE) + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
-	printf("%c distance: %f\n", point, distance);
+	// printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -226,7 +227,7 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 	ray->distance_to_wall = distance;
 	ray->hit_point = hit_point;
 	ray->wall_hit = id;
-	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+	// printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 }
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
@@ -270,8 +271,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	center.x = WIN_WIDTH / 2;
 	center.y = WIN_HEIGHT / 2;
 
-	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
-	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
+	// printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+	// printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
 	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 	if (!h_hit) 
 		return (0); // malloc error
