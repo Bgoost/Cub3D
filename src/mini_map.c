@@ -67,7 +67,7 @@ void load_player_sprite(t_game *game)
     };
     
     i = 0;
-    while(i < 10)
+    while(i < 9)
     {
         texture = mlx_load_png(sprite_paths[i]);
         if (!texture)
@@ -196,7 +196,7 @@ void update(void * ptr)
     mlx_image_t *frame = (mlx_image_t *)ft_lstget(game->anim.sprites, game->anim.current_frame)->sprite;
     if (!frame)
         exit(1);
-    printf("frame: %p\n", frame);
+//    printf("frame: %p\n", frame);
     // put_img_to_img(game, frame);
     draw_player(game);
     update_animation(&game->anim, game->mlx->delta_time);

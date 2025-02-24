@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/20 18:56:40 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:58:40 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,15 @@ void	horizontal_increments(double angle, t_point *increment)
 
 int	safe_hit_point(double x, double y, int width, int height, char id)
 {
+	(void)id;
 	if ((int)x / TILE < 0 || ((int)x / TILE) >= width)
 	{
-		printf("x out of bounds at %f for %c hit\n", x, id);
+//		printf("x out of bounds at %f for %c hit\n", x, id);
 		return (0);
 	}
 	if ((int)y / TILE < 0 || ((int)y / TILE) >= height)
 	{
-		printf("y out of bounds at %f for %c hit\n", y, id);
+//		printf("y out of bounds at %f for %c hit\n", y, id);
 		return (0);
 	}
 	return (1);
@@ -78,7 +79,7 @@ int	is_wall(double x, double y, t_game *info)
 
 //	x_ = floor(x);
 //	y_ = floor(y);
-	printf("want to move to: x = %f y = %f\n", x, y);
+//	printf("want to move to: x = %f y = %f\n", x, y);
 	if (x - floor(x) < 0.500000)
 		x_ = floor(x);
 	else
@@ -87,11 +88,11 @@ int	is_wall(double x, double y, t_game *info)
 		y_ = floor(y);
 	else
 		y_ = ceil(y);
-	print_map(info->map);
-	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
+//	print_map(info->map);
+//	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
 	if (info->map[y_][x_] == '1')
 	{
-		printf("wall found at x = %f y = %f\n", x, y);
+//		printf("wall found at x = %f y = %f\n", x, y);
 		return (1);
 	}
 	return (0);
@@ -123,8 +124,8 @@ t_point	*horizontal_hit(t_point player, char **map, double angle, t_game *info)
 	if (!hit)
 		return (NULL);
 	if (!safe_hit_point(hit->x, hit->y, info->map_width, info->map_height, 'h'))
-		return (printf("first point out\n"), hit);
-	printf("rounded h hit: hit->x = %d hit->y = %d\n", (int)hit->x / TILE, (int)hit->y / TILE);
+		return (/*printf("first point out\n"),*/ hit);
+//	printf("rounded h hit: hit->x = %d hit->y = %d\n", (int)hit->x / TILE, (int)hit->y / TILE);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1') // we find WALL, we stop
 	{															
 //		printf("theres a wall in first point\n");
@@ -217,7 +218,7 @@ double	point_distance(t_point hit, t_point player, char point)
 	grid_player.y = (player.y * TILE) + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
-	printf("%c distance: %f\n", point, distance);
+//	printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -226,7 +227,7 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 	ray->distance_to_wall = distance;
 	ray->hit_point = hit_point;
 	ray->wall_hit = id;
-	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+//	printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 }
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
@@ -270,8 +271,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	center.x = WIN_WIDTH / 2;
 	center.y = WIN_HEIGHT / 2;
 
-	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
-	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
+//	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+//	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
 	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 	if (!h_hit) 
 		return (0); // malloc error
@@ -284,12 +285,13 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	
 //	printf("test.1: %f\n", ray->projection_height / info->distance_to_plane);
 //	printf("test.2: %f\n", TILE / ray->distance_to_wall);
-	if ((ray->projection_height / info->distance_to_plane) - (TILE / ray->distance_to_wall) > 0.0001)
-	{
-	 	ft_putstr_fd("ERROR with projection heigth!\n", 2);
-		exit (1);
-	}
+//	if ((ray->projection_height / info->distance_to_plane) - (TILE / ray->distance_to_wall) > 0.0001)
+//	{
+//	 	ft_putstr_fd("ERROR with projection heigth!\n", 2);
+//		exit (1);
+//	}
 	ray->projection_height = ceil(ray->projection_height); 
+//	printf("\nprojection height: %f\n", ray->projection_height);
 	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
 //	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
 
@@ -316,12 +318,13 @@ void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
 {
 	uint32_t		texture_color;
 	
-	while (*y < info->ray->last_wall_pixel) 
+	while (*y <= info->ray->last_wall_pixel) 
 	{
 		handle_y_texture(t, info->ray->wall_texture);
 		texture_color = get_texture_pixel(info->ray->wall_texture, t->texture_in.x, t->texture_in.y);
+	//	printf("texture_color = %u at y = %d\n", texture_color, *y);
 		mlx_put_pixel(info->image, x, *y, texture_color);
-		if (*y >= WIN_HEIGHT - 1)
+		if (*y >= WIN_HEIGHT)
 			return ;
 		*y += 1;
 	}
@@ -347,21 +350,27 @@ void	print_column(t_ray *ray, t_game *info, int x)
 	ray->wall_texture = get_wall_texture(ray, info->textures);
 	if (!ray->wall_texture)
 	{
-		//mlx_load_image failed
-		exit(1);	
+		ft_putstr_fd("something weird happened with textures\n", 2);
+		exit(1);
 	}
 	handle_xy_texture(&text_info, ray);
-	while (y < WIN_HEIGHT - 1)
+	while (y < WIN_HEIGHT)
 	{
 		if (y < ray->first_wall_pixel)
+		{
+		//	printf("printing ceiling color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->ceiling_color);
-		else if (y >= ray->first_wall_pixel && y <= ray->last_wall_pixel)
+			y++;
+		}
+		else if (y >= ray->first_wall_pixel && y < ray->last_wall_pixel)
 			print_wall(x, &y, info, &text_info);
-		else
+		else if (y < WIN_HEIGHT)
+		{
+		//	printf("printing floor color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->floor_color);
-		y++;
+			y++;
+		}
 	}
-	mlx_delete_texture(ray->wall_texture);
 }
 
 double	adjust_angle(double angle)
@@ -380,9 +389,10 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	int		x;
 	
 	x = 0;
+//	printf("player (%f, %f)\n", info->player.x, info->player.y);
 	ray->angle = info->direction + (FOV / 2);
-	info->ceiling_color = get_ceiling_color(info->textures.ceiling_color);
-	info->floor_color = get_floor_color(info->textures.floor_color);
+//	info->ceiling_color = get_ceiling_color(info->textures.ceiling_color);
+//	info->floor_color = get_floor_color(info->textures.floor_color);
 	while (x < WIN_WIDTH - 1)
 	{
 		ray->angle = adjust_angle(ray->angle);
@@ -407,7 +417,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// 	exit(1);
 	// }
 	draw_minimap(info->image, info->map, info);
-	// draw_player(info);
+//	 draw_player(info);
 
 	// animation_loop(info);
 	//every 100 frame draw playe
@@ -418,9 +428,9 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
-		tmp.y -= 0.20 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.1001 * sin(degree_to_radian(info->direction));
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
-		tmp.x += 0.20 * cos(degree_to_radian(info->direction));
+		tmp.x += 0.1001 * cos(degree_to_radian(info->direction));
 		// tenemos que sumar en player.x porque el resultado de cos puede ser negativo(cuando rayo mira a la izquierda) o positivo
 		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
@@ -434,11 +444,12 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 		if (safe_map_point(info->player.x, tmp.y, info->map_width, info->map_height) && !is_wall(info->player.x, tmp.y, info))
 			info->player.y = tmp.y;
 		print_scene(info, info->map, info->ray);
+		//printf("player (%f, %f)\n", info->player.x, info->player.y);
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_S))
 	{
-		tmp.y += 0.20 * sin(degree_to_radian(info->direction));
-		tmp.x -= 0.20 * cos(degree_to_radian(info->direction));
+		tmp.y += 0.1001 * sin(degree_to_radian(info->direction));
+		tmp.x -= 0.1001 * cos(degree_to_radian(info->direction));
 		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
@@ -458,8 +469,8 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
 	if (mlx_is_key_down(mlx, MLX_KEY_A))
 	{
-		tmp.x -= 0.20 * sin(degree_to_radian(info->direction));
-		tmp.y -= 0.20 * cos(degree_to_radian(info->direction));
+		tmp.x -= 0.1001 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.1001 * cos(degree_to_radian(info->direction));
 		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
@@ -475,8 +486,8 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_D))
 	{
-		tmp.x += 0.20 * sin(degree_to_radian(info->direction));
-		tmp.y += 0.20 * cos(degree_to_radian(info->direction));
+		tmp.x += 0.1001 * sin(degree_to_radian(info->direction));
+		tmp.y += 0.1001 * cos(degree_to_radian(info->direction));
 		/*if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
 		{
 			info->player.x = tmp.x;
@@ -492,14 +503,83 @@ void	handle_ad_movements(t_game *info, mlx_t *mlx, t_point tmp)
 	}
 }
 
+
+
+
+void	key_input(mlx_key_data_t keydata, void *param)
+{
+	(void)keydata;
+	t_game	*info;
+	t_point	tmp;
+	
+	info = (t_game *)param;
+	tmp = info->player;
+	if (/*keydata.action == MLX_REPEAT && */mlx_is_key_down(info->mlx, MLX_KEY_LEFT))
+	{
+		info->direction += 5;
+		info->redisplay = 1;
+	}	
+	if (/*keydata.action == MLX_REPEAT && */mlx_is_key_down(info->mlx, MLX_KEY_RIGHT))
+	{
+		info->direction -= 5;
+		info->redisplay = 1;
+	}
+	if (/*keydata.action == MLX_REPEAT &&*/ mlx_is_key_down(info->mlx, MLX_KEY_A))
+	{
+		tmp.x -= 0.20 * sin(degree_to_radian(info->direction));
+		tmp.y -= 0.20 * cos(degree_to_radian(info->direction));
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+			info->redisplay = 1;
+		}
+	}
+	if (/*keydata.action == MLX_REPEAT &&*/  mlx_is_key_down(info->mlx, MLX_KEY_D))
+	{
+		tmp.x += 0.20 * sin(degree_to_radian(info->direction));
+		tmp.y += 0.20 * cos(degree_to_radian(info->direction));
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+			info->redisplay = 1;
+		}
+	}
+	if ( mlx_is_key_down(info->mlx, MLX_KEY_W))
+	{
+		tmp.y -= 0.20 * sin(degree_to_radian(info->direction));
+		tmp.x += 0.20 * cos(degree_to_radian(info->direction));
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+			info->redisplay = 1;
+		}
+	}
+	if (/*keydata.action == MLX_REPEAT &&*/ mlx_is_key_down(info->mlx, MLX_KEY_S))
+	{
+		tmp.y += 0.20 * sin(degree_to_radian(info->direction));
+		tmp.x -= 0.20 * cos(degree_to_radian(info->direction));
+		if (safe_map_point(tmp.x, tmp.y, info->map_width, info->map_height))
+		{
+			info->player.x = tmp.x;
+			info->player.y = tmp.y;
+			info->redisplay = 1;
+		}
+	}
+}
+
 void	player_movements(void *param)
 {
+//	(void)keydata;
 	t_game	*info;
 	t_point			tmp;
 
 	info = (t_game *)param;
-	tmp = info->player;
-	update(info);
+	tmp.x = info->player.x;
+	tmp.y = info->player.y;
+//	update(info);
 	//printf("someone pressed a key\n");
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
@@ -507,14 +587,19 @@ void	player_movements(void *param)
 		mlx_close_window(info->mlx);
 		exit(0);
 	}
+/*	if (info->redisplay)
+	{
+		print_scene(info, info->map, info->ray);
+		info->redisplay = 0;
+	}*/
 	if (mlx_is_key_down(info->mlx, MLX_KEY_LEFT))
 	{
-		info->direction += 5;
+		info->direction += 3;
 		print_scene(info, info->map, info->ray);
 	}	
 	if (mlx_is_key_down(info->mlx, MLX_KEY_RIGHT))
 	{
-		info->direction -= 5;
+		info->direction -= 3;
 		print_scene(info, info->map, info->ray);
 	}
 	handle_ws_movements(info, info->mlx, tmp);
@@ -525,7 +610,8 @@ void	free_game(t_game *game)
 {
 	mlx_delete_image(game->mlx, game->image);
     mlx_terminate(game->mlx);
-	free_sprites(&game->anim.sprites);
+	free_mlx_textures(game->textures);
+	//free_sprites(&game->anim.sprites);
 	free(game->ray);
 	free(game);
 }
