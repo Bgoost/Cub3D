@@ -8,23 +8,37 @@
 #define WALLCOLOR 0xffffff00
 #define FLOORCOLOR 0xffffff00
 
+int	ft_lstsize(t_sprite *lst)
+{
+    int	i;
+
+    i = 0;
+    if (!lst)
+        return (0);
+    while (lst)
+    {
+        lst = lst->next;
+        i++;
+    }
+    return (i);
+}
+
 void load_player_sprite(t_game *game)
 {
     int i;
     game->anim.current_frame = 0;
     game->anim.frame_counter = 0;
-    game->anim.frame_speed = 10000000;
+    game->anim.frame_speed = 100;
     game->anim.sprites = NULL;
     mlx_texture_t *texture;
-    char *sprite_paths[10] = {
-        "sprites/anim/sprite_01.png", "sprites/anim/sprite_02.png", "sprites/anim/sprite_03.png",
-        "sprites/anim/sprite_04.png", "sprites/anim/sprite_05.png", "sprites/anim/sprite_06.png",
-        "sprites/anim/sprite_07.png", "sprites/anim/sprite_08.png", "sprites/anim/sprite_09.png",
-        "sprites/anim/sprite_10.png"
+    char *sprite_paths[8] = {
+        "sprites/anim/anim_1.png", "sprites/anim/anim_2.png", "sprites/anim/anim_3.png",
+        "sprites/anim/anim_4.png", "sprites/anim/anim_5.png", "sprites/anim/anim_6.png",
+        "sprites/anim/anim_7.png", "sprites/anim/anim_8.png"
     };
     
     i = 0;
-    while(i < 10)
+    while(i < 8)
     {
         texture = mlx_load_png(sprite_paths[i]);
         if (!texture)
@@ -48,7 +62,7 @@ void draw_player_gun(t_game *game)
     int next_frame;
     mlx_image_t *new_sprite;
     
-    next_frame = (game->anim.current_frame + 1) % 10;
+    next_frame = (game->anim.current_frame + 1) % 8;
     new_sprite = game->anim.player_sprites[next_frame];
     if (!new_sprite)
     {
@@ -56,48 +70,33 @@ void draw_player_gun(t_game *game)
         return;
     }
 
-    mlx_image_to_window(game->mlx, new_sprite, WIN_WIDTH / 2, WIN_HEIGHT - new_sprite->height);
+    mlx_image_to_window(game->mlx, new_sprite, 0, 0);
 
     game->anim.current_frame = next_frame;
 }
 
-int	ft_lstsize(t_sprite *lst)
+void update_animation(t_anim *anim, double dt)
 {
-    int	i;
-
-    i = 0;
-    if (!lst)
-        return (0);
-    while (lst)
-    {
-        lst = lst->next;
-        i++;
-    }
-    return (i);
-}
-
-  void update_animation(t_anim *anim, double dt)
-  {
     if (anim) 
     {
-      anim->accum += dt * 10000;
-      if (anim->accum > anim->frame_speed)
-      {
+        anim->accum += dt * 10000;
+        if (anim->accum > anim->frame_speed)
+        {
         anim->accum -= anim->frame_speed;
         anim->current_frame++;
         int size = ft_lstsize(anim->sprites);
         printf("size: %d\n", size);
         anim->current_frame %= ft_lstsize(anim->sprites);
-      }
+        }
     }
-  }
+}
 
 void update(void * ptr)
 {
     t_game *game = (t_game*)ptr;
 
-    // draw_player_gun(game);
-    update_animation(&game->anim, game->mlx->delta_time);
+    draw_player_gun(game);
+    // update_animation(&game->anim, game->mlx->delta_time);
 }
 
 #define MINIMAP_RADIUS 7 
