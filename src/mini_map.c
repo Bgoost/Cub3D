@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 20:13:55 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/24 20:15:14 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:48:14 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 #define TRANSPARENT 0xffffff00
 #define WALLCOLOR 0xffffff00
 #define FLOORCOLOR 0xffffff00
+
+t_sprite	*ft_lstget(t_sprite *l, int n)
+{
+    while (n-- && l)
+        l = l->next;
+    return (l);
+}
 
 void load_player_sprite(t_game *game)
 {
@@ -57,7 +64,7 @@ void load_player_sprite(t_game *game)
 
 void draw_player_gun(t_game *game)
 {
-    int next_frame;
+    int			next_frame;
     mlx_image_t *new_sprite;
     
     next_frame = (game->anim.current_frame + 1) % 10;
@@ -69,7 +76,6 @@ void draw_player_gun(t_game *game)
     }
 
     mlx_image_to_window(game->mlx, new_sprite, WIN_WIDTH / 2, WIN_HEIGHT - new_sprite->height);
-
     game->anim.current_frame = next_frame;
 }
 
@@ -109,12 +115,12 @@ void update(void * ptr)
     t_game *game = (t_game*)ptr;
 
     mlx_image_t *frame = (mlx_image_t *)ft_lstget(game->anim.sprites, game->anim.current_frame)->sprite;
-    if (!frame)
-        exit(1);
+  	if (!frame)
+       exit(1);
 //    printf("frame: %p\n", frame);
     // put_img_to_img(game, frame);
-    draw_player(game);
-    // draw_player_gun(game);
+  //  draw_player(game);
+    draw_player_gun(game);
     update_animation(&game->anim, game->mlx->delta_time);
 }
 

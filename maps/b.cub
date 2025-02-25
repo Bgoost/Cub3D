@@ -1,7 +1,7 @@
 NO ./textures/my_sea.png 
-F 240, 189, 113 
-SO ./textures/cute_water2.png
-EA ./textures/last_chance.png
+F 240, 255, 0 
+SO ./textures/water_1.png
+EA ./textures/water_1.png
 WE ./textures/TILE_2C.PNG
 C 47, 84, 143 
 
@@ -23,8 +23,8 @@ C 47, 84, 143
 1000000000001
 1000010100001
 1000100010001111
-1100000000001101
-10001000100E101
+1100N00000001101
+100010001000101
 100001010000011
 10000000000001
 1111111111111

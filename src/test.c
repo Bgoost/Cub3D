@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/24 20:18:09 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/25 20:25:29 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,8 +271,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	center.x = WIN_WIDTH / 2;
 	center.y = WIN_HEIGHT / 2;
 
-//	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
-//	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
+	printf("\n\nANGLE %f\n-------------------------\n", ray->angle);
+	printf("map player in double: (%f, %f)\n", info->player.x, info->player.y);
 	h_hit = horizontal_hit(info->player, map, ray->angle, info);
 	if (!h_hit) 
 		return (0); // malloc error
@@ -291,7 +291,7 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 //		exit (1);
 //	}
 	ray->projection_height = ceil(ray->projection_height); 
-//	printf("\nprojection height: %f\n", ray->projection_height);
+	printf("\nprojection height: %f\n", ray->projection_height);
 	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
 //	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
 
@@ -300,8 +300,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 
 	if (ray->projection_height > WIN_HEIGHT - 1 || ray->projection_height < 0)
 		adjust_pixels(&ray->first_wall_pixel, &ray->last_wall_pixel);
-//	printf("FIRST pixels modified: %d\n", ray->first_wall_pixel);
-//	printf("LAST pixels modified: %d\n", ray->last_wall_pixel);
+	printf("FIRST pixels modified: %d\n", ray->first_wall_pixel);
+	printf("LAST pixels modified: %d\n", ray->last_wall_pixel);
 	return (1);
 }
 
@@ -311,21 +311,27 @@ void	handle_y_texture(t_math_texture *t, mlx_texture_t *wall_texture)
 	if (t->texture_in.y < 0)
 		t->texture_in.y += wall_texture->height;
 	t->text_pos += t->step;
-	//printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
+//	printf("wall_texture->height = %u\n", wall_texture->height);
+//	printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
 }
 
 void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
 {
 	uint32_t		texture_color;
-	
-	while (*y <= info->ray->last_wall_pixel) 
+
+	if (info->ray->last_wall_pixel == WIN_HEIGHT - 1)
+		info->ray->last_wall_pixel += 1;
+	while (*y < info->ray->last_wall_pixel) 
 	{
 		handle_y_texture(t, info->ray->wall_texture);
 		texture_color = get_texture_pixel(info->ray->wall_texture, t->texture_in.x, t->texture_in.y);
 	//	printf("texture_color = %u at y = %d\n", texture_color, *y);
 		mlx_put_pixel(info->image, x, *y, texture_color);
-		if (*y >= WIN_HEIGHT)
+		if (*y + 1 == info->ray->last_wall_pixel && *y + 1 != WIN_HEIGHT - 1)
+		{
+			printf("I exit print_wall\n");
 			return ;
+		}
 		*y += 1;
 	}
 }
@@ -360,16 +366,15 @@ void	print_column(t_ray *ray, t_game *info, int x)
 		{
 		//	printf("printing ceiling color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->ceiling_color);
-			y++;
 		}
 		else if (y >= ray->first_wall_pixel && y < ray->last_wall_pixel)
 			print_wall(x, &y, info, &text_info);
 		else if (y < WIN_HEIGHT)
 		{
-		//	printf("printing floor color at y = %d\n", y);
+	//		printf("printing floor color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->floor_color);
-			y++;
 		}
+		y++;
 	}
 }
 
@@ -428,6 +433,7 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
+		printf("I move\n");
 		tmp.y -= 0.1001 * sin(degree_to_radian(info->direction));
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
 		tmp.x += 0.1001 * cos(degree_to_radian(info->direction));
@@ -594,12 +600,12 @@ void	player_movements(void *param)
 	}*/
 	if (mlx_is_key_down(info->mlx, MLX_KEY_LEFT))
 	{
-		info->direction += 3;
+		info->direction += 2.5;
 		print_scene(info, info->map, info->ray);
 	}	
 	if (mlx_is_key_down(info->mlx, MLX_KEY_RIGHT))
 	{
-		info->direction -= 3;
+		info->direction -= 2.5;
 		print_scene(info, info->map, info->ray);
 	}
 	handle_ws_movements(info, info->mlx, tmp);
