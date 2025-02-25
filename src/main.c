@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 20:07:39 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 16:28:24 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/23 20:07:47 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ int	main(int argc, char **argv)
 		free_scene(&map);
 		return (1);
 	}
-    load_player_sprite(game);
+//    load_player_sprite(game);
     // init_anim(game);
     
 	print_scene(game, game->map, game->ray);
-//	mlx_key_hook(game->mlx, keyboard_input, game);
+//	mlx_key_hook(game->mlx, key_input, game);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);
     // mlx_loop_hook(game->mlx, update, game);
 	mlx_loop(game->mlx);

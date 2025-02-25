@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:26:13 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/18 19:44:54 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/23 19:05:33 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,32 +83,27 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 	return (r << 24 | g << 16 | b << 8 | a);
 }
 
-mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures)
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures)
 {
-	mlx_texture_t	*texture;
-
-	texture = NULL;
 	if ((ray->angle >= 270 || ray->angle < 90) && ray->wall_hit == 'v')
 	{
-//		printf("west: %s\n", textures.west);
-		texture = mlx_load_png(textures.west);
+	//	printf("west texture chosen\n");
+		return (textures.west);
 	}
 	else if ((ray->angle < 270 && ray->angle >= 90) && ray->wall_hit == 'v')
 	{
-//		printf("east: %s\n", textures.east);
-		texture = mlx_load_png(textures.east);
+	//	printf("east texture chosen\n");
+		return (textures.east);
 	}
 	else if ((ray->angle >= 0 && ray->angle <= 180) && ray->wall_hit == 'h')
 	{
-//		printf("south: %s\n", textures.south);
-		texture = mlx_load_png(textures.south);
+	//	printf("south texture chosen\n");
+		return (textures.south);
 	}
 	else if ((ray->angle < 360 && ray->angle > 180) && ray->wall_hit == 'h')
 	{
-//		printf("north: %s\n", textures.north);
-		texture = mlx_load_png(textures.north);
+	//	printf("north texture chosen\n");
+		return (textures.north);
 	}
-	if (!texture)
-		ft_putstr_fd("Failed to load textures\n", 2);
-	return (texture);
+	return (NULL);
 }

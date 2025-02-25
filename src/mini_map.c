@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini_map.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/24 20:13:55 by martalop          #+#    #+#             */
+/*   Updated: 2025/02/24 20:48:14 by martalop         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/cub3d.h"
 #include <sys/time.h>
 #define MINIMAP_SCALE 10
@@ -59,7 +71,7 @@ void load_player_sprite(t_game *game)
 
 void draw_player_gun(t_game *game)
 {
-    int next_frame;
+    int			next_frame;
     mlx_image_t *new_sprite;
     
     next_frame = (game->anim.current_frame + 1) % 8;

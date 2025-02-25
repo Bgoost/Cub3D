@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 22:56:02 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/23 19:29:23 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,38 @@ int	init_mlx(t_game *info)
 	return (0);
 }
 
+void	free_mlx_textures(t_mlx_textures textures)
+{
+	if (textures.north)
+		mlx_delete_texture(textures.north);
+	if (textures.south)
+		mlx_delete_texture(textures.south);
+	if (textures.west)
+		mlx_delete_texture(textures.west);
+	if (textures.east)
+		mlx_delete_texture(textures.east);
+}
+
 int	init_textures(t_game *info, t_textures textures)
 {
+	info->textures.north = NULL;
+	info->textures.south = NULL;
+	info->textures.east = NULL;
+	info->textures.west = NULL;
 	if (validate_textures(textures))
-		info->textures = textures;
+	{
+		info->textures.north = mlx_load_png(textures.north);
+		info->textures.south = mlx_load_png(textures.south);
+		info->textures.west = mlx_load_png(textures.west);
+		info->textures.east = mlx_load_png(textures.east);
+		if (!info->textures.north || !info->textures.south || !info->textures.west || !info->textures.east)
+		{
+			free_game(info);
+			return (1);
+		}
+		info->floor_color = get_floor_color(textures.floor_color);
+		info->ceiling_color = get_ceiling_color(textures.ceiling_color);
+	}
 	else
 	{
 		free_game(info);
@@ -137,6 +165,7 @@ t_game	*init_raycasting(t_map map)
 	replace_player_pos(info->map, map.player_c);
 	info->map_height = map.height;
 	info->map_width = map.width;
+	info->redisplay = 0;
 	if (init_mlx(info) == 1)
 		return (free(info), NULL);
 	info->ray = malloc(sizeof(t_ray) * 1);

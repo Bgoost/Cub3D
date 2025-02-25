@@ -112,8 +112,8 @@ void    parse_map(t_map *scene)
         process_line(scene, i, &num_players, copy_map);
         i++;
     }
-    printf("copy_map:\n");
-    for(int i = 0; i < scene->height; i++)
-        printf("%s\n", copy_map[i]);
+//    printf("copy_map:\n");
+   // for(int i = 0; i < scene->height; i++)
+     //   printf("%s\n", copy_map[i]);
     validate_and_clean_map(scene, copy_map, num_players);
 }

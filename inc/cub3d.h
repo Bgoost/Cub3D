@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/19 22:48:02 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/24 21:01:38 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 
 typedef struct s_sprite
 {
-	mlx_image_t	*sprite;
-	struct s_sprite *next;
+	mlx_image_t		*sprite;
+	struct s_sprite	*next;
 }	t_sprite;
 
 typedef struct s_anim
@@ -62,14 +62,14 @@ typedef struct s_anim
 	mlx_texture_t	*frame10;
 	mlx_image_t		*curren_img;
 	mlx_image_t		*player_sprites[9];
-	mlx_instance_t		*player_instance;
-	int frame_speed;
-	double 	accum;
-	t_sprite *sprites;
-	int		 index;
-	int		 time;
-	int         current_frame;
-	int         frame_counter;
+	mlx_instance_t	*player_instance;
+	int				frame_speed;
+	double			accum;
+	t_sprite		*sprites;
+	int				index;
+	int				time;
+	int				current_frame;
+	int				frame_counter;
 }	t_anim;
 
 typedef struct s_point
@@ -85,6 +85,14 @@ typedef struct s_math_texture
 	t_point	texture_in;
 }	t_math_texture;
 
+
+typedef struct s_mlx_textures
+{
+	mlx_texture_t	*north;
+	mlx_texture_t	*south;
+	mlx_texture_t	*west;
+	mlx_texture_t	*east;
+}	t_mlx_textures;
 
 typedef struct s_textures
 {
@@ -120,10 +128,11 @@ typedef struct s_game
 	t_ray			*ray;
 	int				map_width;
 	int				map_height;
-	t_textures		textures;
+	t_mlx_textures	textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
 	t_anim			anim;
+	int				redisplay;
 }	t_game;
 
 typedef struct s_map
@@ -142,22 +151,22 @@ typedef struct s_map
 }	t_map;
 
 // PARSING
-int		main_checker(int argc, char *argv[], t_map **map);
-int		cub_control(char *argv);
-void	parse_scene_file(const char *filename, t_map *scene);
-int		is_strspace(char *str);
-char	*trim_whitespace(char *str);
-int		is_valid_map_char(char c);
-void	set_file_lines(const char *filename, t_map *scene, int lines_count);
-int		get_lines_count(const char *filename);
-void	parse_main_textures(char *line, t_map *scene, int map_started);
-void	parse_map(t_map *scene);
-char **init_allocate_map(int height, int width);
-void set_map_chars(t_map *scene, int i, int j, int *num_players);
-void parse_map_errors(int num_players);
-char *pad_line_to_width(const char *line, int width);
-int	extract_texture_path(const char *trimmed, char *result);
-void	error_invalid_identifier(char *trimmed);
+int			main_checker(int argc, char *argv[], t_map **map);
+int			cub_control(char *argv);
+void		parse_scene_file(const char *filename, t_map *scene);
+int			is_strspace(char *str);
+char		*trim_whitespace(char *str);
+int			is_valid_map_char(char c);
+void		set_file_lines(const char *filename, t_map *scene, int lines_count);
+int			get_lines_count(const char *filename);
+void		parse_main_textures(char *line, t_map *scene, int map_started);
+void		parse_map(t_map *scene);
+char		**init_allocate_map(int height, int width);
+void		set_map_chars(t_map *scene, int i, int j, int *num_players);
+void		parse_map_errors(int num_players);
+char		*pad_line_to_width(const char *line, int width);
+int			extract_texture_path(const char *trimmed, char *result);
+void		error_invalid_identifier(char *trimmed);
 
 
 // RAYCASTING
@@ -175,24 +184,26 @@ void			print_scene(t_game *info, char **map, t_ray *ray);
 void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
 uint32_t		get_ceiling_color(int *ceiling_color);
 uint32_t		get_floor_color(int *floor_color);
-mlx_texture_t	*get_wall_texture(t_ray *ray, t_textures textures);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures);
 uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 
 
 // KEYBOARD
+void			key_input(mlx_key_data_t keydata, void *param);
 void			player_movements(void *param);
+//void	player_movements(mlx_key_data_t keydata, void *param); 
 
 //MINIMAP
-void draw_minimap(mlx_image_t *image, char **map, t_game *info);
-void animate_player(void *param);
-void load_player_sprite(t_game *info);
-void	animation_loop(void *param);
-void animate(void *param);
-void load_sprites(t_game *info);
-void draw_player(t_game *info);
-void	animation_loop2(t_game *game);
-void	init_anim(t_game *game);
-void update(void * ptr);
+void			draw_minimap(mlx_image_t *image, char **map, t_game *info);
+void			animate_player(void *param);
+void			load_player_sprite(t_game *info);
+void			animation_loop(void *param);
+void			animate(void *param);
+void			load_sprites(t_game *info);
+void			draw_player(t_game *info);
+void			animation_loop2(t_game *game);
+void			init_anim(t_game *game);
+void			update(void * ptr);
 
 
 
@@ -204,6 +215,6 @@ void			free_game(t_game *game);
 int				is_notvalid(char *str);
 void			print_map(char **map);
 void			free_sprites(t_sprite **lst);
-
+void			free_mlx_textures(t_mlx_textures textures);
 
 #endif
