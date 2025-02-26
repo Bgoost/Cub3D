@@ -6,15 +6,26 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 20:13:55 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/24 20:48:14 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/26 21:26:24 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 #include <sys/time.h>
-#define MINIMAP_SCALE 10
+// movimiento para que el minimapa para que no esté pegado a la esquina
 #define MINIMAP_X_OFFSET 10
 #define MINIMAP_Y_OFFSET 10
+
+// Tamaño del minimapa (no en pixeles)
+// cuanto de el mapa real puedes ver en el minimapa.
+#define MINIMAP_SCALE 10.0
+
+//Tamaño real del minimapa(en pixeles)
+#define MINIMAP_SIZE 200.0
+
+#define MINI_PLAYER_HEIGHT 5
+#define MINI_PLAYER_WIDTH 5
+
 #define PLAYER_COLOR 0xFF0000FF
 #define TRANSPARENT 0xffffff00
 #define WALLCOLOR 0xffffff00
@@ -113,13 +124,15 @@ void update(void * ptr)
 
 #define MINIMAP_RADIUS 7 
 
-static void paint_minimap(t_game *game, int x, int y, int color)
+/*void	paint_minimap(t_game *game, int x, int y, int color)
 {
     int map_x;
     int map_y;
 
     map_x = 0;
     map_y = 0;
+	printf("x: %d\n", x);
+	printf("y: %d\n", y);
     while(map_y < MINIMAP_SCALE)
     {
         map_x = 0;
@@ -128,14 +141,41 @@ static void paint_minimap(t_game *game, int x, int y, int color)
 
             int tmp_x = MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x;
             int tmp_y = MINIMAP_Y_OFFSET + (y * MINIMAP_SCALE) + map_y;
+//        	printf("tmp_x: %d, tmp_y = %d\n", tmp_x, tmp_y);
             mlx_put_pixel(game->image, tmp_x,
                             tmp_y, color);
             map_x++;
         }
         map_y++;
     }
+}*/
+
+
+
+
+
+static void draw_player_pixel(mlx_image_t *image)
+{
+	t_point	mini_player_pos;
+    int player_x;
+    int player_y;
+
+    player_y = -MINI_PLAYER_HEIGHT / 2;
+	mini_player_pos.x = MINIMAP_SIZE / 2;
+	mini_player_pos.y = MINIMAP_SIZE / 2;
+	while (player_y < MINI_PLAYER_HEIGHT / 2)
+	{
+    	player_x = -MINI_PLAYER_WIDTH / 2;
+		while (player_x < MINI_PLAYER_WIDTH / 2)
+		{
+			mlx_put_pixel(image, mini_player_pos.x + player_x + MINIMAP_X_OFFSET, mini_player_pos.y + player_y + MINIMAP_Y_OFFSET, PLAYER_COLOR);
+			player_x++;
+		}
+		player_y++;
+	}
 }
 
+	/*
 static void draw_player_pixel(t_game *game, mlx_image_t *image)
 {
     double center_x;
@@ -155,22 +195,86 @@ static void draw_player_pixel(t_game *game, mlx_image_t *image)
         center_y = 80.0;
     printf("------ center x: %f, center y: %f\n", center_x, center_y);
 
+
     while (map_y <= 2)
     {
         map_x = -2;
         while (map_x <= 2)
         {
+			printf("pixel x = %d, pixel y = %d\n", (int)(center_x + map_x), (int)(center_y + map_y));
             mlx_put_pixel(image, (int)(center_x + map_x), (int)(center_y + map_y), PLAYER_COLOR);
             map_x++;
         }
         map_y++;
     }
+}*/
+
+
+int	get_color(t_point minimap_pos, t_game *game, char **map)
+{
+	int color;
+	int map_x;
+	int map_y; 
+   
+	map_x = floor(minimap_pos.x);
+	map_y = floor(minimap_pos.y);
+//	printf("map_x = %d map_y = %d\n", map_x, map_y);
+	if (map_y < 0 || map_y >= game->map_height || map_x < 0 || map_x >= game->map_width)
+	{
+		//	printf("printing transparent(%x)\n", TRANSPARENT);
+		color = TRANSPARENT;
+	}
+	else if (map[map_y][map_x] == '1')
+	{
+		//	printf("printing wall(%x)\n", WALL_COLOR);
+		color = WALL_COLOR;
+	}
+	else if (map[map_y][map_x] == '0')
+	{
+		//	printf("printing floor(%x)\n", FLOOR_COLOR);
+		color = FLOOR_COLOR;
+	}
+	else
+	{
+		//	printf("printing transparent(%x)\n", TRANSPARENT);
+		color = TRANSPARENT;
+	}
+	return (color);
 }
 
 void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 {
+	t_point	minimap_start;
+	t_point	position;
+	int	x;
+	int	y;
+	int color;
+
+//	ft_putstr_fd("map rerender\n", 2);
+	minimap_start.x = game->player.x - MINIMAP_SCALE / 2;
+	minimap_start.y = game->player.y - MINIMAP_SCALE / 2;
+	y = 0;
+	while (y < MINIMAP_SIZE)
+	{	
+		x = 0;
+		while (x < MINIMAP_SIZE)
+		{
+			position.x = minimap_start.x + (MINIMAP_SCALE * x / MINIMAP_SIZE);
+			position.y = minimap_start.y + (MINIMAP_SCALE * y / MINIMAP_SIZE);
+			color = get_color(position, game, map);
+            mlx_put_pixel(game->image, x + MINIMAP_X_OFFSET, y + MINIMAP_Y_OFFSET, color);
+			x++;
+		}
+		y++;
+	}
+	draw_player_pixel(image);
+}
+/*
+void draw_minimap(mlx_image_t *image, char **map, t_game *game)
+{
+	(void)map;
     int x, y;
-    int color;
+	int color;
     double player_x = game->player.x;
     double player_y = game->player.y;
 
@@ -180,24 +284,36 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *game)
         x = -MINIMAP_RADIUS;
         while (x <= MINIMAP_RADIUS)
         {
-            int map_x = (int)(player_x + x);
-            int map_y = (int)(player_y + y);
+            int map_x = (int)floor(player_x + x);
+            int map_y = (int)floor(player_y + y);
+			printf("map_x = %d map_y = %d\n", map_x, map_y);
             if (map_y < 0 || map_y >= game->map_height || map_x < 0 || map_x >= game->map_width)
-                color = TRANSPARENT;
+			{
+			//	printf("printing transparent(%x)\n", TRANSPARENT);
+				color = TRANSPARENT;
+			}
             else if (map[map_y][map_x] == '1')
+			{
+			//	printf("printing wall(%x)\n", WALL_COLOR);
                 color = WALL_COLOR;
-            else if (map[map_y][map_x] == '0')
+			}
+			else if (map[map_y][map_x] == '0')
+			{
+			//	printf("printing floor(%x)\n", FLOOR_COLOR);
                 color = FLOOR_COLOR;
-            else
-                color = TRANSPARENT;
-
-            paint_minimap(game, (x + MINIMAP_RADIUS), (y + MINIMAP_RADIUS), color);
-            x++;
+			}
+			else
+			{
+			//	printf("printing transparent(%x)\n", TRANSPARENT);
+				color = TRANSPARENT;
+			}
+		   paint_minimap(game, color);
+		   x++;
         }
         y++;
     }
     draw_player_pixel(game, image);
-}
+}*/
 
 
 // static void paint_minimap(t_game *game, int x, int y, int color)

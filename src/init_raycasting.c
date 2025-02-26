@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/23 19:29:23 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:38:50 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	init_player(char player_c, int player_x, int player_y, t_game *info)
 		info->direction = 180;
 	if (player_c == 'E')
 		info->direction = 0;
-	info->player.x = player_x;
-	info->player.y = player_y;
+	info->player.x = player_x + 0.5;
+	info->player.y = player_y + 0.5;
 }
 
 int	init_mlx(t_game *info)
@@ -145,7 +145,7 @@ void	print_map(char **map)
 	while (map[y])
 	{
 
-		// printf("map[%d] = %s\n", y, map[y]);
+		printf("map[%d] = %s\n", y, map[y]);
 		y++;
 	}
 	printf("\n");

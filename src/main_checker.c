@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 23:20:06 by martalop          #+#    #+#             */
-/*   Updated: 2025/01/22 23:20:12 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:44:10 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,9 @@ int main_checker(int argc, char *argv[], t_map **map)
     printf("Ceiling color: %d, %d, %d\n", (*map)->textures.ceiling_color[0],
            (*map)->textures.ceiling_color[1], (*map)->textures.ceiling_color[2]);
     printf("Map:\n");
-    for (int i = 0; i < ((*map)->end - (*map)->start) + 1; i++)
-        printf("%s\n", (*map)->map[i]);
+ //   for (int i = 0; i < ((*map)->end - (*map)->start) + 1; i++)
+   //     printf("%s\n", (*map)->map[i]);
+   	print_map((*map)->map);
     printf("Parsing successful!\n");
 
     return 1;
