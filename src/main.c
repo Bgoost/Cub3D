@@ -31,12 +31,13 @@ int	main(int argc, char **argv)
 		free_scene(&map);
 		return (1);
 	}
-//    load_player_sprite(game);
+   load_player_sprite(game);
     // init_anim(game);
     
 	print_scene(game, game->map, game->ray);
 //	mlx_key_hook(game->mlx, key_input, game);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);
+	mlx_loop_hook(game->mlx, (void *)test_cursor, game);
     // mlx_loop_hook(game->mlx, update, game);
 	mlx_loop(game->mlx);
 	free_game(game);

@@ -61,13 +61,14 @@ typedef struct s_anim
 	mlx_texture_t	*frame9;
 	mlx_texture_t	*frame10;
 	mlx_image_t		*curren_img;
-	mlx_image_t		*player_sprites[9];
+	mlx_image_t		*player_sprites[8];
 	mlx_instance_t	*player_instance;
 	int				frame_speed;
 	double			accum;
 	t_sprite		*sprites;
 	int				index;
 	int				time;
+	mlx_image_t		*current_sprite;
 	int				current_frame;
 	int				frame_counter;
 }	t_anim;
@@ -204,6 +205,7 @@ void			draw_player(t_game *info);
 void			animation_loop2(t_game *game);
 void			init_anim(t_game *game);
 void			update(void * ptr);
+void			test_cursor(void *param);
 
 
 

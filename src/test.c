@@ -585,7 +585,7 @@ void	player_movements(void *param)
 	info = (t_game *)param;
 	tmp.x = info->player.x;
 	tmp.y = info->player.y;
-//	update(info);
+	update(info);
 	//printf("someone pressed a key\n");
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
