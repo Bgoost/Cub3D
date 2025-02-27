@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/24 21:01:38 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:01:42 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ uint32_t		get_ceiling_color(int *ceiling_color);
 uint32_t		get_floor_color(int *floor_color);
 mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures);
 uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
-
+int	safe_map_point(double x, double y, int width, int height);
 
 // KEYBOARD
 void			key_input(mlx_key_data_t keydata, void *param);

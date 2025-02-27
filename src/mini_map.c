@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 20:13:55 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/26 21:26:24 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:10:21 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@
 //Tamaño real del minimapa(en pixeles)
 #define MINIMAP_SIZE 200.0
 
-#define MINI_PLAYER_HEIGHT 5
-#define MINI_PLAYER_WIDTH 5
+#define MINI_PLAYER_HEIGHT 6
+#define MINI_PLAYER_WIDTH 6
 
 #define PLAYER_COLOR 0xFF0000FF
 #define TRANSPARENT 0xffffff00
 #define WALLCOLOR 0xffffff00
 #define FLOORCOLOR 0xffffff00
+#define RAY_COLOR 0x2210c4FF
 
 int	ft_lstsize(t_sprite *lst)
 {
@@ -152,6 +153,47 @@ void update(void * ptr)
 
 
 
+void draw_minimap_ray(mlx_image_t *image, t_game *game, char **map) 
+{
+    t_point ray_pos;
+    double ray_dir_x;
+    double ray_dir_y;
+    double step_size = 0.05; // Step size for the ray (smaller = more precise)
+    int hit = 0;
+
+    // Start the ray at the player's position (scaled to minimap)
+    ray_pos.x = game->player.x;
+    ray_pos.y = game->player.y;
+
+    // Calculate the ray's direction based on the player's direction
+    ray_dir_x = cos(degree_to_radian(game->direction));
+    ray_dir_y = -sin(degree_to_radian(game->direction)); // Negative because y increases downward in screen space
+
+    // Cast the ray
+    while (!hit) 
+	{
+        // Move the ray forward
+        ray_pos.x += ray_dir_x * step_size;
+        ray_pos.y += ray_dir_y * step_size;
+
+        // Check if the ray hits a wall or goes out of bounds
+        if (!safe_map_point(ray_pos.x, ray_pos.y, game->map_width, game->map_height) || map[(int)ray_pos.y][(int)ray_pos.x] == '1') 
+		{
+            hit = 1; // Stop the ray if it hits a wall or goes out of bounds
+        }
+
+        // Scale the ray's position to minimap coordinates
+        int mini_x = (ray_pos.x - (game->player.x - MINIMAP_SCALE / 2)) * (MINIMAP_SIZE / MINIMAP_SCALE);
+        int mini_y = (ray_pos.y - (game->player.y - MINIMAP_SCALE / 2)) * (MINIMAP_SIZE / MINIMAP_SCALE);
+
+        // Check if the ray is within the minimap's bounds
+        if (mini_x < 0 || mini_x >= MINIMAP_SIZE || mini_y < 0 || mini_y >= MINIMAP_SIZE)
+	   	{
+            break; // Stop drawing if the ray goes outside the minimap
+        }
+        mlx_put_pixel(image, mini_x + MINIMAP_X_OFFSET, mini_y + MINIMAP_Y_OFFSET, RAY_COLOR);
+    }
+}
 
 
 static void draw_player_pixel(mlx_image_t *image)
@@ -169,6 +211,7 @@ static void draw_player_pixel(mlx_image_t *image)
 		while (player_x < MINI_PLAYER_WIDTH / 2)
 		{
 			mlx_put_pixel(image, mini_player_pos.x + player_x + MINIMAP_X_OFFSET, mini_player_pos.y + player_y + MINIMAP_Y_OFFSET, PLAYER_COLOR);
+//			printf("printing player at x = %d, y = %d\n", (int)mini_player_pos.x + player_x + MINIMAP_X_OFFSET, (int)mini_player_pos.y + player_y + MINIMAP_Y_OFFSET);
 			player_x++;
 		}
 		player_y++;
@@ -242,6 +285,7 @@ int	get_color(t_point minimap_pos, t_game *game, char **map)
 	return (color);
 }
 
+
 void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 {
 	t_point	minimap_start;
@@ -250,7 +294,6 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 	int	y;
 	int color;
 
-//	ft_putstr_fd("map rerender\n", 2);
 	minimap_start.x = game->player.x - MINIMAP_SCALE / 2;
 	minimap_start.y = game->player.y - MINIMAP_SCALE / 2;
 	y = 0;
@@ -268,6 +311,7 @@ void draw_minimap(mlx_image_t *image, char **map, t_game *game)
 		y++;
 	}
 	draw_player_pixel(image);
+	draw_minimap_ray(image, game, game->map);
 }
 /*
 void draw_minimap(mlx_image_t *image, char **map, t_game *game)

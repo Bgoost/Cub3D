@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/26 20:57:23 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/27 21:37:43 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ t_point	*vertical_hit(t_point player, char **map, double angle, t_game *info)
 		return (hit);
 	if (map[(int)hit->y / TILE][(int)hit->x / TILE] == '1')
 	{
-//		printf("theres a wall in first point\n");
+		//printf("theres a wall in first point\n");
 		return (hit);
 	}
 	vertical_increment(angle, &increment);
@@ -219,7 +219,7 @@ double	point_distance(t_point hit, t_point player, char point)
 	grid_player.y = (player.y * TILE); // + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
-	// printf("%c distance: %f\n", point, distance);
+//	 printf("%c distance: %f\n", point, distance);
 	return (distance);
 }
 
@@ -228,7 +228,7 @@ void	set_distance(double distance, t_ray *ray, t_point *hit_point, char id)
 	ray->distance_to_wall = distance;
 	ray->hit_point = hit_point;
 	ray->wall_hit = id;
-	// printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
+//	 printf("\nfinal distance to wall: %f\n", ray->distance_to_wall);
 }
 
 void	find_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
@@ -280,19 +280,26 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 	v_hit = vertical_hit(info->player, map, ray->angle, info);
 	if (!v_hit)
 		return (free(h_hit), 0); // malloc error
+
+
+//	printf("horizontal hit: (%f, %f)\n", h_hit->x, h_hit->y);
+//	printf("vertical hit: (%f, %f)\n", v_hit->x, v_hit->y);
+
 	find_distance(v_hit, h_hit, ray, info);
 	ray->projection_height = (TILE / ray->distance_to_wall) * info->distance_to_plane;
 //	printf("\nprojection height: %f\n", ray->projection_height);
-	
+
+
+
 //	printf("test.1: %f\n", ray->projection_height / info->distance_to_plane);
 //	printf("test.2: %f\n", TILE / ray->distance_to_wall);
-//	if ((ray->projection_height / info->distance_to_plane) - (TILE / ray->distance_to_wall) > 0.0001)
-//	{
-//	 	ft_putstr_fd("ERROR with projection heigth!\n", 2);
-//		exit (1);
-//	}
+	if ((ray->projection_height / info->distance_to_plane) - (TILE / ray->distance_to_wall) > 0.0001)
+	{
+	 	ft_putstr_fd("ERROR with projection heigth!\n", 2);
+		exit (1);
+	}
 	ray->projection_height = ceil(ray->projection_height); 
-	printf("\nprojection height: %f\n", ray->projection_height);
+//	printf("\nprojection height: %f\n", ray->projection_height);
 	ray->first_wall_pixel = center.y - (ray->projection_height / 2);
 //	printf("\nfirst_wall_pixel: %d\n", ray->first_wall_pixel);
 
@@ -301,8 +308,8 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 
 	if (ray->projection_height > WIN_HEIGHT - 1 || ray->projection_height < 0)
 		adjust_pixels(&ray->first_wall_pixel, &ray->last_wall_pixel);
-	printf("FIRST pixels modified: %d\n", ray->first_wall_pixel);
-	printf("LAST pixels modified: %d\n", ray->last_wall_pixel);
+//	printf("FIRST pixels modified: %d\n", ray->first_wall_pixel);
+//	printf("LAST pixels modified: %d\n", ray->last_wall_pixel);
 	return (1);
 }
 
@@ -312,8 +319,7 @@ void	handle_y_texture(t_math_texture *t, mlx_texture_t *wall_texture)
 	if (t->texture_in.y < 0)
 		t->texture_in.y += wall_texture->height;
 	t->text_pos += t->step;
-//	printf("wall_texture->height = %u\n", wall_texture->height);
-//	printf("pixel %d\ntexture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", y, texture_in.x, texture_in.y, text_pos, step);
+//	printf("texture_in.x: %f, texture_in.y: %f, text_pos: %f, step: %f\n", t->texture_in.x, t->texture_in.y, t->text_pos, t->step);
 }
 
 void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
@@ -330,7 +336,7 @@ void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
 		mlx_put_pixel(info->image, x, *y, texture_color);
 		if (*y + 1 == info->ray->last_wall_pixel && *y + 1 != WIN_HEIGHT - 1)
 		{
-			printf("I exit print_wall\n");
+	//		printf("I exit print_wall\n");
 			return ;
 		}
 		*y += 1;
@@ -340,7 +346,7 @@ void	print_wall(int x, int *y, t_game *info, t_math_texture *t)
 void	handle_xy_texture(t_math_texture *t, t_ray *ray)
 {
 	t->step = (double)ray->wall_texture->height / ray->projection_height;
-	t->text_pos = (ray->first_wall_pixel - WIN_HEIGHT / 2 + ray->projection_height / 2) * t->step;
+	t->text_pos = (ray->first_wall_pixel - WIN_HEIGHT / 2 + ceil(ray->projection_height / 2)) * t->step;
 	if (ray->wall_hit == 'v')
 		t->texture_in.x = fmod(ray->hit_point->y, TILE);
 	else 
@@ -365,14 +371,14 @@ void	print_column(t_ray *ray, t_game *info, int x)
 	{
 		if (y < ray->first_wall_pixel)
 		{
-		//	printf("printing ceiling color at y = %d\n", y);
+//			printf("printing ceiling color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->ceiling_color);
 		}
 		else if (y >= ray->first_wall_pixel && y < ray->last_wall_pixel)
 			print_wall(x, &y, info, &text_info);
 		else if (y < WIN_HEIGHT)
 		{
-	//		printf("printing floor color at y = %d\n", y);
+//			printf("printing floor color at y = %d\n", y);
 			mlx_put_pixel(info->image, x, y, info->floor_color);
 		}
 		y++;
@@ -399,7 +405,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	ray->angle = info->direction + (FOV / 2);
 //	info->ceiling_color = get_ceiling_color(info->textures.ceiling_color);
 //	info->floor_color = get_floor_color(info->textures.floor_color);
-	while (x < WIN_WIDTH - 1)
+	while (x < WIN_WIDTH)
 	{
 		ray->angle = adjust_angle(ray->angle);
 		if (!cast_ray(info, map, ray)) // malloc error
@@ -434,7 +440,7 @@ void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
 	if (mlx_is_key_down(mlx, MLX_KEY_W))
 	{
-		printf("I move\n");
+//		printf("I move\n");
 		tmp.y -= 0.1001 * sin(degree_to_radian(info->direction));
 		// restamos porque cuando los rayos miran abajo, sin es negativo y como queremos avanzar, la y será positiva
 		tmp.x += 0.1001 * cos(degree_to_radian(info->direction));
