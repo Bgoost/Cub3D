@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/25 20:25:29 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/26 20:57:23 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ t_point	*first_h_hit(double angle, t_point player)
 	hit = malloc(sizeof(t_point) * 1);
 	if (!hit)
 		return (NULL);
-	grid_player.x = player.x * TILE + TILE / 2;
-	grid_player.y = player.y * TILE + TILE / 2;
+	grid_player.x = player.x * TILE; // + TILE / 2;
+	grid_player.y = player.y * TILE; // + TILE / 2;
 	
 //	printf("grid player: (%f, %f)\n", grid_player.x, grid_player.y);
 	if (angle <= 180 && angle >= 0)
@@ -79,22 +79,23 @@ int	is_wall(double x, double y, t_game *info)
 
 //	x_ = floor(x);
 //	y_ = floor(y);
-	// printf("want to move to: x = %f y = %f\n", x, y);
-	if (x - floor(x) < 0.500000)
+	 printf("want to move to: x = %f y = %f\n", x, y);
+//	if (x - floor(x) < 0.500000)
 		x_ = floor(x);
-	else
-		x_ = ceil(x);
-	if (y - floor(y) < 0.500000)
+//	else
+//		x_ = ceil(x);
+//	if (y - floor(y) < 0.500000)
 		y_ = floor(y);
-	else
-		y_ = ceil(y);
-//	print_map(info->map);
-// 	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
+//	else
+//		y_ = ceil(y);
+	print_map(info->map);
+ 	printf("checking wall at: x = %d y = %d\n\n", x_, y_);
 	if (info->map[y_][x_] == '1')
 	{
-//		printf("wall found at x = %f y = %f\n", x, y);
+		printf("wall found at x = %f y = %f (%d, %d)\n", x, y, x_, y_);
 		return (1);
 	}
+	printf("NO wall found at x = %f y = %f\n", x, y);
 	return (0);
 }
 
@@ -152,8 +153,8 @@ t_point	*first_v_hit(double angle, t_point player)
 	hit = malloc(sizeof(t_point) * 1);
 	if (!hit)
 		return (NULL);
-	grid_player.x = player.x * TILE + TILE / 2;
-	grid_player.y = player.y * TILE + TILE / 2;
+	grid_player.x = player.x * TILE; //+ TILE / 2;
+	grid_player.y = player.y * TILE; //+ TILE / 2;
 
 	if (angle <= 270 && angle >= 90) // if angle looks LEFT
 		hit->x = floor(grid_player.x / TILE) * TILE - 0.0000000001; 
@@ -214,8 +215,8 @@ double	point_distance(t_point hit, t_point player, char point)
 	double	distance;
 	t_point	grid_player;
 	
-	grid_player.x = (player.x * TILE) + (TILE / 2);
-	grid_player.y = (player.y * TILE) + (TILE / 2);
+	grid_player.x = (player.x * TILE); // + (TILE / 2);
+	grid_player.y = (player.y * TILE); // + (TILE / 2);
 
 	distance = sqrt(pow((grid_player.x - hit.x), 2) + pow((grid_player.y - hit.y), 2));
 	// printf("%c distance: %f\n", point, distance);
@@ -421,7 +422,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// 	//free
 	// 	exit(1);
 	// }
-	draw_minimap(info->image, info->map, info);
+    draw_minimap(info->image, info->map, info);
 //	 draw_player(info);
 
 	// animation_loop(info);
