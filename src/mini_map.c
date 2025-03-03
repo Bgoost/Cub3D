@@ -28,8 +28,9 @@
 
 #define PLAYER_COLOR 0xFF0000FF
 #define TRANSPARENT 0xffffff00
-#define WALLCOLOR 0xffffff00 
+#define WALLCOLOR 0xffffff00
 #define FLOORCOLOR 0xffffff00
+#define RAY_COLOR 0x2210c4FF
 
 
 void load_player_sprite(t_game *game)
@@ -52,7 +53,7 @@ void load_player_sprite(t_game *game)
     
     i = 0;
 	//while (sprite_paths[i])
-    while(i < 8)
+    while(i < 5)
     {
         texture = mlx_load_png(game->anim.sprite_paths[i]);
         if (!texture)
@@ -136,33 +137,7 @@ void test_cursor(void *param)
         info->anim.current_frame = 0;
         info->anim.last_frame_time = mlx_get_time(); 
     }
-}*/
-
-void	print_mini_ray(t_game *game, t_point ray_dir, t_point ray_pos, char **map)
-{
-    int map_x;
-    int map_y;
-
-    map_x = 0;
-    map_y = 0;
-	printf("x: %d\n", x);
-	printf("y: %d\n", y);
-    while(map_y < MINIMAP_SCALE)
-    {
-        map_x = 0;
-        while(map_x < MINIMAP_SCALE)
-        {
-
-            int tmp_x = MINIMAP_X_OFFSET + (x * MINIMAP_SCALE) + map_x;
-            int tmp_y = MINIMAP_Y_OFFSET + (y * MINIMAP_SCALE) + map_y;
-//        	printf("tmp_x: %d, tmp_y = %d\n", tmp_x, tmp_y);
-            mlx_put_pixel(game->image, tmp_x,
-                            tmp_y, color);
-            map_x++;
-        }
-        map_y++;
-    }
-}*/
+}
 
 void	print_mini_ray(t_game *game, t_point ray_dir, t_point ray_pos, char **map)
 {
