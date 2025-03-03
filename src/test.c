@@ -418,7 +418,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// BONUS
     // draw_minimap(info->image, info->map, info);
 	
-	mlx_image_to_window(info->mlx, mlx_texture_to_image(info->mlx, mlx_load_png("sprites/gun_3.png")), 0, 0);
+	mlx_image_to_window(info->mlx, mlx_texture_to_image(info->mlx, mlx_load_png("sprites/gun.png")), 0, 0);
 //	 draw_player(info);
 
 	// animation_loop(info);
