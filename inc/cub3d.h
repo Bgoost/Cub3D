@@ -49,20 +49,12 @@ typedef struct s_sprite
 
 typedef struct s_anim
 {
-	// mlx_image_t	*player_sprites[9];
-	mlx_texture_t	*frame1;
-	mlx_texture_t	*frame2;
-	mlx_texture_t	*frame3;
-	mlx_texture_t	*frame4;
-	mlx_texture_t	*frame5;
-	mlx_texture_t	*frame6;
-	mlx_texture_t	*frame7;
-	mlx_texture_t	*frame8;
-	mlx_texture_t	*frame9;
-	mlx_texture_t	*frame10;
 	mlx_image_t		*curren_img;
-	mlx_image_t		*player_sprites[8];
+	mlx_image_t		*player_sprites[5];
+	char			*sprite_paths[5];
 	mlx_instance_t	*player_instance;
+	int				is_animating;
+	double			last_frame_time;
 	int				frame_speed;
 	double			accum;
 	t_sprite		*sprites;
@@ -206,6 +198,7 @@ void			animation_loop2(t_game *game);
 void			init_anim(t_game *game);
 void			update(void * ptr);
 void			test_cursor(void *param);
+void			update_animation(void *param);
 
 
 
@@ -216,7 +209,7 @@ void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
 void			print_map(char **map);
-void			free_sprites(t_sprite **lst);
+// void			free_sprites(t_sprite **lst);
 void			free_mlx_textures(t_mlx_textures textures);
 
 #endif

@@ -416,13 +416,9 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 		exit(1);
 	}
 	// BONUS
-	// if (mlx_image_to_window(info->mlx, info->anim.frame1, 0, 0) == -1)
-	// {
-	// 	mlx_close_window(info->mlx);
-	// 	//free
-	// 	exit(1);
-	// }
-    draw_minimap(info->image, info->map, info);
+    // draw_minimap(info->image, info->map, info);
+	
+	mlx_image_to_window(info->mlx, mlx_texture_to_image(info->mlx, mlx_load_png("sprites/gun_3.png")), 0, 0);
 //	 draw_player(info);
 
 	// animation_loop(info);
@@ -586,7 +582,8 @@ void	player_movements(void *param)
 	info = (t_game *)param;
 	tmp.x = info->player.x;
 	tmp.y = info->player.y;
-	update(info);
+	test_cursor(info);
+	update_animation(param);
 	//printf("someone pressed a key\n");
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
@@ -612,13 +609,28 @@ void	player_movements(void *param)
 	handle_ws_movements(info, info->mlx, tmp);
 	handle_ad_movements(info, info->mlx, tmp);
 }
+void free_sprites(t_game *game)
+{
+    int i = 0;
+
+    while (i < 5)
+    {
+        if (game->anim.player_sprites[i])
+        {
+            mlx_delete_image(game->mlx, game->anim.player_sprites[i]);
+            game->anim.player_sprites[i] = NULL;
+        }
+        i++;
+    }
+}
+
 
 void	free_game(t_game *game)
 {
+	free_sprites(game);
 	mlx_delete_image(game->mlx, game->image);
     mlx_terminate(game->mlx);
 	free_mlx_textures(game->textures);
-	//free_sprites(&game->anim.sprites);
 	free(game->ray);
 	free(game);
 }
