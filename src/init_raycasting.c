@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/26 18:38:50 by martalop         ###   ########.fr       */
+/*   Updated: 2025/02/27 21:29:15 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	validate_textures(t_textures textures)
 
 void	init_player(char player_c, int player_x, int player_y, t_game *info)
 {
+	(void)player_y;
+	(void)player_x;
 	if (player_c == 'N')
 		info->direction = 90;
 	if (player_c == 'S')
@@ -49,6 +51,8 @@ void	init_player(char player_c, int player_x, int player_y, t_game *info)
 		info->direction = 0;
 	info->player.x = player_x + 0.5;
 	info->player.y = player_y + 0.5;
+//	info->player.x = 25.035243;	
+//	info->player.y = 6.461557;	
 }
 
 int	init_mlx(t_game *info)
