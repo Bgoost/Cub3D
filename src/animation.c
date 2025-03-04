@@ -122,7 +122,7 @@ void update_animation(void *param)
             printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", next_frame);
             exit_error("");
         }
-        mlx_image_to_window(game->mlx, game->anim->player_sprites[next_frame], 0, 0);
+        mlx_image_to_window(game->mlx, game->anim->player_sprites[next_frame], 10, 0);
         game->anim->current_frame = next_frame;
     }
     else
