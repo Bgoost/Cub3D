@@ -72,6 +72,7 @@ int	init_mlx(t_game *info)
 		mlx_close_window(info->mlx);
 		exit(1);
 	}
+
 	return (0);
 }
 
@@ -172,6 +173,13 @@ t_game	*init_raycasting(t_map map)
 	info->redisplay = 0;
 	if (init_mlx(info) == 1)
 		return (free(info), NULL);
+    info->anim = init_anim();
+	if (!info->anim)
+	{
+		printf("\033[31mError:\nFailed to initialize animation\033[0m\n");
+		free_game(info);
+		exit_error("");
+	}
 	info->ray = malloc(sizeof(t_ray) * 1);
 	if (!info->ray)
 	{

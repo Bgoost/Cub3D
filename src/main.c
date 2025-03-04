@@ -33,7 +33,14 @@ int	main(int argc, char **argv)
 	}
 	load_player_sprite(game);
     // init_anim(game);
-    
+    game->anim->player_texture[5] = mlx_load_png(game->anim->sprite_paths[5]);
+	game->anim->player_sprites[5] = mlx_texture_to_image(game->mlx, game->anim->player_texture[5]);
+	if (!game->anim->player_sprites[5])
+	{
+		printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", 5);
+		exit_error("");
+	}
+	mlx_image_to_window(game->mlx, game->anim->player_sprites[5], 0, 0);
 	print_scene(game, game->map, game->ray);
 //	mlx_key_hook(game->mlx, key_input, game);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);

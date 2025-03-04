@@ -194,6 +194,7 @@ void			update(void * ptr);
 void			test_cursor(void *param);
 void			update_animation(void *param);
 void free_anim(t_game *game);
+t_anim *init_anim(void);
 
 
 

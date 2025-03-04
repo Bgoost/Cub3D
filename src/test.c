@@ -359,14 +359,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// BONUS
     draw_minimap(info->image, info->map, info);
 	
-	info->anim->player_texture[5] = mlx_load_png(info->anim->sprite_paths[5]);
-	info->anim->player_sprites[5] = mlx_texture_to_image(info->mlx, info->anim->player_texture[5]);
-	if (!info->anim->player_sprites[5])
-	{
-		printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", 5);
-		exit_error("");
-	}
-	mlx_image_to_window(info->mlx, info->anim->player_sprites[5], 0, 0);
+
 //	 draw_player(info);
 
 	// animation_loop(info);
@@ -528,11 +521,12 @@ void	player_movements(void *param)
 	info = (t_game *)param;
 	tmp.x = info->player.x;
 	tmp.y = info->player.y;
-	test_cursor(info);
 	update_animation(param);
 	//printf("someone pressed a key\n");
-	if(mlx_is_mouse_down(info->mlx, MLX_MOUSE_BUTTON_LEFT) && !info->anim->is_animating)
+	if((mlx_is_mouse_down(info->mlx, MLX_MOUSE_BUTTON_LEFT)
+		|| mlx_is_key_down(info->mlx, MLX_KEY_SPACE)) && !info->anim->is_animating)
     {
+		printf("Pium Pium\n");
         info->anim->is_animating = true;
         info->anim->current_frame = 0;
         info->anim->last_frame_time = mlx_get_time(); 
