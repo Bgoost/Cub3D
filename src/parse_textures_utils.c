@@ -6,7 +6,7 @@
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 19:16:00 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/02/14 19:45:15 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/04 21:05:25 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,15 @@ void	error_invalid_identifier(char *trimmed)
 	free_words(split_error);
 	free(trimmed);
 	exit_error("");
+}
+
+int	ft_strncmp_isspace(char *trimmed, char *identifier)
+{
+	if (ft_strncmp(trimmed, identifier, ft_strlen(identifier)) == 0
+		&& (trimmed[ft_strlen(identifier)] == ' '
+			|| trimmed[ft_strlen(identifier)] == '\t'))
+	{
+		return (1);
+	}
+	return (0);
 }

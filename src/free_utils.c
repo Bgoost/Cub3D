@@ -70,3 +70,45 @@ void	free_scene(t_map **scene)
 	free(*scene);
 	*scene = NULL;
 }
+
+void free_anim(t_game *game)
+{
+    int i;
+
+	i = 0;
+    if (game->anim)
+    {
+		while(i < 6)
+		{
+			if (game->anim->sprite_paths[i])
+                free(game->anim->sprite_paths[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 6)
+		{
+			if (game->anim->player_sprites[i])
+				mlx_delete_image(game->mlx, game->anim->player_sprites[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 6)
+		{
+			if (game->anim->player_texture[i])
+				mlx_delete_texture(game->anim->player_texture[i]);
+			i++;
+		}
+        free(game->anim);
+    }
+}
+
+
+void	free_game(t_game *game)
+{
+	free_anim(game);
+	mlx_delete_image(game->mlx, game->image);
+    mlx_terminate(game->mlx);
+	free_mlx_textures(game->textures);
+	free(game->ray);
+	free(game);
+}

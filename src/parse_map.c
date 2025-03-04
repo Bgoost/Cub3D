@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*																			  */
+/*														  :::	   ::::::::   */
+/*	 parse_map.c										:+:		 :+:	:+:   */
+/*													  +:+ +:+		  +:+	  */
+/*	 By: crmanzan <marvin@42.fr>					+#+  +:+	   +#+		  */
+/*												  +#+#+#+#+#+	+#+			  */
+/*	 Created: 2025/03/04 21:08:31 by crmanzan		   #+#	  #+#			  */
+/*	 Updated: 2025/03/04 21:08:36 by crmanzan		  ###	########.fr		  */
+/*																			  */
+/* ************************************************************************** */
 #include "../inc/cub3d.h"
 
-void process_line(t_map *scene, int i, int *num_players, char **copy_map)
+void	process_line(t_map *scene, int i, int *num_players, char **copy_map)
 {
-	int j;
-	char *trimmed;
-	char *padded_line;
+	int		j;
+	char	*trimmed;
+	char	*padded_line;
 
 	j = 0;
 	trimmed = ft_strtrim(scene->lines[i], "\n");
@@ -29,12 +40,12 @@ void process_line(t_map *scene, int i, int *num_players, char **copy_map)
 	}
 }
 
-static int is_fully_enclosed(char **copy_map, t_map scene, int x, int y)
+static int	is_fully_enclosed(char **copy_map, t_map scene, int x, int y)
 {
-	int right;
-	int left;
-	int down;
-	int up;
+	int	right;
+	int	left;
+	int	down;
+	int	up;
 
 	if (x < 0 || x >= scene.width || y < 0 || y >= scene.height)
 		return (0);
@@ -50,10 +61,10 @@ static int is_fully_enclosed(char **copy_map, t_map scene, int x, int y)
 	return (right && left && down && up);
 }
 
-int is_valid_map(t_map *map, char **copy_map)
+int	is_valid_map(t_map *map, char **copy_map)
 {
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	y = 0;
 	x = 0;
@@ -75,9 +86,9 @@ int is_valid_map(t_map *map, char **copy_map)
 	return (1);
 }
 
-void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
+void	validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 {
-	int is_valid;
+	int	is_valid;
 
 	is_valid = is_valid_map(scene, copy_map);
 	parse_map_errors(num_players);
@@ -89,11 +100,11 @@ void    validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 	free_map(copy_map);
 }
 
-void    parse_map(t_map *scene)
+void	parse_map(t_map *scene)
 {
-	char **copy_map;
-	int num_players;
-	int i;
+	char	**copy_map;
+	int		num_players;
+	int		i;
 
 	scene->height = scene->end - scene->start + 1;
 	num_players = 0;
@@ -112,8 +123,5 @@ void    parse_map(t_map *scene)
 		process_line(scene, i, &num_players, copy_map);
 		i++;
 	}
-//    printf("copy_map:\n");
-   // for(int i = 0; i < scene->height; i++)
-	 //   printf("%s\n", copy_map[i]);
 	validate_and_clean_map(scene, copy_map, num_players);
 }

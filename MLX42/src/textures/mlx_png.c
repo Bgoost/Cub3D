@@ -28,7 +28,7 @@ mlx_texture_t* mlx_load_png(const char* path)
 	{
 		free(image);
 		// Explicitly print error on purpose
-		fprintf(stderr, "MLX42: LodePNG: %s\n", lodepng_error_text(error));
+		fprintf(stderr, "MLX42: LodePNG: %s\nPath to the texture: %s\n", lodepng_error_text(error), path);
 		return ((void*)mlx_error(MLX_INVPNG));
 	}
 	return (image);

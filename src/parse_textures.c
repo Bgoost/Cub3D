@@ -49,7 +49,7 @@ static void	parse_number_and_comma(char **trimmed, int *color,
 		num = 0;
 		while (ft_isdigit(**trimmed))
 			num = num * 10 + (*(*trimmed)++ - '0');
-		if (num > 255)
+		if (num > 255 || num < 0)
 			exit_error("Error:\nColor values must be in range [0,255].");
 		color[(*i)++] = num;
 		while (ft_isspace(**trimmed))
@@ -102,17 +102,17 @@ void	parse_main_textures(char *line, t_map *scene, int map_started)
 		free(trimmed);
 		return ;
 	}
-	if (ft_strncmp(trimmed, "NO ", 3) == 0)
+	if (ft_strncmp_isspace(trimmed, "NO"))
 		parse_texture(trimmed, "NO", &scene->textures.north);
-	else if (ft_strncmp(trimmed, "SO ", 3) == 0)
+	else if (ft_strncmp_isspace(trimmed, "SO"))
 		parse_texture(trimmed, "SO", &scene->textures.south);
-	else if (ft_strncmp(trimmed, "WE ", 3) == 0)
+	else if (ft_strncmp_isspace(trimmed, "WE"))
 		parse_texture(trimmed, "WE", &scene->textures.west);
-	else if (ft_strncmp(trimmed, "EA ", 3) == 0)
+	else if (ft_strncmp_isspace(trimmed, "EA"))
 		parse_texture(trimmed, "EA", &scene->textures.east);
-	else if (ft_strncmp(trimmed, "F ", 2) == 0)
+	else if (ft_strncmp_isspace(trimmed, "F"))
 		parse_color(trimmed, "F", scene->textures.floor_color);
-	else if (ft_strncmp(trimmed, "C ", 2) == 0)
+	else if (ft_strncmp_isspace(trimmed, "C"))
 		parse_color(trimmed, "C", scene->textures.ceiling_color);
 	else if (!is_strspace(trimmed) && !map_started)
 		error_invalid_identifier(trimmed);

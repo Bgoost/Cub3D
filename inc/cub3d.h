@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/02 20:37:31 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/04 01:13:41 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <unistd.h>
 # include <math.h>
 # include <limits.h>
+# include <sys/time.h>
 
 # define WIN_WIDTH 1600
 # define WIN_HEIGHT 1000
@@ -106,7 +107,7 @@ typedef struct s_game
 {
 	double			ray_increment;
 	double			distance_to_plane;
-	double			direction; // N(90), S(270), W(180), E(0)
+	double			direction;
 	t_point			player;
 	mlx_t			*mlx;
 	mlx_image_t		*image;
@@ -118,7 +119,6 @@ typedef struct s_game
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
 	t_anim			*anim;
-	int				redisplay;
 }	t_game;
 
 typedef struct s_map
@@ -135,6 +135,11 @@ typedef struct s_map
 	char		player_c;
 	t_textures	textures;
 }	t_map;
+
+// INIT
+void		init_player(char player_c, int player_x, int player_y, t_game *info);
+int			init_mlx(t_game *info);
+int			init_textures(t_game *info, t_textures textures);
 
 // PARSING
 int			main_checker(int argc, char *argv[], t_map **map);
@@ -153,7 +158,7 @@ void		parse_map_errors(int num_players);
 char		*pad_line_to_width(const char *line, int width);
 int			extract_texture_path(const char *trimmed, char *result);
 void		error_invalid_identifier(char *trimmed);
-
+int			ft_strncmp_isspace(char *trimmed, char *identifier);
 
 // RAYCASTING
 double			degree_to_radian(double degree);
