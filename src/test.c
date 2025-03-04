@@ -359,7 +359,14 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 	// BONUS
     draw_minimap(info->image, info->map, info);
 	
-	mlx_image_to_window(info->mlx, mlx_texture_to_image(info->mlx, mlx_load_png("sprites/gun.png")), 0, 0);
+	info->anim->player_texture[5] = mlx_load_png(info->anim->sprite_paths[5]);
+	info->anim->player_sprites[5] = mlx_texture_to_image(info->mlx, info->anim->player_texture[5]);
+	if (!info->anim->player_sprites[5])
+	{
+		printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", 5);
+		exit_error("");
+	}
+	mlx_image_to_window(info->mlx, info->anim->player_sprites[5], 0, 0);
 //	 draw_player(info);
 
 	// animation_loop(info);
@@ -524,6 +531,12 @@ void	player_movements(void *param)
 	test_cursor(info);
 	update_animation(param);
 	//printf("someone pressed a key\n");
+	if(mlx_is_mouse_down(info->mlx, MLX_MOUSE_BUTTON_LEFT) && !info->anim->is_animating)
+    {
+        info->anim->is_animating = true;
+        info->anim->current_frame = 0;
+        info->anim->last_frame_time = mlx_get_time(); 
+    }
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
 		mlx_delete_image(info->mlx, info->image);
@@ -548,25 +561,41 @@ void	player_movements(void *param)
 	handle_ws_movements(info, info->mlx, tmp);
 	handle_ad_movements(info, info->mlx, tmp);
 }
-void free_sprites(t_game *game)
+void free_anim(t_game *game)
 {
-    int i = 0;
+    int i;
 
-    while (i < 5)
+	i = 0;
+    if (game->anim)
     {
-        if (game->anim.player_sprites[i])
-        {
-            mlx_delete_image(game->mlx, game->anim.player_sprites[i]);
-            game->anim.player_sprites[i] = NULL;
-        }
-        i++;
+		while(i < 6)
+		{
+			if (game->anim->sprite_paths[i])
+                free(game->anim->sprite_paths[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 6)
+		{
+			if (game->anim->player_sprites[i])
+				mlx_delete_image(game->mlx, game->anim->player_sprites[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 6)
+		{
+			if (game->anim->player_texture[i])
+				mlx_delete_texture(game->anim->player_texture[i]);
+			i++;
+		}
+        free(game->anim);
     }
 }
 
 
 void	free_game(t_game *game)
 {
-	free_sprites(game);
+	free_anim(game);
 	mlx_delete_image(game->mlx, game->image);
     mlx_terminate(game->mlx);
 	free_mlx_textures(game->textures);

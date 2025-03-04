@@ -49,20 +49,13 @@ typedef struct s_sprite
 
 typedef struct s_anim
 {
-	mlx_image_t		*curren_img;
-	mlx_image_t		*player_sprites[5];
-	char			*sprite_paths[5];
-	mlx_instance_t	*player_instance;
+	mlx_image_t		*player_sprites[6];
+	mlx_texture_t	*player_texture[6];
+	char			*sprite_paths[6];
 	int				is_animating;
 	double			last_frame_time;
-	int				frame_speed;
-	double			accum;
 	t_sprite		*sprites;
-	int				index;
-	int				time;
-	mlx_image_t		*current_sprite;
 	int				current_frame;
-	int				frame_counter;
 }	t_anim;
 
 typedef struct s_point
@@ -124,7 +117,7 @@ typedef struct s_game
 	t_mlx_textures	textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
-	t_anim			anim;
+	t_anim			*anim;
 	int				redisplay;
 }	t_game;
 
@@ -197,10 +190,10 @@ void			animate(void *param);
 void			load_sprites(t_game *info);
 void			draw_player(t_game *info);
 void			animation_loop2(t_game *game);
-void			init_anim(t_game *game);
 void			update(void * ptr);
 void			test_cursor(void *param);
 void			update_animation(void *param);
+void free_anim(t_game *game);
 
 
 
