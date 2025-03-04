@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:26:13 by martalop          #+#    #+#             */
-/*   Updated: 2025/02/23 19:05:33 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/03 17:06:17 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 	uint8_t	a;
 
 	if (x < 0 || x >= (int)texture->width || y < 0 || y >= (int)texture->height)
-		return (0x00000000); //transparent black
+		return (0x00000000);
 	pixel_index = (y * texture->width + x) * texture->bytes_per_pixel;
 	r = texture->pixels[pixel_index];
 	g = texture->pixels[pixel_index + 1];
@@ -76,8 +76,8 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 	a = texture->pixels[pixel_index + 3];
 	if (a != 255)
 	{
-		r = (r * a) / 255; // Premultiplied alpha handling
-        g = (g * a) / 255;
+		r = (r * a) / 255;
+		g = (g * a) / 255;
 		b = (b * a) / 255;
 	}
 	return (r << 24 | g << 16 | b << 8 | a);
@@ -86,24 +86,12 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures)
 {
 	if ((ray->angle >= 270 || ray->angle < 90) && ray->wall_hit == 'v')
-	{
-	//	printf("west texture chosen\n");
 		return (textures.west);
-	}
 	else if ((ray->angle < 270 && ray->angle >= 90) && ray->wall_hit == 'v')
-	{
-	//	printf("east texture chosen\n");
 		return (textures.east);
-	}
 	else if ((ray->angle >= 0 && ray->angle <= 180) && ray->wall_hit == 'h')
-	{
-	//	printf("south texture chosen\n");
 		return (textures.south);
-	}
 	else if ((ray->angle < 360 && ray->angle > 180) && ray->wall_hit == 'h')
-	{
-	//	printf("north texture chosen\n");
 		return (textures.north);
-	}
 	return (NULL);
 }
