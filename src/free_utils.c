@@ -84,18 +84,16 @@ void free_anim(t_game *game)
                 free(game->anim->sprite_paths[i]);
 			i++;
 		}
-		i = 0;
-		while (i < 6)
+		while (i < 12)
 		{
-			if (game->anim->player_sprites[i])
-				mlx_delete_image(game->mlx, game->anim->player_sprites[i]);
+			if (game->anim->player_sprites[i - 6])
+				mlx_delete_image(game->mlx, game->anim->player_sprites[i - 6]);
 			i++;
 		}
-		i = 0;
-		while (i < 6)
+		while (i < 18)
 		{
-			if (game->anim->player_texture[i])
-				mlx_delete_texture(game->anim->player_texture[i]);
+			if (game->anim->player_texture[i - 12])
+				mlx_delete_texture(game->anim->player_texture[i - 12]);
 			i++;
 		}
         free(game->anim);

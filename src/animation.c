@@ -71,13 +71,55 @@ void load_player_sprite(t_game *game)
     }
 }
 
+void delete_current_sprite(t_game *game)
+{
+    int current_frame;
+
+    current_frame = game->anim->current_frame;
+    if (game->anim->player_sprites[current_frame])
+    {
+        mlx_delete_image(game->mlx, game->anim->player_sprites[current_frame]);
+        game->anim->player_sprites[current_frame] = NULL;
+    }
+}
+
+int load_next_sprite(t_game *game, int next_frame)
+{
+    int j;
+
+    if (!game->anim->player_texture[next_frame])
+    {
+        j = 0;
+        while (j < next_frame)
+        {
+            mlx_delete_texture(game->anim->player_texture[j]);
+            j++;
+        }
+        printf("\033[31mError:\nFailed to load sprite: %s\033[0m\n", game->anim->sprite_paths[next_frame]);
+        exit_error("");
+        return (0);
+    }
+    return (1);
+}
+
+void display_next_sprite(t_game *game, int next_frame)
+{
+    game->anim->player_sprites[next_frame] = mlx_texture_to_image(game->mlx, game->anim->player_texture[next_frame]);
+    if (!game->anim->player_sprites[next_frame])
+    {
+        printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", next_frame);
+        exit_error("");
+    }
+    mlx_image_to_window(game->mlx, game->anim->player_sprites[next_frame], 10, 0);
+    game->anim->current_frame = next_frame;
+}
+
 void update_animation(void *param)
 {
     t_game *game;
     double current_time;
     int next_frame;
-    int current_frame;
-
+    
     game = (t_game *)param;
     if (!game->anim->is_animating)
         return;
@@ -85,37 +127,15 @@ void update_animation(void *param)
     if (current_time - game->anim->last_frame_time < 0.05)
         return;
     game->anim->last_frame_time = current_time;
-    current_frame = game->anim->current_frame;
-    next_frame = current_frame + 1;
-    if (game->anim->player_sprites[current_frame])
-    {
-        mlx_delete_image(game->mlx, game->anim->player_sprites[current_frame]);
-        game->anim->player_sprites[current_frame] = NULL;
-    }
+    next_frame = game->anim->current_frame + 1;
+    delete_current_sprite(game);
     if (next_frame < 5)
     {
-        if (!game->anim->player_texture[next_frame])
-        {
-            for (int j = 0; j < next_frame; j++)
-            {
-                mlx_delete_texture(game->anim->player_texture[j]);
-            }
-            printf("\033[31mError:\nFailed to load sprite: %s\033[0m\n", game->anim->sprite_paths[next_frame]);
-            exit_error("");
-        }
-        game->anim->player_sprites[next_frame] = mlx_texture_to_image(game->mlx, game->anim->player_texture[next_frame]);
-        if (!game->anim->player_sprites[next_frame])
-        {
-            printf("\033[31mError:\nFailed to convert texture to image for sprite %d\033[0m\n", next_frame);
-            exit_error("");
-        }
-        mlx_image_to_window(game->mlx, game->anim->player_sprites[next_frame], 10, 0);
-        game->anim->current_frame = next_frame;
+        if (load_next_sprite(game, next_frame))
+            display_next_sprite(game, next_frame);
     }
     else
-    {
         game->anim->is_animating = false;
-    }
 }
 
 void test_cursor(void *param)
