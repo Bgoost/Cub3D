@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/03 21:49:43 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:08:25 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ void	replace_player_pos(char **map, char id)
 	}
 }
 
+int	init_ray(t_game *info)
+{
+	info->ray = malloc(sizeof(t_ray) * 1);
+	if (!info->ray)
+	{
+		free_game(info);
+		return (ft_putstr_fd("malloc error\n", 2), 1);
+	}
+	info->ray->wall_hit = '\0';
+	return (0);
+}
+
 t_game	*init_raycasting(t_map map)
 {
 	t_game	*info;
@@ -64,24 +76,16 @@ t_game	*init_raycasting(t_map map)
 	replace_player_pos(info->map, map.player_c);
 	info->map_height = map.height;
 	info->map_width = map.width;
-	//info->redisplay = 0;
 	if (init_mlx(info) == 1)
 		return (free(info), NULL);
-    info->anim = init_anim();
+	info->anim = init_anim();
 	if (!info->anim)
 	{
 		printf("\033[31mError:\nFailed to initialize animation\033[0m\n");
 		free_game(info);
 		exit_error("");
 	}
-	info->ray = malloc(sizeof(t_ray) * 1);
-	if (!info->ray)
-	{
-		free_game(info);
-		return (ft_putstr_fd("malloc error\n", 2), NULL);
-	}
-	info->ray->wall_hit = '\0';
-	if (init_textures(info, map.textures) == 1)
+	if (init_ray(info) || init_textures(info, map.textures) == 1)
 		return (NULL);
 	return (info);
 }

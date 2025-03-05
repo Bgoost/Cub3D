@@ -30,8 +30,9 @@ RESET			= \033[0m
 
 # Source Files
 SRC			=	main.c main_checker.c parser.c parser_utils.c parse_textures.c parse_map.c \
-				test.c init_raycasting.c pixels.c mini_map.c parse_map_utils.c parse_textures_utils.c \
-				free_utils.c init_raycasting2.c animation.c init_animation.c
+				raycasting.c init_raycasting.c pixels.c minimap.c minimap_rays.c parse_map_utils.c parse_textures_utils.c \
+				free_utils.c init_raycasting2.c animation.c player_movements.c ray_utils.c ray_printing.c \
+				vertical_hits.c horizontal_hits.c init_animation.c
 SRCS		= $(addprefix $(SRC_DIR), $(SRC))
 
 # Object Files

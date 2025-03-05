@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 21:46:14 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/03 21:49:52 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:10:13 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,4 +114,3 @@ int	init_textures(t_game *info, t_textures textures)
 	}
 	return (0);
 }
-
