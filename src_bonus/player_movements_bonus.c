@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
@@ -82,6 +82,19 @@ void	handle_arrow_fov(t_game *info)
 	}
 }
 
+void	handle_fire_anim(t_game *info)
+{
+	if ((mlx_is_mouse_down(info->mlx, MLX_MOUSE_BUTTON_LEFT)
+			|| mlx_is_key_down(info->mlx, MLX_KEY_SPACE))
+		&& !info->anim->is_animating)
+	{
+		printf("Pium Pium\n");
+		info->anim->is_animating = true;
+		info->anim->current_frame = 0;
+		info->anim->last_frame_time = mlx_get_time();
+	}
+}
+
 void	player_movements(void *param)
 {
 	t_game	*info;
@@ -96,6 +109,8 @@ void	player_movements(void *param)
 		mlx_close_window(info->mlx);
 		exit(0);
 	}
+	handle_fire_anim(info);
+	update_animation(param);
 	handle_arrow_fov(info);
 	handle_ws_movements(info, info->mlx, tmp);
 	handle_ad_movements(info, info->mlx, tmp);

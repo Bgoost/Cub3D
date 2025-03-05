@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	free_mlx_textures(t_mlx_textures textures)
 {
@@ -78,6 +78,13 @@ t_game	*init_raycasting(t_map map)
 	info->map_width = map.width;
 	if (init_mlx(info) == 1)
 		return (free(info), NULL);
+	info->anim = init_anim();
+	if (!info->anim)
+	{
+		printf("\033[31mError:\nFailed to initialize animation\033[0m\n");
+		free_game(info);
+		exit_error("");
+	}
 	if (init_ray(info) || init_textures(info, map.textures) == 1)
 		return (NULL);
 	return (info);

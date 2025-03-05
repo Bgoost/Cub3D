@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                            :+:      :+:    :+:   */
+/*   cub3d_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 19:17:47 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/05 20:48:11 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CUB3D_H
-# define CUB3D_H
+#ifndef CUB3D_BONUS_H
+# define CUB3D_BONUS_H
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/inc/libft.h"
@@ -56,6 +56,16 @@
 # define WALLCOLOR 0xffffff00
 # define FLOORCOLOR 0xffffff00
 # define RAY_COLOR 0x4A001FFF
+
+typedef struct s_anim
+{
+	mlx_image_t		*player_sprites[6];
+	mlx_texture_t	*player_texture[6];
+	char			*sprite_paths[6];
+	int				is_animating;
+	double			last_frame_time;
+	int				current_frame;
+}	t_anim;
 
 typedef struct s_point
 {
@@ -115,6 +125,7 @@ typedef struct s_game
 	t_mlx_textures	textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
+	t_anim			*anim;
 }	t_game;
 
 typedef struct s_map
@@ -137,6 +148,7 @@ void			init_player(char player_c, int player_x, int player_y,
 					t_game *info);
 int				init_mlx(t_game *info);
 int				init_textures(t_game *info, t_textures textures);
+t_anim			*init_anim(void);
 
 // PARSING
 int				main_checker(int argc, char *argv[], t_map **map);
@@ -180,8 +192,18 @@ int				safe_hit_point(double x, double y, int width, int height);
 int				is_wall(double x, double y, t_game *info);
 
 // KEYBOARD
-void			key_input(mlx_key_data_t keydata, void *param);
 void			player_movements(void *param);
+
+//MINIMAP
+void			draw_minimap(mlx_image_t *image, char **map, t_game *info);
+void			draw_player(t_game *info);
+void			draw_minimap_rays(t_game *game);
+
+// ANIMATION
+void			update_animation(void *param);
+void			free_anim(t_game *game);
+t_anim			*init_anim(void);
+void			load_player_sprite(t_game *game);
 
 // UTILS
 void			free_map(char **map);
@@ -189,7 +211,7 @@ void			free_scene(t_map **scene);
 void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
-//void			print_map(char **map);
 void			free_mlx_textures(t_mlx_textures textures);
+void			free_anim(t_game *game);
 
 #endif

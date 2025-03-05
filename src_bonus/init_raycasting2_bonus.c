@@ -10,7 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
+
+void	print_map(char **map)
+{
+	int	y;
+
+	y = 0;
+	while (map[y])
+	{
+		printf("map[%d] = %s\n", y, map[y]);
+		y++;
+	}
+	printf("\n");
+}
 
 int	validate_textures(t_textures textures)
 {

@@ -9,7 +9,7 @@
 /*	 Updated: 2025/03/05 17:09:43 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 static void	delete_current_sprite(t_game *game)
 {
