@@ -1,9 +1,9 @@
 
-NO ./textures/BRICK_1A.PNG 
+NO ./textures/BRICK_1A.png 
 F 160,160,180
-SO ./textures/BRICK_3B.PNG
-EA ./textures/BRICK_2B.PNG
-WE ./textures/TILE_2C.PNG
+SO ./textures/SAND_1A.png
+EA ./textures/Sand.png
+WE ./textures/TILE_2C.png
 C 204,255,255
 
 

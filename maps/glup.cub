@@ -1,19 +1,12 @@
-     NO	 									./textures/water_1.png 
+     NO	 									./textures/alga.png 
 F 251, 208, 177
 
-WE ./textures/water_5.png
+WE ./textures/peces.png
 
-SO ./textures/water_1.png   
+SO ./textures/alga.png   
 
-
-
-EA ./textures/water_2.png
+EA ./textures/bob_esponja.png
 							C	 0, 46, 61
-
-
-
-
-
 
 1111111111111
 1001111111111

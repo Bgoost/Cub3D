@@ -1,12 +1,12 @@
-NO ./textures/water_1.png 
+NO ./textures/TILE_1A.png 
 
-SO ./textures/water_2.png 
-EA ./textures/water_5.png 
-WE ./textures/water_4.png 
+SO ./textures/TILE_2C.png 
+EA ./textures/weird_rock.png 
+WE ./textures/SLUDGE_1A.png 
 
 
 
-C 250,    30     ,1
+C 2, 1, 1
 
 F 2, 1, 1
 
