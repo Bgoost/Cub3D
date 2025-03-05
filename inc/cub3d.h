@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/04 01:13:41 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/05 19:00:36 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 
 # define WIN_WIDTH 1600
 # define WIN_HEIGHT 1000
-# define VALID_MAP_CHARS "10NSEW \n\t"
+# define VALID_MAP_CHARS "10NSEW \n"
 
 # define FOV 60
 # define TILE 64
@@ -38,9 +38,26 @@
 # define BUFF 4096
 # define MAX_LINE_LEN 1024
 
-# define CEILING_COLOR 0xA3E9DAff
-# define WALL_COLOR 0xB76841ff
-# define FLOOR_COLOR 0x869292ff
+// movimiento para que el minimapa para que no esté pegado a la esquina
+# define MINIMAP_X_OFFSET 10
+# define MINIMAP_Y_OFFSET 10
+
+// Tamaño del minimapa (no en pixeles)
+// cuanto de el mapa real puedes ver en el minimapa.
+# define MINIMAP_SCALE 10.0
+
+//Tamaño real del minimapa(en pixeles)
+# define MINIMAP_SIZE 200.0
+
+# define MINI_PLAYER_HEIGHT 8
+# define MINI_PLAYER_WIDTH 8
+
+# define PLAYER_COLOR 0xFF0000FF
+# define TRANSPARENT 0x1c2d36FF
+# define WALLCOLOR 0xffffff00
+# define FLOORCOLOR 0xffffff00
+# define RAY_COLOR 0x4A001FFF
+
 
 typedef struct s_sprite
 {
@@ -140,6 +157,7 @@ typedef struct s_map
 void		init_player(char player_c, int player_x, int player_y, t_game *info);
 int			init_mlx(t_game *info);
 int			init_textures(t_game *info, t_textures textures);
+t_anim		*init_anim(void);
 
 // PARSING
 int			main_checker(int argc, char *argv[], t_map **map);
@@ -166,7 +184,7 @@ t_point			*horizontal_hit(t_point player, char **map, double angle, \
 																t_game *info);
 t_point			*vertical_hit(t_point player, char **map, double angle, \
 																t_game *info);
-double			point_distance(t_point hit, t_point player, char point);
+double			point_distance(t_point hit, t_point player);
 t_game			*init_raycasting(t_map map);
 int				cast_ray(t_game *info, char **map, t_ray *ray);
 void			print_column(t_ray *ray, t_game *info, int x);
@@ -178,13 +196,12 @@ uint32_t		get_floor_color(int *floor_color);
 mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures);
 uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 int				safe_map_point(double x, double y, int width, int height);
-int				safe_hit_point(double x, double y, int width, int height, char id);
+int				safe_hit_point(double x, double y, int width, int height);
 int				is_wall(double x, double y, t_game *info);
 
 // KEYBOARD
 void			key_input(mlx_key_data_t keydata, void *param);
 void			player_movements(void *param);
-//void	player_movements(mlx_key_data_t keydata, void *param); 
 
 //MINIMAP
 void			draw_minimap(mlx_image_t *image, char **map, t_game *info);
@@ -198,10 +215,7 @@ void			animation_loop2(t_game *game);
 void			update(void * ptr);
 void			test_cursor(void *param);
 void			update_animation(void *param);
-void free_anim(t_game *game);
-t_anim *init_anim(void);
-
-
+void			draw_minimap_rays(t_game *game);
 
 // UTILS
 void			free_map(char **map);
@@ -212,5 +226,6 @@ int				is_notvalid(char *str);
 void			print_map(char **map);
 // void			free_sprites(t_sprite **lst);
 void			free_mlx_textures(t_mlx_textures textures);
+void			free_anim(t_game *game);
 
 #endif

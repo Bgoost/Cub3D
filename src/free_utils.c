@@ -71,17 +71,17 @@ void	free_scene(t_map **scene)
 	*scene = NULL;
 }
 
-void free_anim(t_game *game)
+void	free_anim(t_game *game)
 {
-    int i;
+	int	i;
 
 	i = 0;
-    if (game->anim)
-    {
-		while(i < 6)
+	if (game->anim)
+	{
+		while (i < 6)
 		{
 			if (game->anim->sprite_paths[i])
-                free(game->anim->sprite_paths[i]);
+				free(game->anim->sprite_paths[i]);
 			i++;
 		}
 		while (i < 12)
@@ -96,16 +96,15 @@ void free_anim(t_game *game)
 				mlx_delete_texture(game->anim->player_texture[i - 12]);
 			i++;
 		}
-        free(game->anim);
-    }
+		free(game->anim);
+	}
 }
-
 
 void	free_game(t_game *game)
 {
 	free_anim(game);
 	mlx_delete_image(game->mlx, game->image);
-    mlx_terminate(game->mlx);
+	mlx_terminate(game->mlx);
 	free_mlx_textures(game->textures);
 	free(game->ray);
 	free(game);
