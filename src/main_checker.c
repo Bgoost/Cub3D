@@ -55,7 +55,7 @@ int	main_checker(int argc, char *argv[], t_map **map)
 		exit_error("Usage: ./cub3D map.cub");
 	if (cub_control(argv[1]) == -1)
 		return (exit_error("Invalid file extension:\n\
-	Usage: ./cub3D map.cub"), 0);
+Usage: ./cub3D map.cub"), 0);
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
 		return (exit_error(strerror(errno)), 0);

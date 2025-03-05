@@ -1,6 +1,6 @@
-marta:
-- test
-- init raycasting 1/2
-- mini_map
-- pixels
-- main
+sand:
+F 244, 192, 149 
+clear sand: SEE SHADES FBD0B1
+251, 208, 177
+clear blue: SEE SHADES ADEBFF
+194, 240, 255

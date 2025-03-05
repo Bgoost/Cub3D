@@ -1,0 +1,12 @@
+NO	 ./textures/water_1.png 
+F 251, 208, 177
+
+WE ./textures/water_5.png
+SO ./textures/water_1.png   
+EA ./textures/water_2.png
+C	 173, 235, 255
+
+1111111111
+1000000001        111
+100000N001        001
+1111111111        111

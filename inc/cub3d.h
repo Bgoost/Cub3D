@@ -28,7 +28,7 @@
 
 # define WIN_WIDTH 1600
 # define WIN_HEIGHT 1000
-# define VALID_MAP_CHARS "10NSEW \n\t"
+# define VALID_MAP_CHARS "10NSEW \n"
 
 # define FOV 60
 # define TILE 64

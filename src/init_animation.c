@@ -32,7 +32,7 @@ t_anim	*init_anim(void)
 	return (anim);
 }
 
-void	init_and_set(t_game *game)
+static void	init_and_set(t_game *game)
 {
 	int	i;
 

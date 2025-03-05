@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "../inc/cub3d.h"
 
-void	delete_current_sprite(t_game *game)
+static void	delete_current_sprite(t_game *game)
 {
 	int	current_frame;
 
@@ -23,7 +23,7 @@ void	delete_current_sprite(t_game *game)
 	}
 }
 
-int	load_next_sprite(t_game *game, int next_frame)
+static int	load_next_sprite(t_game *game, int next_frame)
 {
 	int	j;
 
@@ -43,7 +43,7 @@ int	load_next_sprite(t_game *game, int next_frame)
 	return (1);
 }
 
-void	display_next_sprite(t_game *game, int next_frame)
+static void	display_next_sprite(t_game *game, int next_frame)
 {
 	game->anim->player_sprites[next_frame] = mlx_texture_to_image(game->mlx,
 			game->anim->player_texture[next_frame]);
