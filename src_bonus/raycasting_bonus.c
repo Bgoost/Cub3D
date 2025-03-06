@@ -41,11 +41,13 @@ void	get_distance(t_point *v_hit, t_point *h_hit, t_ray *ray, t_game *info)
 	if (v_distance < h_distance)
 	{
 		set_distance(v_distance, ray, v_hit, 'v');
+		printf("freeing h_hit %p\n", h_hit);
 		free(h_hit);
 	}
 	else
 	{
 		set_distance(h_distance, ray, h_hit, 'h');
+		printf("freeing v_hit %p\n", v_hit);
 		free(v_hit);
 	}
 	ray->distance_to_wall = ray->distance_to_wall
@@ -65,7 +67,10 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 		return (0);
 	v_hit = vertical_hit(info->player, map, ray->angle, info);
 	if (!v_hit)
+	{
+		printf("freeing h_hit %p\n", h_hit);
 		return (free(h_hit), 0);
+	}
 	get_distance(v_hit, h_hit, ray, info);
 	ray->projection_height = (TILE / ray->distance_to_wall)
 		* info->distance_to_plane;

@@ -18,11 +18,14 @@ char	*pad_line_to_width(const char *line, int width)
 	int		i;
 
 	trimmed = ft_strtrim(line, "\n");
+	printf("malloc trimmed: %p\n", trimmed);
 	if (!trimmed)
 		exit_error("Error:\nMemory allocation for trimmed line failed.");
 	padded = malloc(width + 1);
+	printf("malloc padded: %p\n", padded);
 	if (!padded)
 	{
+		printf("freeing trimmed %p\n", trimmed);
 		free(trimmed);
 		exit_error("Error:\nMemory allocation for padded line failed.");
 	}
@@ -35,6 +38,7 @@ char	*pad_line_to_width(const char *line, int width)
 	while (i < width)
 		padded[i++] = ' ';
 	padded[width] = '\0';
+	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 	return (padded);
 }
@@ -66,8 +70,10 @@ static int	errors_map_chars(t_map *scene, int i, int j)
 	if (!is_notvalid(scene->lines[i]))
 	{
 		trimmed = ft_strtrim(scene->lines[i], "\n");
+		printf("malloc trimmed: %p\n", trimmed);
 		free_scene(&scene);
 		printf("\033[31mError:\nInvalid line [%s] in map.\033[0m", trimmed);
+		printf("freeing trimmed %p\n", trimmed);
 		free(trimmed);
 		return (0);
 
@@ -105,12 +111,14 @@ char	**init_allocate_map(int height, int width)
 	int		i;
 
 	map = malloc(sizeof(char *) * (height + 1));
+	printf("malloc map: %p\n", map);
 	if (!map)
 		exit_error("Error:\nMemory allocation for map failed.");
 	i = 0;
 	while (i < height)
 	{
 		map[i] = malloc(sizeof(char) * (width + 1));
+		printf("malloc map[%d]: %p\n", i, map[i]);
 		if (!map[i])
 		{
 			free_map(map);

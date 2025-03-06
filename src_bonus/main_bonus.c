@@ -22,6 +22,7 @@ void	main_anim_init(t_game *game, t_anim *anim)
 {
 	load_player_sprite(game);
 	anim->player_texture[5] = mlx_load_png(anim->sprite_paths[5]);
+	printf("malloc player_texture[5] %p\n", anim->player_texture[5]);
 	if (!anim->player_texture[5])
 	{
 		exit_error("\033[31mError:\nFailed to load sprite\033[0m");
@@ -29,6 +30,7 @@ void	main_anim_init(t_game *game, t_anim *anim)
 	}
 	anim->player_sprites[5] = \
 			mlx_texture_to_image(game->mlx, anim->player_texture[5]);
+	printf("malloc sprite_paths[5] %p\n", anim->sprite_paths[5]);
 	if (!anim->player_sprites[5])
 	{
 		printf("\033[31mError:\nFailed to convert texture \
@@ -50,6 +52,7 @@ void	print_scene(t_game *info, char **map, t_ray *ray)
 		if (!cast_ray(info, map, ray))
 			exit (1);
 		print_column(ray, info, x);
+		printf("freeing ray->hit_point: %p\n", ray->hit_point);
 		free(ray->hit_point);
 		ray->angle = ray->angle - info->ray_increment;
 		x++;
@@ -66,7 +69,6 @@ int	main(int argc, char **argv)
 	map = NULL;
 	if (!main_checker(argc, argv, &map))
 		return (1);
-	printf("map: %p\n", map);
 	game = init_raycasting(*map);
 	if (!game)
 	{

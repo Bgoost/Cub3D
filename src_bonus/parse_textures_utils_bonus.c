@@ -52,6 +52,7 @@ void	error_invalid_identifier(char *trimmed, t_map *scene)
 		split_error[0]);
 	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
 	free_words(split_error);
+	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 	free_scene(&scene);
 	exit_error("");

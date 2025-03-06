@@ -18,6 +18,7 @@ t_point	*first_h_hit(double angle, t_point player)
 	t_point	*hit;
 
 	hit = malloc(sizeof(t_point) * 1);
+	printf("malloc hit: %p\n", hit);
 	if (!hit)
 		return (NULL);
 	grid_player.x = player.x * TILE;

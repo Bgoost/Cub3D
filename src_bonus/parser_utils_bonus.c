@@ -26,6 +26,7 @@ int	get_lines_count(const char *filename)
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
+		printf("freeing line %p\n", line);
 		free(line);
 		line = get_next_line(fd);
 		lines_count++;
@@ -42,6 +43,7 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count)
 	char	*tmp;
 
 	scene->lines = malloc(sizeof(char *) * (lines_count + 1));
+	printf("malloc lines: %p\n", scene->lines);
 	if (!scene->lines)
 	{
 		free_scene(&scene);
@@ -56,16 +58,18 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count)
 	{
 		tmp = line;
 		scene->lines[i] = ft_strdup(line);
+		printf("malloc scene->lines[%d]: %p\n", i, scene->lines[i]);
 		if (!scene->lines[i])
 		{
 			exit_error("Memory allocation error");
 		}
+		printf("freeing tmp %p\n", tmp);
 		free(tmp);
 		line = get_next_line(fd);
 		i++;
 	}
 	scene->lines[i] = NULL;
-	print_map(scene->lines);
+	//print_map(scene->lines);
 	close(fd);
 }
 

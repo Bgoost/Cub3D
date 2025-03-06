@@ -18,6 +18,8 @@ static void	delete_current_sprite(t_game *game)
 	current_frame = game->anim->current_frame;
 	if (game->anim->player_sprites[current_frame])
 	{
+		printf("freeing player_sprites[%d] %p\n", current_frame,
+			game->anim->player_sprites[current_frame]);
 		mlx_delete_image(game->mlx, game->anim->player_sprites[current_frame]);
 		game->anim->player_sprites[current_frame] = NULL;
 	}
@@ -32,6 +34,8 @@ static int	load_next_sprite(t_game *game, int next_frame)
 		j = 0;
 		while (j < next_frame)
 		{
+			printf("freeing player_texture[%d] %p\n", j,
+				game->anim->player_texture[j]);
 			mlx_delete_texture(game->anim->player_texture[j]);
 			j++;
 		}
@@ -45,14 +49,18 @@ static int	load_next_sprite(t_game *game, int next_frame)
 
 static void	display_next_sprite(t_game *game, int next_frame)
 {
+
 	game->anim->player_sprites[next_frame] = mlx_texture_to_image(game->mlx,
 			game->anim->player_texture[next_frame]);
+	printf("freeing player_sprites[%d] %p\n", next_frame,
+		game->anim->player_sprites[next_frame]);
 	if (!game->anim->player_sprites[next_frame])
 	{
 		printf("\033[31mError:\nFailed to convert texture to\
 image for sprite %d\033[0m\n", next_frame);
 		exit_error("");
 	}
+
 	mlx_image_to_window(game->mlx, game->anim->player_sprites[next_frame],
 		10, 0);
 	game->anim->current_frame = next_frame;

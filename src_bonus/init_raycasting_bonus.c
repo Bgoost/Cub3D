@@ -34,6 +34,7 @@ void	free_mlx_textures(t_mlx_textures *textures)
 		printf("freeing texture east: %p\n", textures->east);
 		mlx_delete_texture(textures->east);
 	}
+	printf("freeing textures: %p\n", textures);
 	free(textures);
 }
 
@@ -66,6 +67,7 @@ void	replace_player_pos(char **map, char id)
 int	init_ray(t_game *info)
 {
 	info->ray = malloc(sizeof(t_ray) * 1);
+	printf("malloc ray: %p\n", info->ray);
 	if (!info->ray)
 	{
 		free_game(info);
@@ -83,8 +85,8 @@ t_game	*init_raycasting(t_map map)
 	// info->mlx = NULL;
 	// info->textures = NULL;
 	// info->ray = NULL;
-	printf("Antes malloc");
 	info = malloc(sizeof(t_game) * 1);
+	printf("malloc info: %p\n", info);
 	if (!info)
 		return (NULL);
 	ft_bzero(info, sizeof(t_game));
@@ -93,7 +95,6 @@ t_game	*init_raycasting(t_map map)
 	init_player(map.player_c, map.player_x, map.player_y, info);
 	info->map = map.map;
 	replace_player_pos(info->map, map.player_c);
-	printf("Despues replace player");
 	info->map_height = map.height;
 	info->map_width = map.width;
 	info->anim = init_anim();
@@ -107,6 +108,5 @@ t_game	*init_raycasting(t_map map)
 		return (NULL);
 	if (init_mlx(info) == 1)
 		return (free_game(info), NULL);
-	printf("Final");
 	return (info);
 }

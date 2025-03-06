@@ -17,13 +17,16 @@ static void	validate_and_assign_texture_path(char *line, const char *result,
 {
 	if (*destination != NULL)
 	{
+		printf("freeing line %p\n", line);
 		free(line);
 		free_scene(&scene);
 		exit_error("Error:\nDuplicate texture identifier.");
 	}
 	*destination = ft_strdup(result);
+	printf("malloc destination %p\n", *destination);
 	if (*destination == NULL)
 	{
+		printf("freeing line %p\n", line);
 		free(line);
 		free_scene(&scene);
 		exit_error("Error:\nMemory allocation failed for texture path.");
@@ -38,7 +41,9 @@ static void	parse_texture(char *line, const char *identifier,
 	char	result[MAX_LINE_LEN];
 
 	trimmed = ft_strtrim(line + ft_strlen(identifier), " \t\n");
+	printf("malloc trimmed %p\n", trimmed);
 	is_in_quotes = extract_texture_path(trimmed, result);
+	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 	if (is_in_quotes)
 		exit_error("Error:\nUnmatched quotes in texture path.");
@@ -90,12 +95,15 @@ static void	parse_color(char *line, const char *identifier, int *color, t_map *s
 	if (color[i] != -1)
 		exit_error("Error:\nDuplicate color identifier.");
 	trimmed = ft_strtrim(line + ft_strlen(identifier), " \t\n");
+	printf("malloc trimmed %p\n", trimmed);
 	current = trimmed;
 	while (*current != '\0' && i < 3)
 	{
 		if (parse_number_and_comma(&current, color, &i, &comma_count) == 0)
 		{
+			printf("freeing line %p\n", line);
 			free(line);
+			printf("freeing trimmed %p\n", trimmed);
 			free(trimmed);
 			free_scene(&scene);
 			exit(1);
@@ -104,10 +112,13 @@ static void	parse_color(char *line, const char *identifier, int *color, t_map *s
 	if ((*current != '\0' && !ft_isspace(*current))
 		|| i != 3 || comma_count != 2)
 	{
+		printf("freeing line %p\n", line);
 		free(line);
+		printf("freeing trimmed %p\n", trimmed);
 		free(trimmed);
 		exit_error("Error:\nInvalid color format.");
 	}
+	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 }
 
@@ -116,8 +127,10 @@ void	parse_main_textures(char *line, t_map *scene, int map_started)
 	char	*trimmed;
 
 	trimmed = ft_strtrim(line, " \t\n");
+	printf("malloc trimmed %p\n", trimmed);
 	if (*trimmed == '\0')
 	{
+		printf("freeing trimmed %p\n", trimmed);
 		free(trimmed);
 		return ;
 	}
@@ -135,5 +148,6 @@ void	parse_main_textures(char *line, t_map *scene, int map_started)
 		parse_color(trimmed, "C", scene->textures.ceiling_color, scene);
 	else if (!is_strspace(trimmed) && !map_started)
 		error_invalid_identifier(trimmed, scene);
+	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 }
