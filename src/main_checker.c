@@ -29,7 +29,7 @@ t_map	*init_map(void)
 {
 	t_map	*map;
 
-	map = malloc(sizeof(t_map));
+	map = malloc(sizeof(t_map) * 1);
 	if (map == NULL)
 		exit_error("Error:\nMemory allocation failed for map.");
 	map->lines = NULL;
@@ -52,13 +52,19 @@ int	main_checker(int argc, char *argv[], t_map **map)
 
 	*map = init_map();
 	if (argc != 2)
-		exit_error("Usage: ./cub3D map.cub");
+		exit_error("Error\nUsage: ./cub3D map.cub");
 	if (cub_control(argv[1]) == -1)
-		return (exit_error("Invalid file extension:\n\
+	{
+		free_scene(map);
+		return (exit_error("Error:\nInvalid file extension:\n\
 Usage: ./cub3D map.cub"), 0);
+	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
+	{
+		free_scene(map);
 		return (exit_error(strerror(errno)), 0);
+	}
 	parse_scene_file(argv[1], *map);
 	return (1);
 }

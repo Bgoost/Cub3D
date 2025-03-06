@@ -42,7 +42,10 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count)
 
 	scene->lines = malloc(sizeof(char *) * (lines_count + 1));
 	if (!scene->lines)
+	{
+		free_scene(&scene);
 		exit_error("Memory allocation error");
+	}
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		exit_error("Error:\nFailed to open file.");

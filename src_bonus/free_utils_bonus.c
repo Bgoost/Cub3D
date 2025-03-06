@@ -14,8 +14,10 @@
 
 void	free_textures(t_textures *textures)
 {
+	
 	if (textures->north)
 	{
+
 		free(textures->north);
 		textures->north = NULL;
 	}

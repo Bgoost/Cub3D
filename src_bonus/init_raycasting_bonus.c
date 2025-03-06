@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_raycasting.c                                  :+:      :+:    :+:   */
+/*   init_raycasting_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 16:08:25 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:26:38 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,25 @@
 void	free_mlx_textures(t_mlx_textures textures)
 {
 	if (textures.north)
+	{
+		printf("freeing texture north: %p", textures.north);
 		mlx_delete_texture(textures.north);
+	}
 	if (textures.south)
+	{
+		printf("freeing texture south: %p", textures.south);
 		mlx_delete_texture(textures.south);
+	}
 	if (textures.west)
+	{
+		printf("freeing texture west: %p", textures.west);
 		mlx_delete_texture(textures.west);
+	}
 	if (textures.east)
+	{
+		printf("freeing texture east: %p", textures.east);
 		mlx_delete_texture(textures.east);
+	}
 }
 
 int	is_same_char(char a, char b)

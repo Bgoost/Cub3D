@@ -6,7 +6,7 @@
 /*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:57:21 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/10 14:39:05 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/06 11:55:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -93,9 +93,7 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*stash;
 	int			read_result;
-	// int			i;
 
-	// i = 0;
 	if (fd < 0 || BUFFER_SIZE < 1 || fd > 10240)
 		return (NULL);
 	read_result = -1;

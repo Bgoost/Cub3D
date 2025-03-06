@@ -11,27 +11,6 @@
 /* ************************************************************************** */
 #include "../inc/cub3d.h"
 
-t_anim	*init_anim(void)
-{
-	t_anim	*anim;
-	int		i;
-
-	i = 0;
-	anim = (t_anim *)malloc(sizeof(t_anim));
-	if (!anim)
-		return (NULL);
-	anim->is_animating = 0;
-	anim->last_frame_time = 0.0;
-	anim->current_frame = 0;
-	while (i < 6)
-		anim->player_sprites[i++] = NULL;
-	while (i < 12)
-		anim->sprite_paths[i++ - 6] = NULL;
-	while (i < 18)
-		anim->player_texture[i++ - 12] = NULL;
-	return (anim);
-}
-
 static void	init_and_set(t_game *game)
 {
 	int	i;

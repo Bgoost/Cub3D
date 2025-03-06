@@ -6,7 +6,7 @@
 /*   By: crmanzan <crmanzan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 14:58:05 by crmanzan          #+#    #+#             */
-/*   Updated: 2024/05/10 22:22:47 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/06 11:56:45 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,5 @@ size_t			ft_strlcat(char *dest, char *src, size_t size);
 size_t			ft_strlcpy(char *dest, char *src, size_t size);
 int				ft_isspace(char c);
 void			free_words(char	**words);
-
 
 #endif

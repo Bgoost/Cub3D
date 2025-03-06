@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   mlx_png.c                                          :+:    :+:            */
+/*   mlx_png.c                                          :+:      :+:    :+:   */
 /*                                                     +:+                    */
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/16 23:11:29 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/06/27 19:55:06 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2025/03/06 13:43:09 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ mlx_texture_t* mlx_load_png(const char* path)
 	{
 		free(image);
 		// Explicitly print error on purpose
+		fprintf(stderr,"\033[31mError:\n");
 		fprintf(stderr, "MLX42: LodePNG: %s\nPath to the texture: %s\n", lodepng_error_text(error), path);
 		return ((void*)mlx_error(MLX_INVPNG));
 	}

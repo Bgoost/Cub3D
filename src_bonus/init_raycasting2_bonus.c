@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_raycasting2.c                                 :+:      :+:    :+:   */
+/*   init_raycasting2_bonus.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 21:46:14 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 16:10:13 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/06 14:00:00 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,22 @@ int	validate_textures(t_textures textures)
 {
 	if (access(textures.north, R_OK))
 	{
-		perror("Error:\nNorth texture");
+		perror("\033[31mError:\nNorth texture");
 		return (0);
 	}
 	if (access(textures.west, R_OK))
 	{
-		perror("Error:\nWest texture");
+		perror("\033[31mError:\nWest texture");
 		return (0);
 	}
 	if (access(textures.south, R_OK))
 	{
-		perror("Error:\nSouth texture");
+		perror("\033[31mError:\nSouth texture");
 		return (0);
 	}
 	if (access(textures.east, R_OK))
 	{
-		perror("Error:\nEast texture");
+		perror("\033[31mError:\nEast texture");
 		return (0);
 	}
 	return (1);
@@ -52,8 +52,6 @@ int	validate_textures(t_textures textures)
 
 void	init_player(char player_c, int player_x, int player_y, t_game *info)
 {
-	(void)player_y;
-	(void)player_x;
 	if (player_c == 'N')
 		info->direction = 90;
 	if (player_c == 'S')
@@ -68,7 +66,7 @@ void	init_player(char player_c, int player_x, int player_y, t_game *info)
 
 int	init_mlx(t_game *info)
 {
-	info->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "MLX42", false);
+	info->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "CUB3D", false);
 	if (!info->mlx)
 		return (1);
 	info->image = mlx_new_image(info->mlx, WIN_WIDTH, WIN_HEIGHT);
