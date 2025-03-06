@@ -4,8 +4,8 @@ NAME_BONUS		= cub3D_bonus
 
 # Compiler and CFlags
 CC			= cc
-CFLAGS		= -g -O3 -Wall -Werror -Wextra -I$(MLX_DIR)/include
-#CFLAGS		= -O3 -Wall -Werror -Wextra -fsanitize=address -LSAN_OPTIONS=verbosity=1:log_threads=1 -I$(MLX_DIR)/include
+# CFLAGS		= -g -O3 -Wall -Werror -Wextra -I$(MLX_DIR)/include
+CFLAGS		= -O3 -Wall -Werror -Wextra -fsanitize=address -LSAN_OPTIONS=verbosity=1:log_threads=1 -I$(MLX_DIR)/include
 RM			= rm -f
 
 # Directories

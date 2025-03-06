@@ -17,22 +17,25 @@ void	free_textures(t_textures *textures)
 	
 	if (textures->north)
 	{
-
+		printf("freeing textures->north %p\n", textures->north);
 		free(textures->north);
 		textures->north = NULL;
 	}
 	if (textures->south)
 	{
+		printf("freeing textures->south %p\n", textures->south);
 		free(textures->south);
 		textures->south = NULL;
 	}
 	if (textures->west)
 	{
+		printf("freeing textures->west %p\n", textures->west);
 		free(textures->west);
 		textures->west = NULL;
 	}
 	if (textures->east)
 	{
+		printf("freeing textures->east %p\n", textures->east);
 		free(textures->east);
 		textures->east = NULL;
 	}
@@ -47,6 +50,7 @@ void	free_map(char **map)
 		return ;
 	while (map[i] != NULL)
 	{
+		printf("freeing map[%d] %p\n", i, map[i]);
 		free(map[i]);
 		map[i] = NULL;
 		i++;
@@ -69,6 +73,7 @@ void	free_scene(t_map **scene)
 		free_map((*scene)->map);
 		(*scene)->map = NULL;
 	}
+	printf("freeing scene %p\n", *scene);
 	free(*scene);
 	*scene = NULL;
 }
@@ -83,21 +88,31 @@ void	free_anim(t_game *game)
 		while (i < 6)
 		{
 			if (game->anim->sprite_paths[i])
+			{
+				printf("freeing game->anim->sprite_paths[%d] %p\n", i, game->anim->sprite_paths[i]);
 				free(game->anim->sprite_paths[i]);
+			}
 			i++;
 		}
 		while (i < 12)
 		{
 			if (game->anim->player_sprites[i - 6])
+			{
+				printf("freeing game->anim->player_sprites[%d] %p\n", (i - 6), game->anim->player_sprites[i - 6]);
 				mlx_delete_image(game->mlx, game->anim->player_sprites[i - 6]);
+			}
 			i++;
 		}
 		while (i < 18)
 		{
 			if (game->anim->player_texture[i - 12])
+			{
+				printf("freeing game->anim->player_texture[%d] %p\n", (i - 12), game->anim->player_texture[i - 12]);
 				mlx_delete_texture(game->anim->player_texture[i - 12]);
+			}
 			i++;
 		}
+		printf("freeing game->anim %p\n", game->anim);
 		free(game->anim);
 	}
 }
@@ -105,9 +120,13 @@ void	free_anim(t_game *game)
 void	free_game(t_game *game)
 {
 	free_anim(game);
+	printf("delete game->image %p\n", game->image);
 	mlx_delete_image(game->mlx, game->image);
+	printf("terminate game->mlx %p\n", game->mlx);
 	mlx_terminate(game->mlx);
 	free_mlx_textures(game->textures);
+	printf("freeing gam->ray %p\n", game->ray);
 	free(game->ray);
+	printf("freeing game %p\n", game);
 	free(game);
 }
