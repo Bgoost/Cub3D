@@ -39,8 +39,9 @@ char	*pad_line_to_width(const char *line, int width)
 	return (padded);
 }
 
-void	parse_map_errors(int num_players)
+void	parse_map_errors(int num_players, t_map **scene)
 {
+	(void)scene;
 	if (num_players == 0)
 		exit_error("Error:\nNo player position found.");
 	if (num_players > 1)

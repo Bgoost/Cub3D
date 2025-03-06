@@ -23,7 +23,12 @@ void	process_line(t_map *scene, int i, int *num_players, char **copy_map)
 		exit_error("Error:\nMemory allocation for trimmed line failed.");
 	padded_line = pad_line_to_width(trimmed, scene->width);
 	if (!padded_line)
+	{
+		free_map(copy_map);
+		printf("Holaaa soy yo\n");
+		free_map(scene->map);
 		exit_error("Error:\nMemory allocation for padded line failed.");
+	}
 	if (scene->map[i - scene->start])
 		free(scene->map[i - scene->start]);
 	if (copy_map[i - scene->start])
@@ -35,7 +40,12 @@ void	process_line(t_map *scene, int i, int *num_players, char **copy_map)
 		exit_error("Error:\nMemory allocation for map line failed.");
 	while (scene->lines[i][j] != '\0')
 	{
-		set_map_chars(scene, i, j, num_players);
+		if(!set_map_chars(scene, i, j, num_players))
+		{
+			free_map(copy_map);
+		printf("Holaaa soy yo1\n");
+			exit(1);
+		}
 		j++;
 	}
 }
@@ -91,13 +101,17 @@ void	validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 	int	is_valid;
 
 	is_valid = is_valid_map(scene, copy_map);
-	parse_map_errors(num_players);
 	if (!is_valid || is_valid == -1)
 	{
 		free_map(copy_map);
+		printf("Holaaa soy yo2\n");
+		free_scene(&scene);
 		exit_error("Error:\nMap is not fully surrounded by walls.");
 	}
 	free_map(copy_map);
+		printf("Holaaa soy yo3\n");
+	parse_map_errors(num_players, &scene);
+		printf("Holaaa soy yo3\n");
 }
 
 void	parse_map(t_map *scene)

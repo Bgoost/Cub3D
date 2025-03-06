@@ -6,34 +6,35 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/06 16:26:38 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:50:32 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d_bonus.h"
 
-void	free_mlx_textures(t_mlx_textures textures)
+void	free_mlx_textures(t_mlx_textures *textures)
 {
-	if (textures.north)
+	if (textures->north)
 	{
-		printf("freeing texture north: %p", textures.north);
-		mlx_delete_texture(textures.north);
+		printf("freeing texture north: %p\n", textures->north);
+		mlx_delete_texture(textures->north);
 	}
-	if (textures.south)
+	if (textures->south)
 	{
-		printf("freeing texture south: %p", textures.south);
-		mlx_delete_texture(textures.south);
+		printf("freeing texture south: %p\n", textures->south);
+		mlx_delete_texture(textures->south);
 	}
-	if (textures.west)
+	if (textures->west)
 	{
-		printf("freeing texture west: %p", textures.west);
-		mlx_delete_texture(textures.west);
+		printf("freeing texture west: %p\n", textures->west);
+		mlx_delete_texture(textures->west);
 	}
-	if (textures.east)
+	if (textures->east)
 	{
-		printf("freeing texture east: %p", textures.east);
-		mlx_delete_texture(textures.east);
+		printf("freeing texture east: %p\n", textures->east);
+		mlx_delete_texture(textures->east);
 	}
+	free(textures);
 }
 
 int	is_same_char(char a, char b)
@@ -78,18 +79,23 @@ t_game	*init_raycasting(t_map map)
 {
 	t_game	*info;
 
+	info = NULL;
+	// info->mlx = NULL;
+	// info->textures = NULL;
+	// info->ray = NULL;
+	printf("Antes malloc");
 	info = malloc(sizeof(t_game) * 1);
 	if (!info)
 		return (NULL);
+	ft_bzero(info, sizeof(t_game));
 	info->ray_increment = (double)FOV / (double)WIN_WIDTH;
 	info->distance_to_plane = (WIN_WIDTH / 2) / tan(degree_to_radian(FOV / 2));
 	init_player(map.player_c, map.player_x, map.player_y, info);
 	info->map = map.map;
 	replace_player_pos(info->map, map.player_c);
+	printf("Despues replace player");
 	info->map_height = map.height;
 	info->map_width = map.width;
-	if (init_mlx(info) == 1)
-		return (free(info), NULL);
 	info->anim = init_anim();
 	if (!info->anim)
 	{
@@ -99,5 +105,8 @@ t_game	*init_raycasting(t_map map)
 	}
 	if (init_ray(info) || init_textures(info, map.textures) == 1)
 		return (NULL);
+	if (init_mlx(info) == 1)
+		return (free_game(info), NULL);
+	printf("Final");
 	return (info);
 }

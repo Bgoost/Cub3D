@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 19:17:47 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:05:41 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void			parse_main_textures(char *line, t_map *scene, int map_started);
 void			parse_map(t_map *scene);
 char			**init_allocate_map(int height, int width);
 void			set_map_chars(t_map *scene, int i, int j, int *num_players);
-void			parse_map_errors(int num_players);
+void			parse_map_errors(int num_players, t_map **scene);
 char			*pad_line_to_width(const char *line, int width);
 int				extract_texture_path(const char *trimmed, char *result);
 void			error_invalid_identifier(char *trimmed);

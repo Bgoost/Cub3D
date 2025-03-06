@@ -83,15 +83,15 @@ uint32_t	get_texture_pixel(mlx_texture_t *texture, int x, int y)
 	return (r << 24 | g << 16 | b << 8 | a);
 }
 
-mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures)
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures *textures)
 {
 	if ((ray->angle >= 270 || ray->angle < 90) && ray->wall_hit == 'v')
-		return (textures.west);
+		return (textures->west);
 	else if ((ray->angle < 270 && ray->angle >= 90) && ray->wall_hit == 'v')
-		return (textures.east);
+		return (textures->east);
 	else if ((ray->angle >= 0 && ray->angle <= 180) && ray->wall_hit == 'h')
-		return (textures.south);
+		return (textures->south);
 	else if ((ray->angle < 360 && ray->angle > 180) && ray->wall_hit == 'h')
-		return (textures.north);
+		return (textures->north);
 	return (NULL);
 }

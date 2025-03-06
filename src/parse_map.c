@@ -91,7 +91,7 @@ void	validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 	int	is_valid;
 
 	is_valid = is_valid_map(scene, copy_map);
-	parse_map_errors(num_players);
+	parse_map_errors(num_players, &scene);
 	if (!is_valid || is_valid == -1)
 	{
 		free_map(copy_map);

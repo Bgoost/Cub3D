@@ -62,8 +62,11 @@ int	main(int argc, char **argv)
 	t_map	*map;
 	t_game	*game;
 
+	game = NULL;
+	map = NULL;
 	if (!main_checker(argc, argv, &map))
 		return (1);
+	printf("map: %p\n", map);
 	game = init_raycasting(*map);
 	if (!game)
 	{
@@ -74,7 +77,7 @@ int	main(int argc, char **argv)
 	print_scene(game, game->map, game->ray);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);
 	mlx_loop(game->mlx);
-	free_game(game);
 	free_scene(&map);
+	free_game(game);
 	return (0);
 }

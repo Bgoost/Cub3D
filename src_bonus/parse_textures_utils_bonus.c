@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_textures_utils.c                             :+:      :+:    :+:   */
+/*   parse_textures_utils_bonus.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 19:16:00 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/03/04 21:05:25 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:27:20 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	extract_texture_path(const char *trimmed, char *result)
 	return (in_quotes);
 }
 
-void	error_invalid_identifier(char *trimmed)
+void	error_invalid_identifier(char *trimmed, t_map *scene)
 {
 	char	**split_error;
 
@@ -53,6 +53,7 @@ void	error_invalid_identifier(char *trimmed)
 	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
 	free_words(split_error);
 	free(trimmed);
+	free_scene(&scene);
 	exit_error("");
 }
 

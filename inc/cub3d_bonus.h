@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 20:48:11 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:25:44 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ typedef struct s_game
 	t_ray			*ray;
 	int				map_width;
 	int				map_height;
-	t_mlx_textures	textures;
+	t_mlx_textures	*textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
 	t_anim			*anim;
@@ -163,11 +163,11 @@ int				get_lines_count(const char *filename);
 void			parse_main_textures(char *line, t_map *scene, int map_started);
 void			parse_map(t_map *scene);
 char			**init_allocate_map(int height, int width);
-void			set_map_chars(t_map *scene, int i, int j, int *num_players);
-void			parse_map_errors(int num_players);
+int			set_map_chars(t_map *scene, int i, int j, int *num_players);
+void			parse_map_errors(int num_players, t_map **scene);
 char			*pad_line_to_width(const char *line, int width);
 int				extract_texture_path(const char *trimmed, char *result);
-void			error_invalid_identifier(char *trimmed);
+void			error_invalid_identifier(char *trimmed, t_map *scene);
 int				ft_strncmp_isspace(char *trimmed, char *identifier);
 
 // RAYCASTING
@@ -185,7 +185,7 @@ void			print_scene(t_game *info, char **map, t_ray *ray);
 void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
 uint32_t		get_ceiling_color(int *ceiling_color);
 uint32_t		get_floor_color(int *floor_color);
-mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures *textures);
 uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 int				safe_map_point(double x, double y, int width, int height);
 int				safe_hit_point(double x, double y, int width, int height);
@@ -211,7 +211,8 @@ void			free_scene(t_map **scene);
 void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
-void			free_mlx_textures(t_mlx_textures textures);
+void			free_mlx_textures(t_mlx_textures *textures);
 void			free_anim(t_game *game);
+void			print_map(char **map);
 
 #endif

@@ -66,6 +66,7 @@ void	init_player(char player_c, int player_x, int player_y, t_game *info)
 
 int	init_mlx(t_game *info)
 {
+	info->mlx = NULL;
 	info->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "CUB3D", false);
 	if (!info->mlx)
 		return (1);
@@ -86,18 +87,24 @@ int	init_mlx(t_game *info)
 
 int	init_textures(t_game *info, t_textures textures)
 {
-	info->textures.north = NULL;
-	info->textures.south = NULL;
-	info->textures.east = NULL;
-	info->textures.west = NULL;
+	info->textures = malloc(sizeof(t_mlx_textures) * 1);
+	if (!info->textures)
+	{
+		free_game(info);
+		return (1);
+	}
+	info->textures->north = NULL;
+	info->textures->south = NULL;
+	info->textures->east = NULL;
+	info->textures->west = NULL;
 	if (validate_textures(textures))
 	{
-		info->textures.north = mlx_load_png(textures.north);
-		info->textures.south = mlx_load_png(textures.south);
-		info->textures.west = mlx_load_png(textures.west);
-		info->textures.east = mlx_load_png(textures.east);
-		if (!info->textures.north || !info->textures.south
-			|| !info->textures.west || !info->textures.east)
+		info->textures->north = mlx_load_png(textures.north);
+		info->textures->south = mlx_load_png(textures.south);
+		info->textures->west = mlx_load_png(textures.west);
+		info->textures->east = mlx_load_png(textures.east);
+		if (!info->textures->north || !info->textures->south
+			|| !info->textures->west || !info->textures->east)
 		{
 			free_game(info);
 			return (1);
