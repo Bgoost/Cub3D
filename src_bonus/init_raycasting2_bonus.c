@@ -68,14 +68,11 @@ int	init_mlx(t_game *info)
 {
 	info->mlx = NULL;
 	info->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "CUB3D", false);
-	printf("malloc mlx: %p\n", info->mlx);
 	if (!info->mlx)
 		return (1);
 	info->image = mlx_new_image(info->mlx, WIN_WIDTH, WIN_HEIGHT);
-	printf("malloc image: %p\n", info->image);
 	if (!info->image)
 	{
-		printf("freeing info->mlx %p\n", info->mlx);
 		free(info->mlx);
 		return (1);
 	}
@@ -88,10 +85,9 @@ int	init_mlx(t_game *info)
 	return (0);
 }
 
-int	init_textures(t_game *info, t_textures textures)
+int	init_textures(t_game *info, t_textures *textures)
 {
 	info->textures = malloc(sizeof(t_mlx_textures) * 1);
-	printf("malloc textures: %p\n", info->textures);
 	if (!info->textures)
 	{
 		free_game(info);
@@ -101,24 +97,20 @@ int	init_textures(t_game *info, t_textures textures)
 	info->textures->south = NULL;
 	info->textures->east = NULL;
 	info->textures->west = NULL;
-	if (validate_textures(textures))
+	if (validate_textures(*textures))
 	{
-		info->textures->north = mlx_load_png(textures.north);
-		printf("malloc north: %p\n", info->textures->north);
-		info->textures->south = mlx_load_png(textures.south);
-		printf("malloc south: %p\n", info->textures->south);
-		info->textures->west = mlx_load_png(textures.west);
-		printf("malloc west: %p\n", info->textures->west);
-		info->textures->east = mlx_load_png(textures.east);
-		printf("malloc east: %p\n", info->textures->east);
+		info->textures->north = mlx_load_png(textures->north);
+		info->textures->south = mlx_load_png(textures->south);
+		info->textures->west = mlx_load_png(textures->west);
+		info->textures->east = mlx_load_png(textures->east);
 		if (!info->textures->north || !info->textures->south
 			|| !info->textures->west || !info->textures->east)
 		{
 			free_game(info);
 			return (1);
 		}
-		info->floor_color = get_floor_color(textures.floor_color);
-		info->ceiling_color = get_ceiling_color(textures.ceiling_color);
+		info->floor_color = get_floor_color(textures->floor_color);
+		info->ceiling_color = get_ceiling_color(textures->ceiling_color);
 	}
 	else
 	{

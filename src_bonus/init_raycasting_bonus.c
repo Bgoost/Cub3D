@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/06 16:50:32 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/07 23:02:35 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,13 @@
 void	free_mlx_textures(t_mlx_textures *textures)
 {
 	if (textures->north)
-	{
-		printf("freeing texture north: %p\n", textures->north);
 		mlx_delete_texture(textures->north);
-	}
 	if (textures->south)
-	{
-		printf("freeing texture south: %p\n", textures->south);
 		mlx_delete_texture(textures->south);
-	}
 	if (textures->west)
-	{
-		printf("freeing texture west: %p\n", textures->west);
 		mlx_delete_texture(textures->west);
-	}
 	if (textures->east)
-	{
-		printf("freeing texture east: %p\n", textures->east);
 		mlx_delete_texture(textures->east);
-	}
-	printf("freeing textures: %p\n", textures);
 	free(textures);
 }
 
@@ -67,7 +54,6 @@ void	replace_player_pos(char **map, char id)
 int	init_ray(t_game *info)
 {
 	info->ray = malloc(sizeof(t_ray) * 1);
-	printf("malloc ray: %p\n", info->ray);
 	if (!info->ray)
 	{
 		free_game(info);
@@ -77,26 +63,45 @@ int	init_ray(t_game *info)
 	return (0);
 }
 
-t_game	*init_raycasting(t_map map)
+char	**copy_map(char **map, int height)
+{
+	char	**new_map;
+	int		i;
+
+	i = 0;
+	new_map = malloc(sizeof(char *) * (height + 1));
+	if (!new_map)
+		return (NULL);
+	while (i < height)
+	{
+		new_map[i] = ft_strdup(map[i]);
+		if (!new_map[i])
+		{
+			free_map(new_map);
+			return (NULL);
+		}
+		i++;
+	}
+	new_map[i] = NULL;
+	return (new_map);
+}
+
+t_game	*init_raycasting(t_map *map)
 {
 	t_game	*info;
 
 	info = NULL;
-	// info->mlx = NULL;
-	// info->textures = NULL;
-	// info->ray = NULL;
 	info = malloc(sizeof(t_game) * 1);
-	printf("malloc info: %p\n", info);
 	if (!info)
 		return (NULL);
 	ft_bzero(info, sizeof(t_game));
 	info->ray_increment = (double)FOV / (double)WIN_WIDTH;
 	info->distance_to_plane = (WIN_WIDTH / 2) / tan(degree_to_radian(FOV / 2));
-	init_player(map.player_c, map.player_x, map.player_y, info);
-	info->map = map.map;
-	replace_player_pos(info->map, map.player_c);
-	info->map_height = map.height;
-	info->map_width = map.width;
+	init_player(map->player_c, map->player_x, map->player_y, info);
+	info->map = copy_map(map->map, map->height);
+	replace_player_pos(info->map, map->player_c);
+	info->map_height = map->height;
+	info->map_width = map->width;
 	info->anim = init_anim();
 	if (!info->anim)
 	{
@@ -104,7 +109,7 @@ t_game	*init_raycasting(t_map map)
 		free_game(info);
 		exit_error("");
 	}
-	if (init_ray(info) || init_textures(info, map.textures) == 1)
+	if (init_ray(info) || init_textures(info, &map->textures) == 1)
 		return (NULL);
 	if (init_mlx(info) == 1)
 		return (free_game(info), NULL);

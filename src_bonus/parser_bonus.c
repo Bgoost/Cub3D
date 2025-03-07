@@ -17,7 +17,6 @@ void	find_delimiter(char *line, int i, t_map *scene)
 	char	*trimmed;
 
 	trimmed = ft_strtrim(line, " \n");
-	printf("malloc trimmed %p\n", trimmed);
 	if (!is_strspace(line))
 	{
 		width = ft_strlen(trimmed);
@@ -28,7 +27,6 @@ void	find_delimiter(char *line, int i, t_map *scene)
 	}
 	scene->end = i;
 	scene->valid_map = 0;
-	printf("freeing trimmed %p\n", trimmed);
 	free(trimmed);
 }
 

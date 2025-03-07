@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:22:41 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/06 16:51:06 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/07 22:49:13 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,6 @@ void	player_movements(void *param)
 	tmp.y = info->player.y;
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
-//		mlx_delete_image(info->mlx, info->image);
-//		mlx_close_window(info->mlx);
 		free_game(info);
 		exit(0);
 	}

@@ -147,7 +147,7 @@ typedef struct s_map
 void			init_player(char player_c, int player_x, int player_y,
 					t_game *info);
 int				init_mlx(t_game *info);
-int				init_textures(t_game *info, t_textures textures);
+int				init_textures(t_game *info, t_textures *textures);
 t_anim			*init_anim(void);
 
 // PARSING
@@ -177,7 +177,7 @@ t_point			*horizontal_hit(t_point player, char **map, double angle, \
 t_point			*vertical_hit(t_point player, char **map, double angle, \
 																t_game *info);
 double			point_distance(t_point hit, t_point player);
-t_game			*init_raycasting(t_map map);
+t_game			*init_raycasting(t_map *map);
 int				cast_ray(t_game *info, char **map, t_ray *ray);
 void			print_column(t_ray *ray, t_game *info, int x);
 double			adjust_angle(double angle);

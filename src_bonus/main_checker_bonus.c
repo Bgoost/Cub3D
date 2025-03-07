@@ -30,7 +30,6 @@ t_map	*init_map(void)
 	t_map	*map;
 
 	map = malloc(sizeof(t_map));
-	printf("malloc map: %p\n", map);
 	if (map == NULL)
 		exit_error("Error:\nMemory allocation failed for map.");
 	map->lines = NULL;
