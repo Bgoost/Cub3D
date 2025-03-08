@@ -10,7 +10,7 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 void	free_textures(t_textures *textures)
 {

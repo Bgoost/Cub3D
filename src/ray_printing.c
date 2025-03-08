@@ -6,11 +6,11 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:29:23 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 18:54:52 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:17:09 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static void	handle_y_texture(t_math_texture *t, mlx_texture_t *wall_texture)
 {

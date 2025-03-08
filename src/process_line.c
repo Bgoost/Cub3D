@@ -1,15 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_line_bonus.c                               :+:      :+:    :+:   */
+/*   process_line.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 17:29:10 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/03/08 17:29:21 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:17:00 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static char	*allocate_padded_line(char *trimmed, t_map *scene, char **copy_map)
 {

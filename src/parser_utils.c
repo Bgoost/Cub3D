@@ -10,7 +10,7 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 int	get_lines_count(const char *filename)
 {

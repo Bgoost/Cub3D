@@ -6,11 +6,11 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:56:18 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 18:42:13 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:17:36 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 double	point_distance(t_point hit, t_point player)
 {

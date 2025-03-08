@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_textures_utils_bonus.c                       :+:      :+:    :+:   */
+/*   parse_textures_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 19:16:00 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/03/06 18:27:20 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:16:06 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 int	extract_texture_path(const char *trimmed, char *result)
 {

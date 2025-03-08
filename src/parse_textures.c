@@ -10,7 +10,7 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static void	validate_and_assign_texture_path(char *line, const char *result,
 	char **destination, t_map *scene)

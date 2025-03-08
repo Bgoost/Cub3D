@@ -9,7 +9,7 @@
 /*	 Updated: 2025/02/26 16:44:10 by martalop		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static void	init_map_textures(t_map *map)
 {

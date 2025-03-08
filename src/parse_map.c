@@ -9,7 +9,7 @@
 /*	 Updated: 2025/03/04 21:08:36 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static int	is_fully_enclosed(char **copy_map, t_map scene, int x, int y)
 {

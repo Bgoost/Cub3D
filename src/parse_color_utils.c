@@ -1,15 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_color_utils_bonus.c                          :+:      :+:    :+:   */
+/*   parse_color_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 17:28:53 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/03/08 17:28:57 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:15:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 static int	parse_number(char **trimmed, int *color, int *i)
 {

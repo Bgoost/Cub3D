@@ -6,11 +6,11 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:26:13 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/03 17:06:17 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:16:37 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 void	adjust_pixels(int *first_wall_pixel, int *last_wall_pixel)
 {

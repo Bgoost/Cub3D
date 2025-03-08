@@ -1,7 +1,0 @@
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/mlx42.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/edit_cache.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/rebuild_cache.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/list_install_components.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/install.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/install/local.dir
-/home/crmanzan/42/5layer/cub3d/MLX42-master/build/CMakeFiles/install/strip.dir

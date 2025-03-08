@@ -9,7 +9,7 @@
 /*	 Updated: 2025/03/04 21:14:30 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 char	*pad_line_to_width(const char *line, int width)
 {

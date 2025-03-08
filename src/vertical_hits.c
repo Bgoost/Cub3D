@@ -6,11 +6,11 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:37:49 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 18:38:34 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:17:46 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 t_point	*first_v_hit(double angle, t_point player)
 {

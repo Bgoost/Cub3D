@@ -6,11 +6,11 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:34:09 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 18:40:56 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:17:25 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 int	is_wall(double x, double y, t_game *info)
 {

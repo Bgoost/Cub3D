@@ -9,7 +9,7 @@
 /*	 Updated: 2025/03/04 21:10:30 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 void	find_delimiter(char *line, int i, t_map *scene)
 {

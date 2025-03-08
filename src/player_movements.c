@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   player_movements_bonus.c                           :+:      :+:    :+:   */
+/*   player_movements.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:22:41 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/07 22:49:13 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:16:50 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d_bonus.h"
+#include "../inc/cub3d.h"
 
 void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
