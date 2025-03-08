@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                            :+:      :+:    :+:   */
+/*   cub3d.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 13:58:57 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/06 17:05:41 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 17:30:48 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,26 +36,6 @@
 # define MAX_MAP_SIZE 1024
 # define BUFF 4096
 # define MAX_LINE_LEN 1024
-
-// movimiento para que el minimapa para que no esté pegado a la esquina
-# define MINIMAP_X_OFFSET 10
-# define MINIMAP_Y_OFFSET 10
-
-// Tamaño del minimapa (no en pixeles)
-// cuanto de el mapa real puedes ver en el minimapa.
-# define MINIMAP_SCALE 10.0
-
-//Tamaño real del minimapa(en pixeles)
-# define MINIMAP_SIZE 200.0
-
-# define MINI_PLAYER_HEIGHT 8
-# define MINI_PLAYER_WIDTH 8
-
-# define PLAYER_COLOR 0xFF0000FF
-# define TRANSPARENT 0x1c2d36FF
-# define WALLCOLOR 0xffffff00
-# define FLOORCOLOR 0xffffff00
-# define RAY_COLOR 0x4A001FFF
 
 typedef struct s_point
 {
@@ -112,7 +92,7 @@ typedef struct s_game
 	t_ray			*ray;
 	int				map_width;
 	int				map_height;
-	t_mlx_textures	textures;
+	t_mlx_textures	*textures;
 	uint32_t		ceiling_color;
 	uint32_t		floor_color;
 }	t_game;
@@ -136,7 +116,7 @@ typedef struct s_map
 void			init_player(char player_c, int player_x, int player_y,
 					t_game *info);
 int				init_mlx(t_game *info);
-int				init_textures(t_game *info, t_textures textures);
+int				init_textures(t_game *info, t_textures *textures);
 
 // PARSING
 int				main_checker(int argc, char *argv[], t_map **map);
@@ -151,12 +131,15 @@ int				get_lines_count(const char *filename);
 void			parse_main_textures(char *line, t_map *scene, int map_started);
 void			parse_map(t_map *scene);
 char			**init_allocate_map(int height, int width);
-void			set_map_chars(t_map *scene, int i, int j, int *num_players);
+int				set_map_chars(t_map *scene, int i, int j, int *num_players);
 void			parse_map_errors(int num_players, t_map **scene);
 char			*pad_line_to_width(const char *line, int width);
 int				extract_texture_path(const char *trimmed, char *result);
-void			error_invalid_identifier(char *trimmed);
+void			error_invalid_identifier(char *trimmed, t_map *scene);
 int				ft_strncmp_isspace(char *trimmed, char *identifier);
+void			process_line(t_map *scene, int i, int *num_players,
+					char **copy_map);
+int				parse_color_values(char **current, int *color);
 
 // RAYCASTING
 double			degree_to_radian(double degree);
@@ -165,7 +148,7 @@ t_point			*horizontal_hit(t_point player, char **map, double angle, \
 t_point			*vertical_hit(t_point player, char **map, double angle, \
 																t_game *info);
 double			point_distance(t_point hit, t_point player);
-t_game			*init_raycasting(t_map map);
+t_game			*init_raycasting(t_map *map);
 int				cast_ray(t_game *info, char **map, t_ray *ray);
 void			print_column(t_ray *ray, t_game *info, int x);
 double			adjust_angle(double angle);
@@ -173,14 +156,13 @@ void			print_scene(t_game *info, char **map, t_ray *ray);
 void			adjust_pixels(int *first_wall_pixel, int *last_wall_pixel);
 uint32_t		get_ceiling_color(int *ceiling_color);
 uint32_t		get_floor_color(int *floor_color);
-mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures textures);
+mlx_texture_t	*get_wall_texture(t_ray *ray, t_mlx_textures *textures);
 uint32_t		get_texture_pixel(mlx_texture_t *texture, int x, int y);
 int				safe_map_point(double x, double y, int width, int height);
 int				safe_hit_point(double x, double y, int width, int height);
 int				is_wall(double x, double y, t_game *info);
 
 // KEYBOARD
-void			key_input(mlx_key_data_t keydata, void *param);
 void			player_movements(void *param);
 
 // UTILS
@@ -189,7 +171,7 @@ void			free_scene(t_map **scene);
 void			exit_error(char *msg);
 void			free_game(t_game *game);
 int				is_notvalid(char *str);
-//void			print_map(char **map);
-void			free_mlx_textures(t_mlx_textures textures);
+void			free_mlx_textures(t_mlx_textures *textures);
+void			print_map(char **map);
 
 #endif

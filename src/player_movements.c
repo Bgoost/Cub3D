@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   player_movements.c                                 :+:      :+:    :+:   */
+/*   player_movements_bonus.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 18:22:41 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 18:41:28 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/07 22:49:13 by crmanzan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	handle_ws_movements(t_game *info, mlx_t *mlx, t_point tmp)
 {
@@ -92,8 +92,7 @@ void	player_movements(void *param)
 	tmp.y = info->player.y;
 	if (mlx_is_key_down(info->mlx, MLX_KEY_ESCAPE))
 	{
-		mlx_delete_image(info->mlx, info->image);
-		mlx_close_window(info->mlx);
+		free_game(info);
 		exit(0);
 	}
 	handle_arrow_fov(info);

@@ -9,36 +9,7 @@
 /*	 Updated: 2025/03/04 21:08:36 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d.h"
-
-void	process_line(t_map *scene, int i, int *num_players, char **copy_map)
-{
-	int		j;
-	char	*trimmed;
-	char	*padded_line;
-
-	j = 0;
-	trimmed = ft_strtrim(scene->lines[i], "\n");
-	if (!trimmed)
-		exit_error("Error:\nMemory allocation for trimmed line failed.");
-	padded_line = pad_line_to_width(trimmed, scene->width);
-	if (!padded_line)
-		exit_error("Error:\nMemory allocation for padded line failed.");
-	if (scene->map[i - scene->start])
-		free(scene->map[i - scene->start]);
-	if (copy_map[i - scene->start])
-		free(copy_map[i - scene->start]);
-	scene->map[i - scene->start] = padded_line;
-	copy_map[i - scene->start] = pad_line_to_width(trimmed, scene->width);
-	free(trimmed);
-	if (!scene->map[i - scene->start] || !copy_map[i - scene->start])
-		exit_error("Error:\nMemory allocation for map line failed.");
-	while (scene->lines[i][j] != '\0')
-	{
-		set_map_chars(scene, i, j, num_players);
-		j++;
-	}
-}
+#include "../inc/cub3d_bonus.h"
 
 static int	is_fully_enclosed(char **copy_map, t_map scene, int x, int y)
 {
@@ -91,13 +62,14 @@ void	validate_and_clean_map(t_map *scene, char **copy_map, int num_players)
 	int	is_valid;
 
 	is_valid = is_valid_map(scene, copy_map);
-	parse_map_errors(num_players, &scene);
 	if (!is_valid || is_valid == -1)
 	{
 		free_map(copy_map);
-		exit_error("Error:\nMap is not fully surrounded by walls.");
+		free_scene(&scene);
+		exit_error("Error:\nMap is not fully surrounded by walls.\n");
 	}
 	free_map(copy_map);
+	parse_map_errors(num_players, &scene);
 }
 
 void	parse_map(t_map *scene)
@@ -111,12 +83,12 @@ void	parse_map(t_map *scene)
 	i = scene->start;
 	scene->map = init_allocate_map(scene->height, scene->width);
 	if (!scene->map)
-		exit_error("Error:\nMemory allocation for map failed.");
+		exit_error("Error:\nMemory allocation for map failed.\n");
 	copy_map = init_allocate_map(scene->height, scene->width);
 	if (!copy_map)
 	{
 		free_map(scene->map);
-		exit_error("Error:\nMemory allocation for map failed.");
+		exit_error("Error:\nMemory allocation for map failed.\n");
 	}
 	while (i <= scene->end)
 	{

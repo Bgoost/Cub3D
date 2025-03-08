@@ -9,7 +9,7 @@
 /*	 Updated: 2025/03/04 21:10:30 by crmanzan		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	find_delimiter(char *line, int i, t_map *scene)
 {
@@ -35,20 +35,20 @@ void	errors_in_map(t_map *scene)
 	if (scene->start == 0)
 	{
 		free_scene(&scene);
-		exit_error("Error:\nNo map found.");
+		exit_error("Error:\nNo map found.\n");
 	}
 	if (!scene->textures.north || !scene->textures.south
 		|| !scene->textures.west
 		|| !scene->textures.east)
 	{
 		free_scene(&scene);
-		exit_error("Error:\nMissing one or more textures.");
+		exit_error("Error:\nMissing one or more textures.\n");
 	}
 	if (scene->textures.floor_color[0] == -1
 		|| scene->textures.ceiling_color[0] == -1)
 	{
 		free_scene(&scene);
-		exit_error("Error:\nMissing floor or ceiling color.");
+		exit_error("Error:\nMissing floor or ceiling color.\n");
 	}
 }
 

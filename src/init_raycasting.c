@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_raycasting.c                                  :+:      :+:    :+:   */
+/*   init_raycasting_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/05 16:08:25 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 18:02:50 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
-void	free_mlx_textures(t_mlx_textures textures)
+void	free_mlx_textures(t_mlx_textures *textures)
 {
-	if (textures.north)
-		mlx_delete_texture(textures.north);
-	if (textures.south)
-		mlx_delete_texture(textures.south);
-	if (textures.west)
-		mlx_delete_texture(textures.west);
-	if (textures.east)
-		mlx_delete_texture(textures.east);
-}
-
-int	is_same_char(char a, char b)
-{
-	if (a == b)
-		return (1);
-	return (0);
+	if (textures->north)
+		mlx_delete_texture(textures->north);
+	if (textures->south)
+		mlx_delete_texture(textures->south);
+	if (textures->west)
+		mlx_delete_texture(textures->west);
+	if (textures->east)
+		mlx_delete_texture(textures->east);
+	free(textures);
 }
 
 void	replace_player_pos(char **map, char id)
@@ -42,7 +36,7 @@ void	replace_player_pos(char **map, char id)
 		x = 0;
 		while (map[y][x])
 		{
-			if (is_same_char(map[y][x], id))
+			if (map[y][x] == id)
 				map[y][x] = '0';
 			x++;
 		}
@@ -62,23 +56,48 @@ int	init_ray(t_game *info)
 	return (0);
 }
 
-t_game	*init_raycasting(t_map map)
+char	**copy_map(char **map, int height)
+{
+	char	**new_map;
+	int		i;
+
+	i = 0;
+	new_map = malloc(sizeof(char *) * (height + 1));
+	if (!new_map)
+		return (NULL);
+	while (i < height)
+	{
+		new_map[i] = ft_strdup(map[i]);
+		if (!new_map[i])
+		{
+			free_map(new_map);
+			return (NULL);
+		}
+		i++;
+	}
+	new_map[i] = NULL;
+	return (new_map);
+}
+
+t_game	*init_raycasting(t_map *map)
 {
 	t_game	*info;
 
+	info = NULL;
 	info = malloc(sizeof(t_game) * 1);
 	if (!info)
 		return (NULL);
+	ft_bzero(info, sizeof(t_game));
 	info->ray_increment = (double)FOV / (double)WIN_WIDTH;
 	info->distance_to_plane = (WIN_WIDTH / 2) / tan(degree_to_radian(FOV / 2));
-	init_player(map.player_c, map.player_x, map.player_y, info);
-	info->map = map.map;
-	replace_player_pos(info->map, map.player_c);
-	info->map_height = map.height;
-	info->map_width = map.width;
-	if (init_mlx(info) == 1)
-		return (free(info), NULL);
-	if (init_ray(info) || init_textures(info, map.textures) == 1)
+	init_player(map->player_c, map->player_x, map->player_y, info);
+	info->map = copy_map(map->map, map->height);
+	replace_player_pos(info->map, map->player_c);
+	info->map_height = map->height;
+	info->map_width = map->width;
+	if (init_ray(info) || init_textures(info, &map->textures) == 1)
 		return (NULL);
+	if (init_mlx(info) == 1)
+		return (free_game(info), NULL);
 	return (info);
 }

@@ -9,7 +9,7 @@
 /*	 Updated: 2025/02/26 16:44:10 by martalop		  ###	########.fr		  */
 /*																			  */
 /* ************************************************************************** */
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 static void	init_map_textures(t_map *map)
 {
@@ -29,9 +29,9 @@ t_map	*init_map(void)
 {
 	t_map	*map;
 
-	map = malloc(sizeof(t_map) * 1);
+	map = malloc(sizeof(t_map));
 	if (map == NULL)
-		exit_error("Error:\nMemory allocation failed for map.");
+		exit_error("Error:\nMemory allocation failed for map.\n");
 	map->lines = NULL;
 	map->map = NULL;
 	init_map_textures(map);
@@ -52,18 +52,22 @@ int	main_checker(int argc, char *argv[], t_map **map)
 
 	*map = init_map();
 	if (argc != 2)
-		exit_error("Error\nUsage: ./cub3D map.cub");
+	{
+		free_scene(map);
+		exit_error("Error\nUsage: ./cub3D map.cub\n");
+	}
 	if (cub_control(argv[1]) == -1)
 	{
 		free_scene(map);
 		return (exit_error("Error:\nInvalid file extension:\n\
-Usage: ./cub3D map.cub"), 0);
+Usage: ./cub3D map.cub\n"), 0);
 	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
 	{
 		free_scene(map);
-		return (exit_error(strerror(errno)), 0);
+		printf("\033[31mError:\n%s\n\033[0m", strerror(errno));
+		return (exit_error(""), 0);
 	}
 	parse_scene_file(argv[1], *map);
 	return (1);

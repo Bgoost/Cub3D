@@ -10,7 +10,7 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 int	get_lines_count(const char *filename)
 {
@@ -21,7 +21,7 @@ int	get_lines_count(const char *filename)
 	fd = open(filename, O_RDONLY);
 	lines_count = 0;
 	if (fd < 0)
-		exit_error("Error:\nFailed to open file.");
+		exit_error("Error:\nFailed to open file.\n");
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -33,37 +33,77 @@ int	get_lines_count(const char *filename)
 	return (lines_count);
 }
 
-void	set_file_lines(const char *filename, t_map *scene, int lines_count)
+static void	read_file_lines(int fd, t_map *scene)
 {
 	int		i;
-	int		fd;
 	char	*line;
-	char	*tmp;
+
+	i = 0;
+	line = get_next_line(fd);
+	while (line)
+	{
+		scene->lines[i] = ft_strdup(line);
+		if (!scene->lines[i])
+		{
+			free(line);
+			exit_error("Memory allocation error.\n");
+		}
+		free(line);
+		line = get_next_line(fd);
+		i++;
+	}
+	scene->lines[i] = NULL;
+}
+
+void	set_file_lines(const char *filename, t_map *scene, int lines_count)
+{
+	int	fd;
 
 	scene->lines = malloc(sizeof(char *) * (lines_count + 1));
 	if (!scene->lines)
 	{
 		free_scene(&scene);
-		exit_error("Memory allocation error");
+		exit_error("Memory allocation error.\n");
 	}
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		exit_error("Error:\nFailed to open file.");
-	i = 0;
-	line = get_next_line(fd);
-	while (line != NULL)
 	{
-		tmp = line;
-		scene->lines[i] = ft_strdup(line);
-		if (!scene->lines[i])
-			exit_error("Memory allocation error");
-		free(tmp);
-		line = get_next_line(fd);
-		i++;
+		free_scene(&scene);
+		exit_error("Error:\nFailed to open file.\n");
 	}
-	scene->lines[i] = NULL;
+	read_file_lines(fd, scene);
 	close(fd);
 }
+
+// void	set_file_lines(const char *filename, t_map *scene, int lines_count)
+// {
+//	int		i;
+//	int		fd;
+//	char	*line;
+
+//	scene->lines = malloc(sizeof(char *) * (lines_count + 1));
+//	if (!scene->lines)
+//	{
+//		free_scene(&scene);
+//		exit_error("Memory allocation error");
+//	}
+//	fd = open(filename, O_RDONLY);
+//	if (fd < 0)
+//		exit_error("Error:\nFailed to open file.");
+//	i = 0;
+//	line = get_next_line(fd);
+//	while (line != NULL)
+//	{
+//		scene->lines[i] = ft_strdup(line);
+//		if (!scene->lines[i])
+//			exit_error("Memory allocation error");
+//		free(line);
+//		line = get_next_line(fd);
+//		i++;
+//	}
+//	scene->lines[i] = NULL;
+//	close(fd);
+// }
 
 int	is_notvalid(char *str)
 {

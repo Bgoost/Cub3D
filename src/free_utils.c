@@ -10,7 +10,7 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	free_textures(t_textures *textures)
 {
@@ -46,7 +46,6 @@ void	free_map(char **map)
 	while (map[i] != NULL)
 	{
 		free(map[i]);
-		map[i] = NULL;
 		i++;
 	}
 	free(map);
@@ -73,9 +72,16 @@ void	free_scene(t_map **scene)
 
 void	free_game(t_game *game)
 {
-	mlx_delete_image(game->mlx, game->image);
-	mlx_terminate(game->mlx);
-	free_mlx_textures(game->textures);
+	free_map(game->map);
+	if (game->textures)
+		free_mlx_textures(game->textures);
+	if (game->mlx != NULL)
+	{
+		if (game->image)
+			mlx_delete_image(game->mlx, game->image);
+		mlx_close_window(game->mlx);
+		mlx_terminate(game->mlx);
+	}
 	free(game->ray);
 	free(game);
 }

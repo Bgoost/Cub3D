@@ -1,9 +1,0 @@
-sand:
-F 244, 192, 149 
-251, 208, 177
-dark blue (gun metal):
-0, 46, 61
-clear sand: SEE SHADES FBD0B1
-251, 208, 177
-clear blue: SEE SHADES ADEBFF
-194, 240, 255

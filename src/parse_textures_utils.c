@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_textures_utils.c                             :+:      :+:    :+:   */
+/*   parse_textures_utils_bonus.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: crmanzan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 19:16:00 by crmanzan          #+#    #+#             */
-/*   Updated: 2025/03/04 21:05:25 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:27:20 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 int	extract_texture_path(const char *trimmed, char *result)
 {
@@ -31,17 +31,17 @@ int	extract_texture_path(const char *trimmed, char *result)
 			if (result_len < MAX_LINE_LEN - 1)
 				result[result_len++] = trimmed[i];
 			else
-				exit_error("Error:\nTexture path is too long.");
+				exit_error("Error:\nTexture path is too long.\n");
 		}
 		else
-			exit_error("Error:\nFound a space in the file.");
+			exit_error("Error:\nFound a space in the file.\n");
 		i++;
 	}
 	result[result_len] = '\0';
 	return (in_quotes);
 }
 
-void	error_invalid_identifier(char *trimmed)
+void	error_invalid_identifier(char *trimmed, t_map *scene)
 {
 	char	**split_error;
 
@@ -50,9 +50,10 @@ void	error_invalid_identifier(char *trimmed)
 		exit_error("Error:\nMemory allocation failed for split error.");
 	printf("\033[31mError:\nInvalid texture identifier [%s] in file.\n\033[0m",
 		split_error[0]);
-	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
+	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\n\033[0m");
 	free_words(split_error);
 	free(trimmed);
+	free_scene(&scene);
 	exit_error("");
 }
 

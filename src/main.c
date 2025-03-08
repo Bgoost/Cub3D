@@ -10,11 +10,11 @@
 /*																			  */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 void	exit_error(char *msg)
 {
-	printf("\033[31m%s\n\033[0m", msg);
+	printf("\033[31m%s\033[0m", msg);
 	exit(1);
 }
 
@@ -41,18 +41,21 @@ int	main(int argc, char **argv)
 	t_map	*map;
 	t_game	*game;
 
+	game = NULL;
+	map = NULL;
 	if (!main_checker(argc, argv, &map))
 		return (1);
-	game = init_raycasting(*map);
+	game = init_raycasting(map);
 	if (!game)
 	{
 		free_scene(&map);
 		return (1);
 	}
+	free_scene(&map);
 	print_scene(game, game->map, game->ray);
 	mlx_loop_hook(game->mlx, (void *)player_movements, game);
 	mlx_loop(game->mlx);
-	free_game(game);
 	free_scene(&map);
+	free_game(game);
 	return (0);
 }

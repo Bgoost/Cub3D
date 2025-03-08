@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/cub3d.h"
+#include "../inc/cub3d_bonus.h"
 
 double	point_distance(t_point hit, t_point player)
 {
@@ -65,7 +65,9 @@ int	cast_ray(t_game *info, char **map, t_ray *ray)
 		return (0);
 	v_hit = vertical_hit(info->player, map, ray->angle, info);
 	if (!v_hit)
+	{
 		return (free(h_hit), 0);
+	}
 	get_distance(v_hit, h_hit, ray, info);
 	ray->projection_height = (TILE / ray->distance_to_wall)
 		* info->distance_to_plane;
