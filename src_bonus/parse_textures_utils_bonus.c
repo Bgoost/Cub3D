@@ -31,10 +31,10 @@ int	extract_texture_path(const char *trimmed, char *result)
 			if (result_len < MAX_LINE_LEN - 1)
 				result[result_len++] = trimmed[i];
 			else
-				exit_error("Error:\nTexture path is too long.");
+				exit_error("Error:\nTexture path is too long.\n");
 		}
 		else
-			exit_error("Error:\nFound a space in the file.");
+			exit_error("Error:\nFound a space in the file.\n");
 		i++;
 	}
 	result[result_len] = '\0';
@@ -50,7 +50,7 @@ void	error_invalid_identifier(char *trimmed, t_map *scene)
 		exit_error("Error:\nMemory allocation failed for split error.");
 	printf("\033[31mError:\nInvalid texture identifier [%s] in file.\n\033[0m",
 		split_error[0]);
-	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\033[0m");
+	printf("\033[31mExpected identifiers: NO, SO, WE, EA, F, C\n\033[0m");
 	free_words(split_error);
 	free(trimmed);
 	free_scene(&scene);

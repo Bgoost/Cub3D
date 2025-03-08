@@ -14,7 +14,7 @@
 
 void	exit_error(char *msg)
 {
-	printf("\033[31m%s\n\033[0m", msg);
+	printf("\033[31m%s\033[0m", msg);
 	exit(1);
 }
 
@@ -24,15 +24,15 @@ void	main_anim_init(t_game *game, t_anim *anim)
 	anim->player_texture[5] = mlx_load_png(anim->sprite_paths[5]);
 	if (!anim->player_texture[5])
 	{
-		exit_error("\033[31mError:\nFailed to load sprite\033[0m");
-		exit_error("");
+		free_game(game);
+		exit_error("\033[31mError:\nFailed to load sprite\n\033[0m");
 	}
 	anim->player_sprites[5] = \
 			mlx_texture_to_image(game->mlx, anim->player_texture[5]);
 	if (!anim->player_sprites[5])
 	{
 		printf("\033[31mError:\nFailed to convert texture \
-to image for sprite %d\033[0m", 5);
+to image for sprite %d\n\033[0m", 5);
 		exit_error("");
 	}
 	mlx_image_to_window(game->mlx, game->anim->player_sprites[5], 0, 0);

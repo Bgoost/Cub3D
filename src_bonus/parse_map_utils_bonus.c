@@ -19,12 +19,12 @@ char	*pad_line_to_width(const char *line, int width)
 
 	trimmed = ft_strtrim(line, "\n");
 	if (!trimmed)
-		exit_error("Error:\nMemory allocation for trimmed line failed.");
+		exit_error("Error:\nMemory allocation for trimmed line failed.\n");
 	padded = malloc(width + 1);
 	if (!padded)
 	{
 		free(trimmed);
-		exit_error("Error:\nMemory allocation for padded line failed.");
+		exit_error("Error:\nMemory allocation for padded line failed.\n");
 	}
 	i = 0;
 	while (trimmed[i] && i < width)
@@ -44,12 +44,12 @@ void	parse_map_errors(int num_players, t_map **scene)
 	if (num_players == 0)
 	{
 		free_scene(scene);
-		exit_error("Error:\nNo player position found.");
+		exit_error("Error:\nNo player position found.\n");
 	}
 	if (num_players > 1)
 	{
 		free_scene(scene);
-		exit_error("Error:\nMultiple player positions found.");
+		exit_error("Error:\nMultiple player positions found.\n");
 	}
 }
 
@@ -60,21 +60,21 @@ static int	errors_map_chars(t_map *scene, int i, int j)
 	if (is_strspace(scene->lines[i]))
 	{
 		free_scene(&scene);
-		printf("\033[31mError:\nEmpty lines not allowed in map.\033[0m");
+		printf("\033[31mError:\nEmpty lines not allowed in map.\n\033[0m");
 		return (0);
 	}
 	if (!is_notvalid(scene->lines[i]))
 	{
 		trimmed = ft_strtrim(scene->lines[i], "\n");
 		free_scene(&scene);
-		printf("\033[31mError:\nInvalid line [%s] in map.\033[0m", trimmed);
+		printf("\033[31mError:\nInvalid line [%s] in map.\n\033[0m", trimmed);
 		free(trimmed);
 		return (0);
 	}
 	if (!ft_strchr(VALID_MAP_CHARS, scene->lines[i][j]))
 	{
-		printf("\033[31mError:\nInvalid character\
-[%c] in map.\033[0m", scene->lines[i][j]);
+		printf("\033[31mError:\nInvalid character \
+[%c] in map.\n\033[0m", scene->lines[i][j]);
 		free_scene(&scene);
 		return (0);
 	}
@@ -100,7 +100,7 @@ char	**init_allocate_map(int height, int width)
 
 	map = malloc(sizeof(char *) * (height + 1));
 	if (!map)
-		exit_error("Error:\nMemory allocation for map failed.");
+		exit_error("Error:\nMemory allocation for map failed.\n");
 	i = 0;
 	while (i < height)
 	{
@@ -108,7 +108,7 @@ char	**init_allocate_map(int height, int width)
 		if (!map[i])
 		{
 			free_map(map);
-			exit_error("Error:\nMemory allocation for map row failed.");
+			exit_error("Error:\nMemory allocation for map row failed.\n");
 		}
 		ft_bzero(map[i], width);
 		map[i][width] = '\0';

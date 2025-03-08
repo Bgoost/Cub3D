@@ -21,7 +21,7 @@ int	get_lines_count(const char *filename)
 	fd = open(filename, O_RDONLY);
 	lines_count = 0;
 	if (fd < 0)
-		exit_error("Error:\nFailed to open file.");
+		exit_error("Error:\nFailed to open file.\n");
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -46,7 +46,7 @@ static void	read_file_lines(int fd, t_map *scene)
 		if (!scene->lines[i])
 		{
 			free(line);
-			exit_error("Memory allocation error");
+			exit_error("Memory allocation error.\n");
 		}
 		free(line);
 		line = get_next_line(fd);
@@ -63,13 +63,13 @@ void	set_file_lines(const char *filename, t_map *scene, int lines_count)
 	if (!scene->lines)
 	{
 		free_scene(&scene);
-		exit_error("Memory allocation error");
+		exit_error("Memory allocation error.\n");
 	}
-	fd = open_file(filename);
+	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
 		free_scene(&scene);
-		exit_error("Error:\nFailed to open file.");
+		exit_error("Error:\nFailed to open file.\n");
 	}
 	read_file_lines(fd, scene);
 	close(fd);

@@ -35,12 +35,12 @@ RESET			= \033[0m
 SRC			=	main.c main_checker.c parser.c parser_utils.c parse_textures.c parse_map.c \
 				raycasting.c init_raycasting.c pixels.c parse_map_utils.c parse_textures_utils.c \
 				free_utils.c init_raycasting2.c player_movements.c ray_utils.c ray_printing.c \
-				vertical_hits.c horizontal_hits.c
+				vertical_hits.c horizontal_hits.c process_line.c parse_color_utils.c
 
 SRC_BONUS	=	main_bonus.c main_checker_bonus.c parser_bonus.c parser_utils_bonus.c parse_textures_bonus.c parse_map_bonus.c \
 				raycasting_bonus.c init_raycasting_bonus.c pixels_bonus.c minimap_bonus.c minimap_rays_bonus.c parse_map_utils_bonus.c parse_textures_utils_bonus.c \
 				free_utils_bonus.c init_raycasting2_bonus.c animation_bonus.c player_movements_bonus.c ray_utils_bonus.c ray_printing_bonus.c \
-				vertical_hits_bonus.c horizontal_hits_bonus.c init_animation_bonus.c
+				vertical_hits_bonus.c horizontal_hits_bonus.c init_animation_bonus.c process_line_bonus.c parse_color_utils_bonus.c
 
 SRCS		= $(addprefix $(SRC_DIR), $(SRC))
 SRCS_BONUS	= $(addprefix $(SRC_DIR_BONUS), $(SRC_BONUS))
