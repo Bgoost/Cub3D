@@ -6,13 +6,13 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 21:46:14 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/06 14:00:00 by martalop         ###   ########.fr       */
+/*   Updated: 2025/03/08 17:52:49 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d_bonus.h"
 
-void	print_map(char **map)
+/*void	print_map(char **map)
 {
 	int	y;
 
@@ -23,7 +23,7 @@ void	print_map(char **map)
 		y++;
 	}
 	printf("\n");
-}
+}*/
 
 int	validate_textures(t_textures textures)
 {
@@ -85,6 +85,23 @@ int	init_mlx(t_game *info)
 	return (0);
 }
 
+static int	load_init_textures(t_textures *textures, t_game *info)
+{
+	info->textures->north = mlx_load_png(textures->north);
+	info->textures->south = mlx_load_png(textures->south);
+	info->textures->west = mlx_load_png(textures->west);
+	info->textures->east = mlx_load_png(textures->east);
+	if (!info->textures->north || !info->textures->south
+		|| !info->textures->west || !info->textures->east)
+	{
+		free_game(info);
+		return (1);
+	}
+	info->floor_color = get_floor_color(textures->floor_color);
+	info->ceiling_color = get_ceiling_color(textures->ceiling_color);
+	return (0);
+}
+
 int	init_textures(t_game *info, t_textures *textures)
 {
 	info->textures = malloc(sizeof(t_mlx_textures) * 1);
@@ -99,18 +116,8 @@ int	init_textures(t_game *info, t_textures *textures)
 	info->textures->west = NULL;
 	if (validate_textures(*textures))
 	{
-		info->textures->north = mlx_load_png(textures->north);
-		info->textures->south = mlx_load_png(textures->south);
-		info->textures->west = mlx_load_png(textures->west);
-		info->textures->east = mlx_load_png(textures->east);
-		if (!info->textures->north || !info->textures->south
-			|| !info->textures->west || !info->textures->east)
-		{
-			free_game(info);
+		if (load_init_textures(textures, info) == 1)
 			return (1);
-		}
-		info->floor_color = get_floor_color(textures->floor_color);
-		info->ceiling_color = get_ceiling_color(textures->ceiling_color);
 	}
 	else
 	{

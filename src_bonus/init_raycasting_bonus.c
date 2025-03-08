@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 16:26:16 by martalop          #+#    #+#             */
-/*   Updated: 2025/03/07 23:02:35 by crmanzan         ###   ########.fr       */
+/*   Updated: 2025/03/08 18:02:50 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,6 @@ void	free_mlx_textures(t_mlx_textures *textures)
 	free(textures);
 }
 
-int	is_same_char(char a, char b)
-{
-	if (a == b)
-		return (1);
-	return (0);
-}
-
 void	replace_player_pos(char **map, char id)
 {
 	int	x;	
@@ -43,7 +36,7 @@ void	replace_player_pos(char **map, char id)
 		x = 0;
 		while (map[y][x])
 		{
-			if (is_same_char(map[y][x], id))
+			if (map[y][x] == id)
 				map[y][x] = '0';
 			x++;
 		}
@@ -105,9 +98,8 @@ t_game	*init_raycasting(t_map *map)
 	info->anim = init_anim();
 	if (!info->anim)
 	{
-		printf("\033[31mError:\nFailed to initialize animation\033[0m\n");
 		free_game(info);
-		exit_error("");
+		exit_error("Error:\nFailed to initialize animation\n");
 	}
 	if (init_ray(info) || init_textures(info, &map->textures) == 1)
 		return (NULL);
